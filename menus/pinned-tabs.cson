@@ -2,7 +2,7 @@
 'context-menu':
     '.tab': [{
         'label': 'Pin tab'
-        'command': 'pinned-tabs:pin'
+        'command': 'pinned-tabs:pin-selected'
     }]
 
 # This is the menu within the Packages menu, pinned-tabs

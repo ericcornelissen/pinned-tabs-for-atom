@@ -11,7 +11,8 @@ module.exports = PinnedTabs =
         @subscriptions = new CompositeDisposable
 
         # Register command that will pin the current tab
-        @subscriptions.add atom.commands.add 'atom-workspace', 'pinned-tabs:pin': => @pin()
+        @subscriptions.add atom.commands.add 'atom-workspace', 'pinned-tabs:pin-selected': => @pinSelected()
+        @subscriptions.add atom.commands.add 'atom-workspace', 'pinned-tabs:pin': => @pinActive()
 
     deactivate: ->
         @pinnedTabsView.destroy()
@@ -19,6 +20,10 @@ module.exports = PinnedTabs =
     serialize: ->
         pinnedTabsViewState: @pinnedTabsView.serialize()
 
-    pin: ->
-        if pane = atom.workspace.getActivePaneItem()
-            atom.contextMenu.activeElement.classList.toggle('pinned')
+
+    pinActive: ->
+        if tab = document.querySelector('.tab.active')
+            tab.classList.toggle('pinned')
+    pinSelected: ->
+        if tab = atom.contextMenu.activeElement
+            tab.classList.toggle('pinned')

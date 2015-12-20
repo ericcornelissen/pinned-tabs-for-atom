@@ -8,15 +8,3 @@
             'label': 'Unpin tab'
             'command': 'pinned-tabs:pin-selected'
         }]
-
-# This is the menu within the Packages menu, pinned-tabs
-# uses this for configuration of the package.
-'menu': [{
-    'label': 'Packages'
-    'submenu': [
-        'label': 'pinned-tabs'
-        'submenu': [{
-            'label': 'This is not the context-menu you\'re looking for...'
-        }]
-    ]
-}]

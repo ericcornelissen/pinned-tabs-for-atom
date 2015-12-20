@@ -1,5 +1,13 @@
-# pinned-tabs
+# Pinned tabs for Atom
 
-A short description of your package.
+A simple package for the Atom text editor from Github that allows you to pin tabs. Inspired by the pin tab feature from Google Chrome.
 
-![A screenshot of your package](https://f.cloud.github.com/assets/69169/2290250/c35d867a-a017-11e3-86be-cd7c5bf3ff9b.gif)
+![](http://i.imgur.com/TJUkfM0.gif)
+
+* * *
+
+### Usage
+There are three ways to pin/unpin a tab using this package.
+- Via the context menu of a tab.
+- Via the keyboard shortcut ```ctrl-alt-p```.
+- Via the command-palette, by typing ```pin```.

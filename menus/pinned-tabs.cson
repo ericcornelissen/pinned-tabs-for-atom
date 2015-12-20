@@ -1,0 +1,19 @@
+#
+'context-menu':
+    '.tab': [{
+        'label': 'Pin tab'
+        'command': 'pinned-tabs:toggle'
+    }]
+
+# This is the menu within the Packages menu, pinned-tabs
+# uses this for configuration of the package.
+'menu': [{
+    'label': 'Packages'
+    'submenu': [
+        'label': 'pinned-tabs'
+        'submenu': [{
+            'label': 'Toggle'
+            'command': 'pinned-tabs:toggle'
+        }]
+    ]
+}]

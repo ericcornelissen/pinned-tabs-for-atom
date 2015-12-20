@@ -1,23 +1,32 @@
 @import "ui-variables";
 
-.pinned {
-    min-width: 38px !important;
-    max-width: 38px !important;
-}
 .pinned:not(.active) {
     /* TODO: something to make pinned tabs stand out */
 }
 .pinned.modified {
-    background-color: #004400;
+    /* TODO: something to make modified pinned tabs stand out */
 }
 
-
-/* Hide the title of the tab */
+.pinned {
+    /* Make pinned tabs a fixed width */
+    max-width: 38px !important;
+    min-width: 38px !important;
+}
 .pinned .title {
+    /* Hide the title of the tab */
     color: transparent;
 }
-
-/* Hide the close icon element of pinned tabs */
 .pinned .close-icon {
-    display: none;
+    /* Slighty change the position of the close-icon */
+    padding-right: 13px !important;
+    /* Disable events on the close-icon */
+    pointer-events: none;
+    /* Scale the close-icon to make it visible */
+    transform: scale(1) !important;
+    /* Add a transition for the color of the icon */
+    transition: color .16s ease !important;
+}
+.pinned .close-icon::before {
+    /* Set the close-icon to always be the 'modified' icon */
+    content: "\f052" !important;
 }

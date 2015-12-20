@@ -1,9 +1,13 @@
-#
+# Add a pin/unpin option to the context menu of tabs.
 'context-menu':
-    '.tab': [{
-        'label': 'Pin tab'
-        'command': 'pinned-tabs:pin-selected'
-    }]
+    '.tab:not(.pinned)': [{
+            'label': 'Pin tab'
+            'command': 'pinned-tabs:pin-selected'
+        }]
+    '.tab.pinned': [{
+            'label': 'Unpin tab'
+            'command': 'pinned-tabs:pin-selected'
+        }]
 
 # This is the menu within the Packages menu, pinned-tabs
 # uses this for configuration of the package.

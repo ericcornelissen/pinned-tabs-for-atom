@@ -1,13 +1,10 @@
 {
   "name": "pinned-tabs",
   "main": "./lib/pinned-tabs",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "An Atom package that allows you to pin tabs",
   "keywords": [
   ],
-  "activationCommands": {
-    "atom-workspace": "pinned-tabs:toggle"
-  },
   "repository": "https://github.com/atom/pinned-tabs",
   "license": "MIT",
   "engines": {

@@ -2,7 +2,7 @@
 'context-menu':
     '.tab': [{
         'label': 'Pin tab'
-        'command': 'pinned-tabs:toggle'
+        'command': 'pinned-tabs:pin'
     }]
 
 # This is the menu within the Packages menu, pinned-tabs
@@ -12,8 +12,7 @@
     'submenu': [
         'label': 'pinned-tabs'
         'submenu': [{
-            'label': 'Toggle'
-            'command': 'pinned-tabs:toggle'
+            'label': 'This is not the context-menu you\'re looking for...'
         }]
     ]
 }]

@@ -1,25 +1,21 @@
 @import "ui-variables";
 
 .pinned {
-    width: 0 !important;
-    min-width: 0 !important;
+    min-width: 38px !important;
     max-width: 38px !important;
 }
-
-.pinned .title {
-    color: transparent;
-    margin: 0 !important;
-    width: 38px !important;
-}
-.pinned::after {
-    margin: 0 !important;
-    width: 38px !important
-}
-
 .pinned:not(.active) {
     /* TODO: something to make pinned tabs stand out */
 }
+.pinned.modified {
+    background-color: #004400;
+}
 
+
+/* Hide the title of the tab */
+.pinned .title {
+    color: transparent;
+}
 
 /* Hide the close icon element of pinned tabs */
 .pinned .close-icon {

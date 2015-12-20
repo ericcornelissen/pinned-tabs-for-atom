@@ -1,1 +1,2 @@
-# TODO: Add keybind to pin a tab
+'atom-workspace':
+   'ctrl-alt-p': 'pinned-tabs:pin'

@@ -1,13 +1,23 @@
-.pinned {
+.tab-bar .tab {
+    /* Add a transition for the size of the tab */
+    transition: max-width .3s ease !important;
+}
+.tab-bar .title {
+    /* Add transition because title is hidden when a tab is pinned */
+    transition: opacity .3s ease !important;
+    /* The transition delay is there to make the unpin animation look smoother */
+    -webkit-transition-delay: .025s !important;
+}
+.tab-bar .pinned {
     /* Make pinned tabs a fixed width */
     max-width: 38px !important;
     min-width: 38px !important;
 }
-.pinned .title {
+.tab-bar .pinned .title {
     /* Hide the title of the tab */
-    color: transparent;
+    opacity: 0 !important;
 }
-.pinned .close-icon {
+.tab-bar .pinned .close-icon {
     /* Slighty change the position of the close-icon */
     padding-right: 13px !important;
     /* Disable events on the close-icon */
@@ -17,7 +27,9 @@
     /* Add a transition for the color of the icon */
     transition: color .16s ease !important;
 }
-.pinned .close-icon::before {
+.tab-bar .pinned .close-icon::before {
     /* Set the close-icon to always be the 'modified' icon */
     content: "\f052" !important;
+    /* Makes sure the correct icon is showed */
+    font-family: '.SFNSText-Regular', 'SF UI Text', 'Lucida Grande', 'Segoe UI', Ubuntu, Cantarell, sans-serif;
 }

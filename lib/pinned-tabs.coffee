@@ -22,51 +22,37 @@ module.exports = PinnedTabs =
 
     # Method to pin the active tab.
     pinActive: ->
-        @pin(document.querySelector '.tab.active')
+        @pin document.querySelector('.tab.active')
 
     # Method to pin the selected (via contextmenu) tab.
     pinSelected: ->
-        @pin(atom.contextMenu.activeElement)
+        @pin atom.contextMenu.activeElement
 
     pin: (e) ->
+        # Get an instance of the Pane class to be able
+        # to move the tabs around.
+        pane = atom.workspace.getActivePane()
+
+        # Get the index of the tab that should be pinned,
+        # and get the item of the tab, so it can be moved.
+        selectedIndex = Array.prototype.indexOf.call e.parentNode.children, e
+        item = pane.itemAtIndex selectedIndex
+
+        # Get the new index for the item.
+        newIndex = e.parentNode.querySelectorAll('.pinned').length
         if e.classList.contains 'pinned'
-            # If the element has the class 'pinned', it will be unpinned with
-            # this function call.
+            # If the element has the element 'pinned', it
+            # is currently being unpinned. So the new index
+            # is one off when look at the amount of pinned
+            # tabs, because it actually includes the tab
+            # that is being unpinned.
+            newIndex -= 1
 
-            # First move it to the front, this is the amount of pinned tabs at
-            # worst. Because a tab being unpinned must be in the range of
-            # pinned tabs.
-            limit = document.querySelector('.tab-bar').querySelectorAll('.tab.pinned').length
-            for i in [0...limit]
-                atom.workspace.getActivePane().moveItemLeft()
-
-            # Then, move it back to the right for the amount of pinned tabs
-            # minus 1. The minus 1 is there because this tab should be now be
-            # the first unpinned tab which is the spot of the current last
-            # pinned tab.
-            limit = document.querySelector('.tab-bar').querySelectorAll('.tab.pinned').length - 1
-            for i in [0...limit]
-                atom.workspace.getActivePane().moveItemRight()
-        else
-            # If the element does not have has the class 'pinned', it will be
-            # pinned with this function call.
-
-            # First move the current tab to the front. This can be, in the
-            # worst case scenario, the amount of opened tabs if the last tab
-            # should be pinned.
-            limit = document.querySelector('.tab-bar').querySelectorAll('.tab').length
-            for i in [0...limit]
-                atom.workspace.getActivePane().moveItemLeft()
-
-            # Then move the tab to the last spot of the pinned tabs. To
-            # achieve this the tab should be moved as many times as there
-            # are pinned tabs.
-            limit = document.querySelector('.tab-bar').querySelectorAll('.tab.pinned').length
-            for i in [0...limit]
-                atom.workspace.getActivePane().moveItemRight()
+        # Actually move the item to its new index.
+        pane.moveItem item, newIndex
 
         # Finally, toggle the 'pinned' class on the tab after a
         # timout of 1 millisecond. This will ensure the animation
         # of pinning the tab will run.
-        callback = -> e.classList.toggle('pinned')
+        callback = -> e.classList.toggle 'pinned'
         setTimeout callback, 1

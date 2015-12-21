@@ -10,6 +10,8 @@ module.exports = PinnedTabs =
         # Register commands to pin a tab.
         @subscriptions.add atom.commands.add 'atom-workspace', 'pinned-tabs:pin': => @pinActive()
         @subscriptions.add atom.commands.add 'atom-workspace', 'pinned-tabs:pin-selected': => @pinSelected()
+        @subscriptions.add atom.commands.add 'atom-workspace', 'pinned-tabs:toggle-animation': => @toggleAnimation()
+
 
     # Method that is ran when the package is stopped.
     deactivate: ->
@@ -20,9 +22,13 @@ module.exports = PinnedTabs =
         pinnedTabsViewState: @pinnedTabsView.serialize()
 
 
+    toggleAnimation: ->
+        e = document.querySelector('.tab-bar')
+        e.classList.toggle 'pinned-tabs-enable-animation'
+
     # Method to pin the active tab.
     pinActive: ->
-        @pin document.querySelector('.tab.active')
+        @pin document.querySelector('.tab-bar .tab.active')
 
     # Method to pin the selected (via contextmenu) tab.
     pinSelected: ->

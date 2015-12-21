@@ -1,13 +1,14 @@
-.tab-bar .tab {
+.tab-bar.pinned-tabs-enable-animation .tab {
     /* Add a transition for the size of the tab */
     transition: max-width .3s ease !important;
 }
-.tab-bar .tab .title {
+.tab-bar.pinned-tabs-enable-animation .tab .title {
     /* Add transition because title is hidden when a tab is pinned */
     transition: opacity .3s ease !important;
     /* The transition delay is there to make the unpin animation look smoother */
     -webkit-transition-delay: .025s !important;
 }
+
 .tab-bar .pinned {
     /* Make pinned tabs a fixed width */
     max-width: 38px !important;

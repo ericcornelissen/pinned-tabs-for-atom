@@ -1,13 +1,13 @@
 {
-    "name": "pinned-tabs",
-    "main": "./lib/pinned-tabs",
-    "version": "0.0.2",
-    "description": "An Atom package that allows you to pin tabs",
-    "keywords": [],
-    "repository": "https://github.com/ericcornelissen/pinned-tabs-for-atom",
-    "license": "MIT",
-    "engines": {
-        "atom": ">=1.0.0 <2.0.0"
-    },
-    "dependencies": {}
+  "name": "pinned-tabs",
+  "main": "./lib/pinned-tabs",
+  "version": "0.1.0",
+  "description": "An Atom package that allows you to pin tabs",
+  "keywords": [],
+  "repository": "https://github.com/ericcornelissen/pinned-tabs-for-atom",
+  "license": "MIT",
+  "engines": {
+    "atom": ">=1.0.0 <2.0.0"
+  },
+  "dependencies": {}
 }

@@ -8,16 +8,3 @@
             'label': 'Unpin tab'
             'command': 'pinned-tabs:pin-selected'
         }]
-
-# This is the menu within the Packages menu. pinned-tabs
-# uses this for configuration of the package.
-'menu': [{
-    'label': 'Packages'
-    'submenu': [
-        'label': 'Pinned tabs'
-        'submenu': [{
-            'label': 'Toggle animation'
-            'command': 'pinned-tabs:toggle-animation'
-        }]
-    ]
-}]

@@ -1,4 +1,3 @@
-PinnedTabsView = require './pinned-tabs-view'
 {CompositeDisposable} = require 'atom'
 
 module.exports = PinnedTabs =
@@ -6,44 +5,38 @@ module.exports = PinnedTabs =
     config:
         enableAnimation:
             title: 'Enable animation'
-            description: 'Enable or disable the animation used to pin a tab'
+            description: 'Enable the animation used to pin a tab'
             type: 'boolean'
             default: true
 
+
     # Method that is ran when the package is started.
     activate: (state) ->
-        #console.log 'PinnedTabs', 'activate', state
-
-        # Events subscribed to in atom's system can be easily cleaned up with a CompositeDisposable.
-        @subscriptions = new CompositeDisposable
-
         # Register commands to pin a tab.
+        @subscriptions = new CompositeDisposable
         @subscriptions.add atom.commands.add 'atom-workspace', 'pinned-tabs:pin': => @pinActive()
         @subscriptions.add atom.commands.add 'atom-workspace', 'pinned-tabs:pin-selected': => @pinSelected()
         @subscriptions.add atom.commands.add 'atom-workspace', 'pinned-tabs:toggle-animation': => @toggleAnimation()
 
-        #
-        atom.config.onDidChange 'pinned-tabs.enable-animation', ({newValue}) ->
-            e = document.querySelector('.tab-bar')
-            if newValue
-                e.classList.add 'pinned-tabs-enable-animation'
-            else
-                e.classList.remove 'pinned-tabs-enable-animation'
 
+        # Add an event listener for when the value of the 'enable-animation'
+        # settings is changed.
+        atom.config.observe 'pinned-tabs.enable-animation', (newValue) ->
+            callback = ->
+                e = document.querySelector('.tab-bar')
+                if newValue
+                    e.classList.add 'pinned-tabs-enable-animation'
+                else
+                    e.classList.remove 'pinned-tabs-enable-animation'
 
-    # Method that is ran when the package is stopped.
-    deactivate: ->
-        @pinnedTabsView.destroy()
+            # This timeout is required for when Atom is launched, and
+            # it does not influence other times the setting is changed.
+            setTimeout callback, 1
+
 
     # Method that is ran to serialize the package.
     serialize: ->
-        pinnedTabsViewState: @pinnedTabsView.serialize()
-
-
-    #
-    toggleAnimation: ->
-        current = atom.config.get('pinned-tabs.enable-animation')
-        atom.config.set('pinned-tabs.enable-animation', !current)
+        @PinnedTabsState.serialize()
 
 
     # Method to pin the active tab.
@@ -54,6 +47,7 @@ module.exports = PinnedTabs =
     pinSelected: ->
         @pin atom.contextMenu.activeElement
 
+    # Method that pins/unpins a tab given its element.
     pin: (e) ->
         # Get an instance of the Pane class to be able
         # to move the tabs around.
@@ -82,3 +76,10 @@ module.exports = PinnedTabs =
         # of pinning the tab will run.
         callback = -> e.classList.toggle 'pinned'
         setTimeout callback, 1
+
+
+    # Toggle the animation class in the DOM of Atom.
+    toggleAnimation: ->
+        #
+        current = atom.config.get('pinned-tabs.enable-animation')
+        atom.config.set('pinned-tabs.enable-animation', !current)

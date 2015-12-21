@@ -1,4 +1,7 @@
+PinnedTabsState = require './pinned-tabs-state'
 {CompositeDisposable} = require 'atom'
+
+
 
 module.exports = PinnedTabs =
     # Configuration of pinned-tabs
@@ -9,9 +12,27 @@ module.exports = PinnedTabs =
             type: 'boolean'
             default: true
 
+    #
+    PinnedTabsState: undefined
 
-    # Method that is ran when the package is started.
     activate: (state) ->
+        # Restore the serialized session or start a new
+        # serializable state.
+        @PinnedTabsState =
+            if state
+                atom.deserializers.deserialize state
+            else
+                new PinnedTabsState 0
+
+        #
+        self = this
+        callback = ->
+            e = document.querySelector('.tab-bar').children
+            for i in [0...self.PinnedTabsState.data]
+                e[i].classList.add 'pinned'
+
+        setTimeout callback, 1
+
         # Register commands to pin a tab.
         @subscriptions = new CompositeDisposable
         @subscriptions.add atom.commands.add 'atom-workspace', 'pinned-tabs:pin': => @pinActive()
@@ -33,8 +54,6 @@ module.exports = PinnedTabs =
             # it does not influence other times the setting is changed.
             setTimeout callback, 1
 
-
-    # Method that is ran to serialize the package.
     serialize: ->
         @PinnedTabsState.serialize()
 
@@ -67,6 +86,12 @@ module.exports = PinnedTabs =
             # tabs, because it actually includes the tab
             # that is being unpinned.
             newIndex -= 1
+
+            #
+            @PinnedTabsState.data -= 1
+        else
+            #
+            @PinnedTabsState.data += 1
 
         # Actually move the item to its new index.
         pane.moveItem item, newIndex

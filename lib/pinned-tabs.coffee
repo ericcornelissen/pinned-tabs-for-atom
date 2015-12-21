@@ -1,8 +1,6 @@
 PinnedTabsState = require './pinned-tabs-state'
 {CompositeDisposable} = require 'atom'
 
-
-
 module.exports = PinnedTabs =
     # Configuration of pinned-tabs
     config:
@@ -12,27 +10,10 @@ module.exports = PinnedTabs =
             type: 'boolean'
             default: true
 
-    #
+    # Attribute used to store the workspace state.
     PinnedTabsState: undefined
 
     activate: (state) ->
-        # Restore the serialized session or start a new
-        # serializable state.
-        @PinnedTabsState =
-            if state
-                atom.deserializers.deserialize state
-            else
-                new PinnedTabsState 0
-
-        #
-        self = this
-        callback = ->
-            e = document.querySelector('.tab-bar').children
-            for i in [0...self.PinnedTabsState.data]
-                e[i].classList.add 'pinned'
-
-        setTimeout callback, 1
-
         # Register commands to pin a tab.
         @subscriptions = new CompositeDisposable
         @subscriptions.add atom.commands.add 'atom-workspace', 'pinned-tabs:pin': => @pinActive()
@@ -40,15 +21,55 @@ module.exports = PinnedTabs =
         @subscriptions.add atom.commands.add 'atom-workspace', 'pinned-tabs:toggle-animation': => @toggleAnimation()
 
 
+        # Recover the serialized session or start a new
+        # serializable state.
+        @PinnedTabsState =
+            if state
+                atom.deserializers.deserialize state
+            else
+                new PinnedTabsState {}
+
+        # This callback system will pin tabs on startup
+        # just like how they're pinned when the previous
+        # session stopped.
+        self = this # This object has to be stored in self because the callback function will create its own 'this'
+        callback = ->
+            # Get the panes DOM object.
+            panes = document.querySelector '.panes .pane-row'
+            panes = document.querySelector('.panes') if panes == null
+
+            # Loop through each pane that the previous
+            # state has information about.
+            for key of self.PinnedTabsState.data
+                try
+                    # Find the pane and tab-bar DOM objects for
+                    # this pane.
+                    pane = panes.children[parseInt key, 10]
+                    tabbar = pane.querySelector '.tab-bar'
+
+                    # Pin the first N tabs, since pinned tabs are
+                    # always the left-most tabs. The N is given
+                    # by the previous state.
+                    for i in [0...self.PinnedTabsState.data[key]]
+                        tabbar.children[i].classList.add 'pinned'
+                catch
+                    # If an error occured, the workspace has changed
+                    # and the old configuration should be ignored.
+                    delete self.PinnedTabsState.data[key]
+        # This timeout ensures that the DOM elements can be edited.
+        setTimeout callback, 1
+
         # Add an event listener for when the value of the 'enable-animation'
         # settings is changed.
         atom.config.observe 'pinned-tabs.enable-animation', (newValue) ->
             callback = ->
-                e = document.querySelector('.tab-bar')
+                e = document.querySelectorAll('.tab-bar')
                 if newValue
-                    e.classList.add 'pinned-tabs-enable-animation'
+                    for i in [0...e.length]
+                        e[i].classList.add 'pinned-tabs-enable-animation'
                 else
-                    e.classList.remove 'pinned-tabs-enable-animation'
+                    for i in [0...e.length]
+                        e[i].classList.remove 'pinned-tabs-enable-animation'
 
             # This timeout is required for when Atom is launched, and
             # it does not influence other times the setting is changed.
@@ -68,16 +89,18 @@ module.exports = PinnedTabs =
 
     # Method that pins/unpins a tab given its element.
     pin: (e) ->
-        # Get an instance of the Pane class to be able
-        # to move the tabs around.
-        pane = atom.workspace.getActivePane()
+        # Get necessary DOM elements
+        tabbar = e.parentNode
+        pane = tabbar.parentNode
+        axis = pane.parentNode
 
-        # Get the index of the tab that should be pinned,
-        # and get the item of the tab, so it can be moved.
-        selectedIndex = Array.prototype.indexOf.call e.parentNode.children, e
-        item = pane.itemAtIndex selectedIndex
+        # Get the index of the selected tab and the
+        # corresponding pane.
+        selectedIndex = Array.prototype.indexOf.call tabbar.children, e
+        paneIndex = Array.prototype.indexOf.call(axis.children, pane) / 2
 
-        # Get the new index for the item.
+        # Calculate the new index for this tab based
+        # on the amount of pinned tabs within this pane.
         newIndex = e.parentNode.querySelectorAll('.pinned').length
         if e.classList.contains 'pinned'
             # If the element has the element 'pinned', it
@@ -87,13 +110,19 @@ module.exports = PinnedTabs =
             # that is being unpinned.
             newIndex -= 1
 
-            #
-            @PinnedTabsState.data -= 1
+            # Removed one pinned tab from the state key for this pane.
+            @PinnedTabsState.data[paneIndex * 2] -= 1
         else
-            #
-            @PinnedTabsState.data += 1
+            # Initialize the state kye for this pane if needed.
+            @PinnedTabsState.data[paneIndex * 2] = 0 if @PinnedTabsState.data[paneIndex * 2] == undefined
+
+            # Add one pinned tab from the state key for this pane.
+            @PinnedTabsState.data[paneIndex * 2] += 1
 
         # Actually move the item to its new index.
+        #pane = atom.workspace.getActivePane()
+        pane = atom.workspace.getPanes()[paneIndex]
+        item = pane.itemAtIndex selectedIndex
         pane.moveItem item, newIndex
 
         # Finally, toggle the 'pinned' class on the tab after a
@@ -103,8 +132,7 @@ module.exports = PinnedTabs =
         setTimeout callback, 1
 
 
-    # Toggle the animation class in the DOM of Atom.
+    # Toggle the animation setting in Atoms configuration
     toggleAnimation: ->
-        #
         current = atom.config.get('pinned-tabs.enable-animation')
         atom.config.set('pinned-tabs.enable-animation', !current)

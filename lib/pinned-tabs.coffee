@@ -59,6 +59,7 @@ module.exports = PinnedTabs =
         # This timeout ensures that the DOM elements can be edited.
         setTimeout callback, 1
 
+
         # Add an event listener for when the value of the 'enable-animation'
         # settings is changed.
         atom.config.observe 'pinned-tabs.enable-animation', (newValue) ->
@@ -97,7 +98,7 @@ module.exports = PinnedTabs =
         # Get the index of the selected tab and the
         # corresponding pane.
         selectedIndex = Array.prototype.indexOf.call tabbar.children, e
-        paneIndex = Array.prototype.indexOf.call(axis.children, pane) / 2
+        paneIndex = Array.prototype.indexOf.call axis.children, pane
 
         # Calculate the new index for this tab based
         # on the amount of pinned tabs within this pane.
@@ -111,17 +112,17 @@ module.exports = PinnedTabs =
             newIndex -= 1
 
             # Removed one pinned tab from the state key for this pane.
-            @PinnedTabsState.data[paneIndex * 2] -= 1
+            @PinnedTabsState.data[paneIndex] -= 1
         else
             # Initialize the state kye for this pane if needed.
-            @PinnedTabsState.data[paneIndex * 2] = 0 if @PinnedTabsState.data[paneIndex * 2] == undefined
+            @PinnedTabsState.data[paneIndex] = 0 if @PinnedTabsState.data[paneIndex] == undefined
 
             # Add one pinned tab from the state key for this pane.
-            @PinnedTabsState.data[paneIndex * 2] += 1
+            @PinnedTabsState.data[paneIndex] += 1
 
         # Actually move the item to its new index.
         #pane = atom.workspace.getActivePane()
-        pane = atom.workspace.getPanes()[paneIndex]
+        pane = atom.workspace.getPanes()[paneIndex / 2]
         item = pane.itemAtIndex selectedIndex
         pane.moveItem item, newIndex
 

@@ -16,7 +16,7 @@
     'submenu': [
         'label': 'Pinned tabs'
         'submenu': [{
-            'label': 'Toggle animations'
+            'label': 'Toggle animation'
             'command': 'pinned-tabs:toggle-animation'
         }]
     ]

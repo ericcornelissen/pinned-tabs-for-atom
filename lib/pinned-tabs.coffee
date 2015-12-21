@@ -2,8 +2,18 @@ PinnedTabsView = require './pinned-tabs-view'
 {CompositeDisposable} = require 'atom'
 
 module.exports = PinnedTabs =
+    # Configuration of pinned-tabs
+    config:
+        enableAnimation:
+            title: 'Enable animation'
+            description: 'Enable or disable the animation used to pin a tab'
+            type: 'boolean'
+            default: true
+
     # Method that is ran when the package is started.
     activate: (state) ->
+        #console.log 'PinnedTabs', 'activate', state
+
         # Events subscribed to in atom's system can be easily cleaned up with a CompositeDisposable.
         @subscriptions = new CompositeDisposable
 
@@ -11,6 +21,14 @@ module.exports = PinnedTabs =
         @subscriptions.add atom.commands.add 'atom-workspace', 'pinned-tabs:pin': => @pinActive()
         @subscriptions.add atom.commands.add 'atom-workspace', 'pinned-tabs:pin-selected': => @pinSelected()
         @subscriptions.add atom.commands.add 'atom-workspace', 'pinned-tabs:toggle-animation': => @toggleAnimation()
+
+        #
+        atom.config.onDidChange 'pinned-tabs.enable-animation', ({newValue}) ->
+            e = document.querySelector('.tab-bar')
+            if newValue
+                e.classList.add 'pinned-tabs-enable-animation'
+            else
+                e.classList.remove 'pinned-tabs-enable-animation'
 
 
     # Method that is ran when the package is stopped.
@@ -22,9 +40,11 @@ module.exports = PinnedTabs =
         pinnedTabsViewState: @pinnedTabsView.serialize()
 
 
+    #
     toggleAnimation: ->
-        e = document.querySelector('.tab-bar')
-        e.classList.toggle 'pinned-tabs-enable-animation'
+        current = atom.config.get('pinned-tabs.enable-animation')
+        atom.config.set('pinned-tabs.enable-animation', !current)
+
 
     # Method to pin the active tab.
     pinActive: ->

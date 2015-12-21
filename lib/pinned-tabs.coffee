@@ -4,11 +4,11 @@ PinnedTabsState = require './pinned-tabs-state'
 module.exports = PinnedTabs =
     # Configuration of pinned-tabs
     config:
-        enableAnimation:
-            title: 'Enable animation'
-            description: 'Enable the animation used to pin a tab'
+        disableAnimation:
+            title: 'Disable animation'
+            description: 'Disable the animation used to pin a tab'
             type: 'boolean'
-            default: true
+            default: false
 
     # Attribute used to store the workspace state.
     PinnedTabsState: undefined
@@ -24,7 +24,7 @@ module.exports = PinnedTabs =
         # Recover the serialized session or start a new
         # serializable state.
         @PinnedTabsState =
-            if state
+            if state.deserializer == 'PinnedTabsState'
                 atom.deserializers.deserialize state
             else
                 new PinnedTabsState {}
@@ -62,15 +62,15 @@ module.exports = PinnedTabs =
 
         # Add an event listener for when the value of the 'enable-animation'
         # settings is changed.
-        atom.config.observe 'pinned-tabs.enable-animation', (newValue) ->
+        atom.config.observe 'pinned-tabs.disableAnimation', (newValue) ->
             callback = ->
                 e = document.querySelectorAll('.tab-bar')
                 if newValue
                     for i in [0...e.length]
-                        e[i].classList.add 'pinned-tabs-enable-animation'
+                        e[i].classList.remove 'pinned-tabs-enable-animation'
                 else
                     for i in [0...e.length]
-                        e[i].classList.remove 'pinned-tabs-enable-animation'
+                        e[i].classList.add 'pinned-tabs-enable-animation'
 
             # This timeout is required for when Atom is launched, and
             # it does not influence other times the setting is changed.
@@ -135,5 +135,5 @@ module.exports = PinnedTabs =
 
     # Toggle the animation setting in Atoms configuration
     toggleAnimation: ->
-        current = atom.config.get('pinned-tabs.enable-animation')
-        atom.config.set('pinned-tabs.enable-animation', !current)
+        current = atom.config.get('pinned-tabs.disableAnimation')
+        atom.config.set('pinned-tabs.disableAnimation', !current)

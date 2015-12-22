@@ -1,3 +1,5 @@
+@import "ui-variables";
+
 .tab-bar.pinned-tabs-enable-animation .tab {
     /* Add a transition for the size of the tab */
     transition: max-width .3s ease !important;
@@ -11,19 +13,28 @@
 
 .tab-bar .pinned {
     /* Make pinned tabs a fixed width */
+    margin: 0 !important;
     max-width: 38px !important;
     min-width: 38px !important;
+    width: 38px !important;
 }
 .tab-bar .pinned .title {
     /* Hide the title of the tab */
     opacity: 0 !important;
 }
 .tab-bar .pinned .close-icon {
+    /* Make sure the close-icon is displayed */
+    display: inline-block !important;
+
     /* Slighty change the position of the close-icon */
     left: 0 !important;
+    height: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
     right: 0 !important;
     text-align: center !important;
     top: 0 !important;
+
     /* Disable events on the close-icon */
     pointer-events: none !important;
     /* Scale the close-icon to make it visible */
@@ -34,8 +45,19 @@
     -webkit-animation: none !important;
 }
 .tab-bar .pinned .close-icon::before {
+    position: relative !important;
+
+    /* Set a color for the tab-icon from the selectex syntax theme */
+    color: @text-color-info !important;
     /* Set the close-icon to always be the 'modified' icon */
     content: "\f052" !important;
     /* Makes sure the correct icon is showed */
     font-family: 'Octicons Regular' !important;
+}
+
+.tab-bar .tab .title {
+    /* Make the title of the tab unclickable. Otherwise
+       in some themes the title will be pinned instead
+       of the tab */
+    pointer-events: none !important;
 }

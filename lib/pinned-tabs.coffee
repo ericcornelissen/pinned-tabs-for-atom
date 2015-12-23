@@ -2,7 +2,7 @@ PinnedTabsState = require './pinned-tabs-state'
 {CompositeDisposable} = require 'atom'
 
 module.exports = PinnedTabs =
-    # Configuration of pinned-tabs
+    # Configuration of the package
     config:
         disableTabAnimation:
             title: 'Disable tab animation'

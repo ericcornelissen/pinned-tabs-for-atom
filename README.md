@@ -2,7 +2,7 @@
 
 A simple package for the Atom text editor from Github that allows you to pin tabs. Inspired by the pin tab feature from Google Chrome.
 
-![preview gif](http://i.imgur.com/PbOOtbV.gif)
+![preview gif](http://i.imgur.com/dbUUAMX.gif)
 
 * * *
 

@@ -3,14 +3,14 @@
     transition: max-width .3s ease !important;
 }
 .tab-bar.pinned-tabs-enable-tabanimation .tab .title {
-    /* Add transition because title is hidden when a tab is pinned */
+    /* Add transition for hiding the title of a pinned tab */
     transition: opacity .3s ease !important;
     /* The transition delay is there to make the unpin animation look smoother */
     -webkit-transition-delay: .025s !important;
 }
 
 .tab-bar.pinned-tabs-enable-iconanimation .tab .title::after {
-    /* Configure icon transition */
+    /* Add a transition for the icon of a pinned tab */
     transition: opacity .3s ease,
                 left .3s ease !important;
 }

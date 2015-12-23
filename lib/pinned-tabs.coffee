@@ -4,9 +4,14 @@ PinnedTabsState = require './pinned-tabs-state'
 module.exports = PinnedTabs =
     # Configuration of pinned-tabs
     config:
-        disableAnimation:
-            title: 'Disable animation'
+        disableTabAnimation:
+            title: 'Disable tab animation'
             description: 'Disable the animation used to pin a tab'
+            type: 'boolean'
+            default: false
+        disableIconAnimation:
+            title: 'Disable icon animation'
+            description: 'Disable the animation of the icon of a pinned tab'
             type: 'boolean'
             default: false
 
@@ -18,7 +23,6 @@ module.exports = PinnedTabs =
         @subscriptions = new CompositeDisposable
         @subscriptions.add atom.commands.add 'atom-workspace', 'pinned-tabs:pin': => @pinActive()
         @subscriptions.add atom.commands.add 'atom-workspace', 'pinned-tabs:pin-selected': => @pinSelected()
-        @subscriptions.add atom.commands.add 'atom-workspace', 'pinned-tabs:toggle-animation': => @toggleAnimation()
 
 
         # Recover the serialized session or start a new
@@ -29,11 +33,13 @@ module.exports = PinnedTabs =
             else
                 new PinnedTabsState {}
 
+
         # This callback system will pin tabs on startup
         # just like how they're pinned when the previous
         # session stopped.
         self = this # This object has to be stored in self because the callback function will create its own 'this'
-        callback = ->
+        # This timeout ensures that the DOM elements can be edited.
+        setTimeout (->
             # Get the panes DOM object.
             panes = document.querySelector '.panes .pane-row'
             panes = document.querySelector('.panes') if panes == null
@@ -56,25 +62,57 @@ module.exports = PinnedTabs =
                     # If an error occured, the workspace has changed
                     # and the old configuration should be ignored.
                     delete self.PinnedTabsState.data[key]
-        # This timeout ensures that the DOM elements can be edited.
-        setTimeout callback, 1
+            ), 1
 
 
-        # Add an event listener for when the value of the 'enable-animation'
-        # settings is changed.
-        atom.config.observe 'pinned-tabs.disableAnimation', (newValue) ->
-            callback = ->
+        # Add an event listener for when the value of the settings are changed.
+        atom.config.observe 'pinned-tabs.disableTabAnimation', (newValue) ->
+            # This timeout is required for when Atom is launched, and
+            # it does not influence other times the setting is changed.
+            setTimeout (->
                 e = document.querySelectorAll('.tab-bar')
                 if newValue
                     for i in [0...e.length]
-                        e[i].classList.remove 'pinned-tabs-enable-animation'
+                        e[i].classList.remove 'pinned-tabs-enable-tabanimation'
                 else
                     for i in [0...e.length]
-                        e[i].classList.add 'pinned-tabs-enable-animation'
-
+                        e[i].classList.add 'pinned-tabs-enable-tabanimation'
+            ), 1
+        atom.config.observe 'pinned-tabs.disableIconAnimation', (newValue) ->
             # This timeout is required for when Atom is launched, and
             # it does not influence other times the setting is changed.
-            setTimeout callback, 1
+            setTimeout (->
+                e = document.querySelectorAll('.tab-bar')
+                if newValue
+                    for i in [0...e.length]
+                        e[i].classList.remove 'pinned-tabs-enable-iconanimation'
+                else
+                    for i in [0...e.length]
+                        e[i].classList.add 'pinned-tabs-enable-iconanimation'
+            ), 1
+
+
+        # Add a callback for when a new pane is created to add the animation enable classes.
+        callback = ->
+            setTimeout (->
+                # Tab animation
+                e = document.querySelectorAll('.tab-bar')
+                if atom.config.get 'pinned-tabs.disableTabAnimation'
+                    for i in [0...e.length]
+                        e[i].classList.remove 'pinned-tabs-enable-tabanimation'
+                else
+                    for i in [0...e.length]
+                        e[i].classList.add 'pinned-tabs-enable-tabanimation'
+
+                # Icon animation
+                if atom.config.get 'pinned-tabs.disableIconAnimation'
+                    for i in [0...e.length]
+                        e[i].classList.remove 'pinned-tabs-enable-iconanimation'
+                else
+                    for i in [0...e.length]
+                        e[i].classList.add 'pinned-tabs-enable-iconanimation'
+            ), 1
+        atom.workspace.onDidAddPane callback
 
     serialize: ->
         @PinnedTabsState.serialize()
@@ -131,9 +169,3 @@ module.exports = PinnedTabs =
         # of pinning the tab will run.
         callback = -> e.classList.toggle 'pinned'
         setTimeout callback, 1
-
-
-    # Toggle the animation setting in Atoms configuration
-    toggleAnimation: ->
-        current = atom.config.get('pinned-tabs.disableAnimation')
-        atom.config.set('pinned-tabs.disableAnimation', !current)

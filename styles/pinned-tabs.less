@@ -1,12 +1,18 @@
-.tab-bar.pinned-tabs-enable-animation .tab {
+.tab-bar.pinned-tabs-enable-tabanimation .tab {
     /* Add a transition for the size of the tab */
     transition: max-width .3s ease !important;
 }
-.tab-bar.pinned-tabs-enable-animation .tab .title {
+.tab-bar.pinned-tabs-enable-tabanimation .tab .title {
     /* Add transition because title is hidden when a tab is pinned */
     transition: opacity .3s ease !important;
     /* The transition delay is there to make the unpin animation look smoother */
     -webkit-transition-delay: .025s !important;
+}
+
+.tab-bar.pinned-tabs-enable-iconanimation .tab .title::after {
+    /* Configure icon transition */
+    transition: opacity .3s ease,
+                left .3s ease !important;
 }
 
 .tab-bar .tab {
@@ -50,6 +56,6 @@
 .tab-bar .pinned .close-icon {
     /* Disable events on the close-icon */
     pointer-events: none !important;
-    /* Scale the close-icon to make it visible */
+    /* Scale the close-icon to make it invisible */
     transform: scale(0) !important;
 }

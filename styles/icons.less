@@ -1,8 +1,10 @@
 @import "icon-variables";
 
-// - - - - - - - - - - - - - - -
+// - - - - - - - - - - - - - - - -
 // ICONS BASED ON FILE EXTENSION
-// - - - - - - - - - - - - - - -
+//
+// BASED ON SETI-UI BY  Jesse Weed
+// - - - - - - - - - - - - - - - -
 
 // FONT //
 @font-face {
@@ -17,183 +19,174 @@
 }
 
 // MIXIN //
-.icon-tab( @extension: ''; @type: ''; @font: 20px; @top: 6px; @right: -3px; @left: -5px; @offset: -6px) {
+.icon-tab(@extension: 'default'; @type: 'default'; @font: 20px) {
     .tab-bar .tab .title[data-name$="@{extension}"] {
         &:after {
             /* Configure icon position */
             left: -38px;
+			display: block !important;
+			height: 100% !important;
             position: absolute !important;
-            display: inline-block !important;
             width: 38px !important;
             text-align: center !important;
-            top: 50% !important;
-            transform: translate(0, -50%) !important;
+			top: 50% !important;
+			transform: translate(0, -50%) !important;
 
             /* Configure the icon */
             color: ~"@{color-@{type}}" !important;
             content: "@{icon-@{type}}" !important;
             font-family: icomoon !important;
             font-size: @font !important;
-
-            /* Configure icon transition */
-            transition: opacity .3s ease,
-                        left .3s ease !important;
         }
     }
 }
 
 
 // ICONS //
-
 // CSS
-.icon-tab('.css', css, 20px, 6px, -1px, -5px, -5px);
+.icon-tab('.css', 'css');
 
 // CSON
-.icon-tab('.cson', 'json', 20px, 6px, -3px, -5px, -4px);
+.icon-tab('.cson', 'json');
 
 // Handlebars
-.icon-tab('.hbs', 'handlebars', 22px, 6px, 0px, -5px );
-.icon-tab('.handlebars', 'handlebars', 22px, 6px, 0px, -5px );
-.icon-tab('.hjs', 'handlebars', 22px, 6px, 0px, -5px );
+.icon-tab('.hbs', 'handlebars', 22px);
+.icon-tab('.handlebars', 'handlebars', 22px);
+.icon-tab('.hjs', 'handlebars', 22px);
 
 // Hidden files
-.icon-tab('.gitignore', 'hidden', 20px, 6px, -3px, -3px, -5px);
-.icon-tab('.gitmodules', 'hidden', 20px, 6px, -3px, -3px, -5px);
-.icon-tab('.config', 'hidden', 20px, 6px, -3px, -3px, -5px);
-.icon-tab('.DS_Store', 'hidden', 20px, 6px, -3px, -3px, -5px);
+.icon-tab('.gitignore', 'hidden');
+.icon-tab('.gitmodules', 'hidden');
+.icon-tab('.config', 'hidden');
+.icon-tab('.DS_Store', 'hidden');
 
 // HTML
-.icon-tab('.html', html, 22px, 6px);
+.icon-tab('.html', 'html', 22px);
 
 // Jade
-.icon-tab('.jade', 'jade', 20px, 5px, -3px, -5px, -5px);
+.icon-tab('.jade', 'jade');
 
 // JavaScript
-.icon-tab('.js', 'js', 20px, 6px, -3px, -5px, -5px);
-.icon-tab('.es', 'js', 20px, 6px, -3px, -5px, -5px);
-.icon-tab('.es6', 'js', 20px, 6px, -3px, -5px, -5px);
+.icon-tab('.js', 'js');
+.icon-tab('.es', 'js');
+.icon-tab('.es6', 'js');
 
 // Coffescript
-.icon-tab('.coffee', 'coffee', 16px, 5px, 4px, 2px, -3px);
+.icon-tab('.coffee', 'coffee', 16px);
 
 // JSON
-.icon-tab('.json', 'json', 20px, 5px, -3px, -5px, -5px);
+.icon-tab('.json', 'json');
 
 // React
-.icon-tab('.jsx', 'jsx', 21px, 6px, -1px, -3px, -4px);
-.icon-tab('.cjsx', 'jsx', 21px, 6px, -1px, -3px, -4px);
+.icon-tab('.jsx', 'jsx', 21px);
+.icon-tab('.cjsx', 'jsx', 21px);
 
 // LESS
-.icon-tab('.less', less, 20px, 6px, -3px, -5px, -5px);
+.icon-tab('.less', less);
 
 // LICENSE
-.icon-tab('LICENSE', 'license', 15px, 3px, 2px, 0px, -2px);
-.icon-tab('License', 'license', 15px, 3px, 2px, 0px, -4px);
-.icon-tab('license', 'license', 15px, 3px, 2px, 0px, -4px);
+.icon-tab('LICENSE', 'license', 15px);
+.icon-tab('License', 'license', 15px);
+.icon-tab('license', 'license', 15px);
 
 // Markdown
-.icon-tab('.md', 'md', 20px, 5px, -3px, -5px, -5px);
-
-// Override for Markdown package
-tabs-bar tabs-tab .title.icon-markdown[data-name*=".md"], .tab-bar .tab .title.icon-markdown[data-name*=".md"] {
-	top: 0;
-}
+.icon-tab('.md', 'md');
 
 // Mustache
-.icon-tab('.mustache', 'mustache', 22px, 6px, 0px, -5px );
-.icon-tab('.mu', 'mustache', 22px, 6px, 0px, -5px );
-.icon-tab('.stache', 'mustache', 22px, 6px, 0px, -5px );
+.icon-tab('.mustache', 'mustache', 22px);
+.icon-tab('.mu', 'mustache', 22px);
+.icon-tab('.stache', 'mustache', 22px);
 
 // NPM
-.icon-tab('npm-debug.log', 'npm', 20px, 6px, 0px, -5px, -4px);
-.icon-tab('.npmignore', 'npm', 20px, 6px, 0px, -5px, -4px);
+.icon-tab('npm-debug.log', 'npm');
+.icon-tab('.npmignore', 'npm');
 
 // PHP
-.icon-tab('.php', 'php', 24px, 6px, -3px, -5px, -6px);
+.icon-tab('.php', 'php', 24px);
 
 // Procfile
-.icon-tab('procfile', 'procfile', 14px, 2px, 3px, 0px, 0px);
-.icon-tab('Procfile', 'procfile', 14px, 2px, 3px, 0px, 0px);
-.icon-tab('PROCFILE', 'procfile', 14px, 2px, 3px, 0px, 0px);
+.icon-tab('procfile', 'procfile', 14px);
+.icon-tab('Procfile', 'procfile', 14px);
+.icon-tab('PROCFILE', 'procfile', 14px);
 
 // Python
-.icon-tab('.py', 'py', 20px, 5px, -3px, -5px, -5px);
+.icon-tab('.py', 'py');
 
 // Ruby
-.icon-tab('.rb', 'rb', 15px, 3px, -1px, -5px, -2px);
+.icon-tab('.rb', 'rb', 15px);
 
 // Sass
-.icon-tab('.sass', 'sass', 20px, 4px, -3px, -5px, -5px);
-.icon-tab('.scss', 'sass', 20px, 4px, -3px, -5px, -5px);
+.icon-tab('.sass', 'sass');
+.icon-tab('.scss', 'sass');
 
 // Settings
-.icon-tab('.svgx', 'img', 15px, 3px, 4px, 0px, -3px);
+.icon-tab('.svgx', 'img', 15px);
 
 // Stache
-.icon-tab('.stache', 'stache', 22px, 6px, 0px, -5px );
+.icon-tab('.stache', 'stache', 22px);
 
 // Stylus
-.icon-tab('.styl', 'styl', 20px, 5px, -2px, -5px, -5px);
+.icon-tab('.styl', 'styl');
 
 // TypeScript
-.icon-tab('.ts', 'ts', 20px, 5px, -3px, -3px, -5px);
+.icon-tab('.ts', 'ts');
 
 // XML
-.icon-tab('.xml', 'xml', 15px, 2px, 3px, 0px, -2px);
+.icon-tab('.xml', 'xml', 15px);
 
 // YML
-.icon-tab('.yml', 'yml', 16px, 3px, 3px, 0px, -2px);
-.icon-tab('.yaml', 'yml', 16px, 3px, 3px, 0px, -2px);
+.icon-tab('.yml', 'yml', 16px);
+.icon-tab('.yaml', 'yml', 16px);
 
 // Golang
-.icon-tab('.go', 'go', 16px, 3px, 3px, -3px, -2px);
+.icon-tab('.go', 'go', 16px);
 
 // Julia
-.icon-tab('.jl', 'jl', 18px, 4px, 3px, -3px, -3px);
+.icon-tab('.jl', 'jl', 18px);
 
 // EJS
-.icon-tab('.ejs', 'ejs', 20px, 5px, -3px, -5px, -5px);
+.icon-tab('.ejs', 'ejs');
 
 // Favicon
-.icon-tab('.ico', 'ico', 18px, 4px, 3px, -2px, -4px);
+.icon-tab('.ico', 'ico', 18px);
 
 
 // IMAGES
-.icon-tab('.ai', 'img', 15px, 3px, 4px, 0px, -2px);
-.icon-tab('.bpm', 'img', 15px, 3px, 4px, 0px, -2px);
-.icon-tab('.gif', 'img', 15px, 3px, 4px, 0px, -2px);
-.icon-tab('.jpeg', 'img', 15px, 3px, 4px, 0px, -2px);
-.icon-tab('.jpg', 'img', 15px, 3px, 4px, 0px, -2px);
-.icon-tab('.png', 'img', 15px, 3px, 4px, 0px, -2px);
-.icon-tab('.psd', 'img', 15px, 3px, 4px, 0px, -2px);
-.icon-tab('.svg', 'img', 15px, 3px, 4px, 0px, -2px);
-.icon-tab('.svgx', 'img', 15px, 3px, 4px, 0px, -2px);
+.icon-tab('.ai', 'img', 15px);
+.icon-tab('.bpm', 'img', 15px);
+.icon-tab('.gif', 'img', 15px);
+.icon-tab('.jpeg', 'img', 15px);
+.icon-tab('.jpg', 'img', 15px);
+.icon-tab('.png', 'img', 15px);
+.icon-tab('.psd', 'img', 15px);
+.icon-tab('.svg', 'img', 15px);
+.icon-tab('.svgx', 'img', 15px);
 
 
 // THESE NEED TO COME LAST SO THE DON'T GET OVERRIDEN!
 
 // Bower
-.icon-tab('bower.json', 'bower', 20px, 5px, 2px, -4px, -5px);
-.icon-tab('Bower.json', 'bower', 20px, 5px, 2px, -4px, -5px);
-.icon-tab('BOWER.json', 'bower', 20px, 5px, 2px, -4px, -5px);
-.icon-tab('.bowerrc', 'bower', 20px, 5px, 2px, -4px, -5px);
+.icon-tab('bower.json', 'bower');
+.icon-tab('Bower.json', 'bower');
+.icon-tab('BOWER.json', 'bower');
+.icon-tab('.bowerrc', 'bower');
 
 // Grunt
-.icon-tab('gruntfile.js', 'grunt', 15px, 3px, 3px, 0px, -2px);
-.icon-tab('Gruntfile.js', 'grunt', 15px, 3px, 3px, 0px, -2px);
-.icon-tab('GruntFile.js', 'grunt', 15px, 3px, 3px, 0px, -2px);
-.icon-tab('GRUNTFILE.js', 'grunt', 15px, 3px, 3px, 0px, -2px);
-.icon-tab('gruntfile.coffee', 'grunt', 15px, 3px, 3px, 0px, -2px);
-.icon-tab('Gruntfile.coffee', 'grunt', 15px, 3px, 3px, 0px, -2px);
-.icon-tab('GruntFile.coffee', 'grunt', 15px, 3px, 3px, 0px, -2px);
-.icon-tab('GRUNTFILE.coffee', 'grunt', 15px, 3px, 3px, 0px, -2px);
+.icon-tab('gruntfile.js', 'grunt', 15px);
+.icon-tab('Gruntfile.js', 'grunt', 15px);
+.icon-tab('GruntFile.js', 'grunt', 15px);
+.icon-tab('GRUNTFILE.js', 'grunt', 15px);
+.icon-tab('gruntfile.coffee', 'grunt', 15px);
+.icon-tab('Gruntfile.coffee', 'grunt', 15px);
+.icon-tab('GruntFile.coffee', 'grunt', 15px);
+.icon-tab('GRUNTFILE.coffee', 'grunt', 15px);
 
 // Gulp
-.icon-tab('gulpfile.js', 'gulp', 20px, 6px, -3px, -5px, -3px);
-.icon-tab('Gulpfile.js', 'gulp', 17px, 3px, -3px, -5px, -3px);
-.icon-tab('GulpFile.js', 'gulp', 20px, 6px, -3px, -5px, -3px);
-.icon-tab('GULPFILE.js', 'gulp', 20px, 6px, -3px, -5px, -3px);
-.icon-tab('gulpfile.coffee', 'gulp', 20px, 6px, -3px, -5px, -3px);
-.icon-tab('Gulpfile.coffee', 'gulp', 17px, 3px, -3px, -5px, -3px);
-.icon-tab('GulpFile.coffee', 'gulp', 20px, 6px, -3px, -5px, -3px);
-.icon-tab('GULPFILE.coffee', 'gulp', 20px, 6px, -3px, -5px, -3px);
+.icon-tab('gulpfile.js', 'gulp');
+.icon-tab('Gulpfile.js', 'gulp');
+.icon-tab('GulpFile.js', 'gulp');
+.icon-tab('GULPFILE.js', 'gulp');
+.icon-tab('gulpfile.coffee', 'gulp');
+.icon-tab('Gulpfile.coffee', 'gulp');
+.icon-tab('GulpFile.coffee', 'gulp');
+.icon-tab('GULPFILE.coffee', 'gulp');

@@ -4,6 +4,11 @@ PinnedTabsState = require './pinned-tabs-state'
 module.exports = PinnedTabs =
     # Configuration of the package
     config:
+        coloredIcons:
+            title: 'Use colored icons'
+            type: 'boolean'
+            default: true
+            description: 'Untick this for colorless icons'
         disableTabAnimation:
             title: 'Disable tab animation'
             description: 'Disable the animation used to pin a tab'
@@ -91,6 +96,12 @@ module.exports = PinnedTabs =
                         e[i].classList.add 'pinned-tabs-enable-iconanimation'
             ), 1
 
+        atom.config.observe 'pinned-tabs.coloredIcons', (newValue) =>
+            body = document.querySelector 'body'
+            if newValue
+                body.classList.remove 'pinned-icons-colorless'
+            else
+                body.classList.add 'pinned-icons-colorless'
 
         # Add a callback for when a new pane is created to add the animation enable classes.
         callback = ->

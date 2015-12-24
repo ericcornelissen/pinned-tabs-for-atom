@@ -1,192 +1,508 @@
+@import "colors";
 @import "icon-variables";
 
-// - - - - - - - - - - - - - - - -
-// ICONS BASED ON FILE EXTENSION
-//
-// BASED ON SETI-UI BY  Jesse Weed
-// - - - - - - - - - - - - - - - -
 
-// FONT //
-@font-face {
-	font-family: 'icomoon';
-	src: url('atom://pinned-tabs/styles/_fonts/icomoon.eot');
-	src: url('atom://pinned-tabs//styles/_fonts/icomoon.eot') format('embedded-opentype'),
-		 url('atom://pinned-tabs//styles/_fonts/icomoon.woff') format('woff'),
-		 url('atom://pinned-tabs//styles/_fonts/icomoon.ttf') format('truetype'),
-		 url('atom://pinned-tabs//styles/_fonts/icomoon.svg') format('svg');
-	font-weight: normal;
-	font-style: normal;
+/*============================================================================*
+  ICONS BASED ON FILE EXTENSION
+
+  Based on the 'file-icons' package:
+  https://atom.io/packages/file-icons
+/*============================================================================*/
+
+
+// General
+.tab-bar .tab .title:after {
+	// Configure icon position
+	left: -38px;
+	display: block !important;
+	height: 100% !important;
+	position: absolute !important;
+	width: 38px !important;
+	text-align: center !important;
+	top: 50% !important;
+	transform: translate(0, -50%) !important;
+
+	// Default settings
+	.default-color;
+	.default-icon;
 }
 
-// MIXIN //
-.icon-tab(@extension: 'default'; @type: 'default'; @font: 20px) {
-    .tab-bar .tab .title[data-name$="@{extension}"] {
-        &:after {
-            /* Configure icon position */
-            left: -38px;
-			display: block !important;
-			height: 100% !important;
-            position: absolute !important;
-            width: 38px !important;
-            text-align: center !important;
-			top: 50% !important;
-			transform: translate(0, -50%) !important;
-
-            /* Configure the icon */
-            color: ~"@{color-@{type}}" !important;
-            content: "@{icon-@{type}}" !important;
-            font-family: icomoon !important;
-            font-size: @font !important;
-        }
-    }
+body.pinned-icons-colorless {
+	.tab-bar .tab .title:after {
+		color: #FFF !important;
+	}
 }
 
 
-// ICONS //
-// CSS
-.icon-tab('.css', 'css');
+// Icons
+.tab-bar .tab .title {
 
-// CSON
-.icon-tab('.cson', 'json');
+	// TODO
+	&[data-name$="TODO"]:after { .checklist-icon; .medium-yellow; };
 
-// Handlebars
-.icon-tab('.hbs', 'handlebars', 22px);
-.icon-tab('.handlebars', 'handlebars', 22px);
-.icon-tab('.hjs', 'handlebars', 22px);
+	// Makefile icon
+	&[data-name$=".Makefile"]:after { .checklist-icon; .medium-yellow; }
+	&[data-name$=".makefile"]:after { .checklist-icon; .medium-yellow; }
+	&[data-name$=".mk"]:after { .checklist-icon; .medium-yellow; }
+	&[data-name$=".mak"]:after { .checklist-icon; .medium-yellow; }
 
-// Hidden files
-.icon-tab('.gitignore', 'hidden');
-.icon-tab('.gitmodules', 'hidden');
-.icon-tab('.config', 'hidden');
-.icon-tab('.DS_Store', 'hidden');
+	// Config files
+	&[data-name$=".ini"]:after { .config-icon; .medium-yellow; }
+	&[data-name$=".properties"]:after { .config-icon; .medium-purple; }
+	&[data-name$=".toml"]:after { .config-icon; .medium-green; }
 
-// HTML
-.icon-tab('.html', 'html', 22px);
+	// Clojure
+	&[data-name$=".clj"]:after { .clojure-icon; .medium-blue; }
 
-// Jade
-.icon-tab('.jade', 'jade');
+	// ClojureScript
+	&[data-name$=".cljs"]:after { .cljs-icon; .medium-blue; }
 
-// JavaScript
-.icon-tab('.js', 'js');
-.icon-tab('.es', 'js');
-.icon-tab('.es6', 'js');
+	// Code icon
+	&[data-name$=".xml"]:after { .code-icon; .medium-blue; }
+	&[data-name$=".config"]:after { .code-icon; .medium-blue; }
+	&[data-name$=".manifest"]:after { .code-icon; .medium-blue; }
+	&[data-name$=".jl"]:after { .code-icon; .medium-purple; }
+	&[data-name$=".cfc"]:after { .code-icon; .light-cyan; }
+	&[data-name$=".cfm"]:after { .code-icon; .medium-cyan; }
+	&[data-name$=".cfml"]:after { .code-icon; .medium-cyan; }
 
-// Coffescript
-.icon-tab('.coffee', 'coffee', 16px);
+	// CSS3 icon
+	&[data-name$=".less"]:after { .css3-icon; .dark-blue; }
+	&[data-name$=".css"]:after { .css3-icon; .medium-blue; }
+	&[data-name$=".styl"]:after { .css3-icon; .medium-green; }
 
-// JSON
-.icon-tab('.json', 'json');
+	// Dashboard icon
+	&[data-name$=".slim"]:after { .dashboard-icon; .medium-orange; }
+	&[data-name$=".skim"]:after { .dashboard-icon; .medium-orange; }
 
-// React
-.icon-tab('.jsx', 'jsx', 21px);
-.icon-tab('.cjsx', 'jsx', 21px);
+	// Database icon
+	&[data-name$=".json"]:after { .database-icon; .medium-yellow; }
+	&[data-name$=".hjson"]:after { .database-icon; .medium-yellow; }
+	&[data-name$=".ndjson"]:after { .database-icon; .medium-orange; }
+	&[data-name$=".cson"]:after { .database-icon; .medium-maroon; }
+	&[data-name$=".yml"]:after { .database-icon; .light-red; }
+	&[data-name$=".yaml"]:after { .database-icon; .light-red; }
 
-// LESS
-.icon-tab('.less', less);
+	// Elixir icon
+	&[data-name$=".ex"]:after { .elixir-icon; .dark-purple; }
+	&[data-name$=".exs"]:after { .elixir-icon; .medium-purple; }
+	&[data-name$=".eex"]:after { .elixir-icon; .medium-purple; }
+	&[data-name$=".html.eex"]:after { .html5-icon; .medium-purple; }
+	&[data-name$=".json.eex"]:after { .database-icon; .medium-purple; }
+	&[data-name$=".mix.exs"]:after { .elixir-icon; .light-purple; }
+	&[data-name$=".mix.ex"]:after { .elixir-icon; .light-purple; }
 
-// LICENSE
-.icon-tab('LICENSE', 'license', 15px);
-.icon-tab('License', 'license', 15px);
-.icon-tab('license', 'license', 15px);
+	// Erlang icon
+	&[data-name$=".erl"]:after { .erlang-icon; .medium-red; }
+	&[data-name$=".beam"]:after { .erlang-icon; .dark-red; }
 
-// Markdown
-.icon-tab('.md', 'md');
+	// FSharp icon
+	&[data-name$=".fs"]:after { .fsharp-icon; .medium-blue; }
+	&[data-name$=".fsx"]:after { .fsharp-icon; .medium-blue; }
+	&[data-name$=".fsi"]:after { .fsharp-icon; .medium-blue; }
 
-// Mustache
-.icon-tab('.mustache', 'mustache', 22px);
-.icon-tab('.mu', 'mustache', 22px);
-.icon-tab('.stache', 'mustache', 22px);
+	// Git icon
+	&[data-name$=".gitconfig"]:after { .git-icon; }
+	&[data-name$=".gitignore"]:after { .git-icon; }
+	&[data-name$=".gitignore_global"]:after { .git-icon; }
+	&[data-name$=".gitkeep"]:after { .git-icon; }
+	&[data-name$=".gitattributes"]:after { .git-icon; }
+	&[data-name$=".gitmodules"]:after { .git-icon; }
 
-// NPM
-.icon-tab('npm-debug.log', 'npm');
-.icon-tab('.npmignore', 'npm');
+	// HTML5 icon
+	&[data-name$=".html"]:after { .html5-icon; .medium-orange; }
+	&[data-name$=".htm"]:after { .html5-icon; .medium-orange; }
+	&[data-name$=".shtml"]:after { .html5-icon; .medium-cyan; }
+	&[data-name$=".haml"]:after { .haml-icon; .medium-yellow; }
+	&[data-name$=".jade"]:after { .html5-icon; .medium-green; }
+	&[data-name$=".jsp"]:after { .html5-icon; .medium-purple; }
+	&[data-name$=".ctp"]:after { .html5-icon; .medium-blue; }
+	&[data-name$=".ejs"]:after { .html5-icon; .medium-green; }
+	&[data-name$=".swig"]:after { .html5-icon; .medium-green; }
+	&[data-name$=".cshtml"]:after { .html5-icon; .medium-red; }
 
-// PHP
-.icon-tab('.php', 'php', 24px);
+	// Mustache icon
+	&[data-name$=".hbs"]:after { .hbs-mustache-icon; .medium-orange; }
+	&[data-name$=".handlebars"]:after { .hbs-mustache-icon; .medium-orange; }
+	&[data-name$=".mustache"]:after { .hbs-mustache-icon; .medium-orange; }
+	// Emblem
+	&[data-name$=".emblem"]:after { .hbs-mustache-icon; .medium-blue; }
+	&[data-name$=".em"]:after { .hbs-mustache-icon; .medium-blue; }
 
-// Procfile
-.icon-tab('procfile', 'procfile', 14px);
-.icon-tab('Procfile', 'procfile', 14px);
-.icon-tab('PROCFILE', 'procfile', 14px);
+	// Smarty icon
+	&[data-name$=".tpl"]:after { .smarty-icon; .medium-yellow; }
 
-// Python
-.icon-tab('.py', 'py');
+	// Twig icon
+	&[data-name$=".twig"]:after { .twig-icon; .medium-green; }
 
-// Ruby
-.icon-tab('.rb', 'rb', 15px);
+	// Gear icon
+	&[data-name$=".hgignore"]:after { .gear-icon; }
+	&[data-name$=".mailmap"]:after { .gear-icon; }
+	&[data-name$=".editorconfig"]:after { .gear-icon; .medium-orange; }
+	&[data-name=".csscomb.json"]:after { .gear-icon; .medium-yellow; }
+	&[data-name$=".csslintrc"]:after { .gear-icon; .medium-yellow; }
+	&[data-name$=".jshintrc"]:after { .gear-icon; .medium-yellow; }
+	&[data-name$=".jshintignore"]:after { .gear-icon; }
+	&[data-name$=".eslintrc"]:after { .gear-icon; .medium-yellow; }
+	&[data-name$=".eslintignore"]:after { .gear-icon; }
+	&[data-name$=".babelrc"]:after { .gear-icon; .medium-yellow; }
+	&[data-name$=".babelignore"]:after { .gear-icon; }
+	&[data-name$=".jscsrc"]:after { .gear-icon; .medium-yellow; }
+	&[data-name$=".module"]:after { .gear-icon; .medium-blue; }
+	&[data-name$=".htaccess"]:after { .gear-icon; .medium-red; }
 
-// Sass
-.icon-tab('.sass', 'sass');
-.icon-tab('.scss', 'sass');
+	// Nodemon icon
+	&[data-name=".nodemon.json"]:after { .gear-icon; .medium-green; }
+	&[data-name=".nodemonignore"]:after { .gear-icon; .medium-green; }
 
-// Settings
-.icon-tab('.svgx', 'img', 15px);
+	// Npm icon
+	&[data-name=".npmrc"]:after { .node-icon; }
+	&[data-name=".npmignore"]:after { .node-icon; }
+	&[data-name=".npm-debug.log"]:after { .node-icon; .medium-red; }
+	&[data-name=".package.json"]:after { .node-icon; .medium-red; }
 
-// Stache
-.icon-tab('.stache', 'stache', 22px);
+	// Bower icon
+	&[data-name=".bowerrc"]:after { .bower-icon; }
+	&[data-name="bower.json"]:after { .bower-icon; .medium-yellow; }
 
-// Stylus
-.icon-tab('.styl', 'styl');
+	// Sass icon
+	&[data-name$=".sass"]:after { .sass-icon; .dark-pink; }
+	&[data-name$=".scss"]:after { .sass-icon; .light-pink; }
 
-// TypeScript
-.icon-tab('.ts', 'ts');
+	// PHP icon
+	&[data-name$=".php"]:after { .php-icon; .dark-blue; }
+	&[data-name$=".hh"]:after { .php-icon; .dark-blue; }
+	&[data-name$=".blade.php"]:after { .laravel-icon; .dark-purple; }
 
-// XML
-.icon-tab('.xml', 'xml', 15px);
+	// Python icon
+	&[data-name$=".py"]:after { .python-icon; .dark-yellow; }
 
-// YML
-.icon-tab('.yml', 'yml', 16px);
-.icon-tab('.yaml', 'yml', 16px);
+	// IPython icon
+	&[data-name$=".ipy"]:after { .python-icon; .dark-blue; }
 
-// Golang
-.icon-tab('.go', 'go', 16px);
+	// Ren'Py (Python)
+	&[data-name$=".rpy"]:after { .python-icon; .medium-pink; }
+	&[data-name$=".rpyb"]:after { .binary-icon; .medium-red; }
+	&[data-name$=".rpyc"]:after { .binary-icon; }
 
-// Julia
-.icon-tab('.jl', 'jl', 18px);
+	// Ruby icon
+	&[data-name="Capfile"]:after { .ruby-icon; }
+	&[data-name$="Gemfile"]:after { .ruby-icon; }
+	&[data-name$="Gemfile.lock"]:after { .ruby-icon; }
+	&[data-name="Guardfile"]:after { .ruby-icon; }
+	&[data-name$="Rakefile"]:after { .ruby-icon; }
+	&[data-name$=".gemspec"]:after { .ruby-icon; }
+	&[data-name=".ruby-gemset"]:after { .ruby-icon; }
+	&[data-name=".ruby-version"]:after { .ruby-icon; }
+	&[data-name=".rspec"]:after { .ruby-icon; }
 
-// EJS
-.icon-tab('.ejs', 'ejs');
+	&[data-name$=".rb"]:after { .ruby-icon; .medium-red; }
+	&[data-name$=".ru"]:after { .ruby-icon; .medium-red; }
+	&[data-name$=".rake"]:after { .ruby-icon; .medium-red; }
+	&[data-name$=".erb"]:after { .ruby-icon; .medium-red; }
+	&[data-name$=".opal"]:after { .ruby-icon; .medium-red; }
 
-// Favicon
-.icon-tab('.ico', 'ico', 18px);
+	&[data-name$="_spec.rb"]:after { .ruby-icon; .light-green; }
+
+	&[data-name$="rails"]:after { .rails-icon; .medium-red; }
+
+	&[data-name$=".pp"]:after { .puppet-icon; .medium-purple; }
+
+	// Cucumber (Gherkin) icon
+	&[data-name$=".feature"]:after { .comment-icon; .medium-green; }
+
+	// JavaScript icon
+	&[data-name$=".js"]:after { .js-icon; .medium-yellow; }
+	&[data-name$=".ts"]:after { .js-icon; .medium-purple; }
+	&[data-name$=".es6"]:after { .js-icon; .medium-yellow; }
+	&[data-name$=".es"]:after { .js-icon; .medium-yellow; }
+
+	// JSX icon
+	&[data-name$=".jsx"]:after { .react-icon; .medium-blue; }
+	&[data-name$=".tsx"]:after { .react-icon; .light-blue; }
+	&[data-name$=".react.js"]:after { .react-icon; .medium-blue; }
+	&[data-name$=".jsx"]:after { .jsx-icon; .medium-blue; }
+
+	// Elm icon
+	&[data-name$=".elm"]:after { .elm-icon; .medium-blue; }
+
+	// Boot icon
+	&[data-name$="build.boot"]:after { .boot-icon; }
+
+	// Lein icon
+	&[data-name$="project.clj"]:after { .lein-icon; }
+
+	// Coffee icon
+	&[data-name$=".coffee"]:after{ .coffee-icon; .medium-maroon; }
+	&[data-name$=".cjsx"]:after{ .coffee-icon; .dark-maroon; }
+	&[data-name$=".litcoffee"]:after { .coffee-icon; .light-maroon;}
+	&[data-name$=".iced"]:after { .coffee-icon; .medium-blue;}
 
 
-// IMAGES
-.icon-tab('.ai', 'img', 15px);
-.icon-tab('.bpm', 'img', 15px);
-.icon-tab('.gif', 'img', 15px);
-.icon-tab('.jpeg', 'img', 15px);
-.icon-tab('.jpg', 'img', 15px);
-.icon-tab('.png', 'img', 15px);
-.icon-tab('.psd', 'img', 15px);
-.icon-tab('.svg', 'img', 15px);
-.icon-tab('.svgx', 'img', 15px);
+	// ERB combinations
+	&[data-name$=".js.erb"]:after { .js-icon; .medium-red; }
+	&[data-name$=".coffee.erb"]:after { .coffee-icon; .medium-red; }
+	&[data-name$=".html.erb"]:after { .html5-icon;.medium-red; }
+
+	// Perl icon
+	&[data-name$=".pl"]:after { .perl-icon; .medium-blue; }
+	&[data-name$=".pm"]:after { .perl-icon; .medium-blue; }
+	&[data-name$=".t"]:after { .perl-icon; .medium-blue; }
+
+	// Java icon
+	&[data-name$=".java"]:after { .java-icon; .medium-purple; }
+
+	// Go
+	.set-go-bg-color(@c) when (lightness(@c) >= 50%) {
+	background-color: lighten(@mc, 55%);
+	}
+	.set-go-bg-color(@c) when (lightness(@c) <50%) {
+	background-color:darken(@mc, 55%);
+	}
+	&[data-name$=".go"]:after {
+	.go-icon;
+	.set-go-bg-color(@tree-view-background-color);
+	color: @mb;
+	}
+	.selected > &[data-name$=".go"]:after {
+	-webkit-text-stroke-width: 0px !important;
+	}
+	&[data-name$=".gohtml"]:after { .html5-icon; .dark-blue; }
 
 
-// THESE NEED TO COME LAST SO THE DON'T GET OVERRIDEN!
+	// Scala
+	&[data-name$=".scala"]:after { .scala-icon; .medium-red; }
 
-// Bower
-.icon-tab('bower.json', 'bower');
-.icon-tab('Bower.json', 'bower');
-.icon-tab('BOWER.json', 'bower');
-.icon-tab('.bowerrc', 'bower');
+	// Haskell
+	&[data-name$=".hs"]:after { .haskell-icon; .medium-purple; }
 
-// Grunt
-.icon-tab('gruntfile.js', 'grunt', 15px);
-.icon-tab('Gruntfile.js', 'grunt', 15px);
-.icon-tab('GruntFile.js', 'grunt', 15px);
-.icon-tab('GRUNTFILE.js', 'grunt', 15px);
-.icon-tab('gruntfile.coffee', 'grunt', 15px);
-.icon-tab('Gruntfile.coffee', 'grunt', 15px);
-.icon-tab('GruntFile.coffee', 'grunt', 15px);
-.icon-tab('GRUNTFILE.coffee', 'grunt', 15px);
+	// Rust
+	&[data-name$=".rs"]:after { .rust-icon; .medium-maroon; }
+	&[data-name$=".rlib"]:after { .rust-icon; .light-maroon; }
 
-// Gulp
-.icon-tab('gulpfile.js', 'gulp');
-.icon-tab('Gulpfile.js', 'gulp');
-.icon-tab('GulpFile.js', 'gulp');
-.icon-tab('GULPFILE.js', 'gulp');
-.icon-tab('gulpfile.coffee', 'gulp');
-.icon-tab('Gulpfile.coffee', 'gulp');
-.icon-tab('GulpFile.coffee', 'gulp');
-.icon-tab('GULPFILE.coffee', 'gulp');
+	// Objective-C, C++, C
+	&[data-name$=".c"]:after { .c-icon; .medium-blue; }
+	&[data-name$=".h"]:after { .c-icon; .medium-purple; }
+	&[data-name$=".cpp"]:after { .cpp-icon; .medium-blue; }
+	&[data-name$=".hpp"]:after { .cpp-icon; .medium-purple; }
+	&[data-name$=".cxx"]:after { .cpp-icon; .medium-blue; }
+	&[data-name$=".cc"]:after { .cpp-icon; .medium-blue; }
+	&[data-name$=".hxx"]:after { .cpp-icon; .medium-purple; }
+	&[data-name$=".ipp"]:after { .cpp-icon; .medium-orange; }
+	&[data-name$=".m"]:after { .objc-icon; .medium-blue; }
+	&[data-name$=".mm"]:after{ .objc-icon; .medium-blue; }
+	&[data-name$=".swift"]:after { .swift-icon; .medium-green; }
+
+	///D lang icon
+	&[data-name$=".d"]:after { .dlang-icon; .medium-red; }
+	&[data-name$=".di"]:after{ .dlang-icon; .medium-red; }
+
+	&[data-name$=".cs"]:after { .csharp-icon; .medium-blue; }
+	&[data-name$=".vb"]:after { .code-icon; .medium-blue; }
+
+	// Dart
+	&[data-name$=".dart"]:after { .dart-icon; .medium-cyan; }
+
+	// Sourcepwn
+	&[data-name$=".sp"]:after,{ .clojure-icon; .medium-yellow; }
+	&[data-name$=".inc"]:after{ .clojure-icon; .medium-green;}
+
+	// Secret icon
+	&[data-name$=".secret"]:after { .secret-icon; }
+
+	// Markdown (except readme.md)
+	&[data-name$=".mdown"]:after,
+	&[data-name$=".markdown"]:after,
+	&[data-name$=".mkd"]:after,
+	&[data-name$=".mkdown"]:after,
+	&[data-name$=".rmd"]:after,
+	&[data-name$=".ron"]:after,
+	&[data-name$=".md"]:after{ .markdown-icon; .medium-blue; }
+
+	//Template Toolkit
+	&[data-name$=".tt"]:after { .templatetoolkit-icon; .medium-blue; }
+	&[data-name$=".tt2"]:after { .templatetoolkit-icon; .medium-blue; }
+	&[data-name$=".tt3"]:after { .templatetoolkit-icon; .medium-purple; }
+
+	//SQL
+	&[data-name$=".sql"]:after { .sql-icon;}
+
+	// txt
+	&[data-name$=".txt"]:after { .medium-cyan; }
+
+	// Assembly and binary
+	&[data-name$=".o"]:after,
+	&[data-name$=".out"]:after,
+	&[data-name$=".s"]:after,
+	&[data-name$=".asm"]:after { .binary-icon; .medium-red; }
+
+	// shell
+	&[data-name$=".sh"]:after,
+	&[data-name$=".bash"]:after,
+	&[data-name=".bashrc"]:after { .terminal-icon; .medium-purple; }
+	&[data-name$=".zsh"]:after,
+	&[data-name=".zshrc"]:after { .terminal-icon; .medium-blue; }
+	&[data-name$=".fish"]:after,
+	&[data-name=".fishrc"]:after{ .terminal-icon; .medium-green; }
+
+	// Composer icon
+	&[data-name="composer.json"]:after { .composer-icon; .medium-yellow; }
+
+	// Grunt icon
+	&[data-name="GRUNTFILE.js"]:after,
+	&[data-name="Gruntfile.js"]:after,
+	&[data-name="gruntfile.js"]:after { .grunt-icon; .medium-yellow; }
+	&[data-name="GRUNTFILE.coffee"]:after,
+	&[data-name="Gruntfile.coffee"]:after,
+	&[data-name="gruntfile.coffee"]:after { .grunt-icon; .medium-maroon; }
+
+	// Gulp icon
+	&[data-name="GULPFILE.js"]:after,
+	&[data-name="Gulpfile.js"]:after,
+	&[data-name="gulpfile.js"]:after{ .gulp-icon; .medium-red; }
+	&[data-name="GULPFILE.coffee"]:after,
+	&[data-name="Gulpfile.coffee"]:after,
+	&[data-name="gulpfile.coffee"]:after { .gulp-icon; .medium-maroon; }
+	&[data-name="GULPFILE.babel.js"]:after,
+	&[data-name="Gulpfile.babel.js"]:after,
+	&[data-name="gulpfile.babel.js"]:after{ .gulp-icon; .medium-red; }
+
+	//Cargo
+	&[data-name$="Cargo.toml"]:after { .package-icon; .light-orange; }
+	&[data-name$="Cargo.lock"]:after { .package-icon; .dark-orange; }
+
+	// Ionic icon
+	&[data-name="ionic.project"]:after { .ionic-icon; .medium-blue; }
+
+	// NGINX icon
+	&[data-name$=".conf"]:after { .nginx-icon; .dark-green; }
+
+	// Apache
+	&[data-name="apache.conf"]:after { .apache-icon; .medium-red; }
+	&[data-name="apache2.conf"]:after { .apache-icon; .medium-red; }
+	&[data-name="httpd.conf"]:after { .apache-icon; .medium-red; }
+
+	// OS packages
+	&[data-name$=".deb"]:after { .debian-icon; .medium-red; }
+	&[data-name$=".rpm"]:after { .red-hat-icon; .medium-red; }
+	&[data-name$=".dmg"]:after { .osx-icon; .medium-red; }
+
+	// Travis icon
+	&[data-name^=".travis"]:after { .travis-icon; .medium-red; }
+
+	// Dockerfile icon
+	&[data-name^="Dockerfile"]:after { .docker-icon; .dark-blue; }
+
+	// XAML icon
+	&[data-name$=".xaml"]:after { .code-icon; .medium-blue; }
+
+	// Lua icon
+	&[data-name$=".lua"]:after { .lua-icon; .medium-blue; }
+
+	// PowerShell icon
+	&[data-name$=".ps1"]:after { .terminal-icon; .medium-blue; }
+	&[data-name$=".psd1"]:after { .terminal-icon; .medium-blue; }
+	&[data-name$=".ps1m"]:after { .terminal-icon; .medium-blue; }
+	&[data-name$=".ps1xml"]:after { .terminal-icon; .medium-blue; }
+
+	// Readme
+	&[data-name="README.md"]:after,
+	&[data-name="Readme.md"]:after,
+	&[data-name="readme.md"]:after { .book-icon; .medium-blue; }
+
+	// Images
+	&[data-name$=".png"]:after { .image-icon; .medium-orange; }
+	&[data-name$=".gif"]:after { .image-icon; .medium-yellow; }
+	&[data-name$=".jpg"]:after { .image-icon; .medium-green;}
+	&[data-name$=".ico"]:after { .image-icon; .medium-blue;}
+	&[data-name$=".svg"]:after { .svg-icon; .dark-yellow;}
+	&[data-name$=".PNG"]:after { .image-icon; .medium-orange; }
+	&[data-name$=".GIF"]:after { .image-icon; .medium-yellow; }
+	&[data-name$=".JPG"]:after { .image-icon; .medium-green;}
+	&[data-name$=".ICO"]:after { .image-icon; .medium-blue;}
+	&[data-name$=".SVG"]:after { .svg-icon; .dark-yellow;}
+
+	// Windows specific Files
+	&[data-name$=".bat"]:after { .windows-icon; .medium-purple;}
+	&[data-name$=".cmd"]:after { .windows-icon; .medium-purple;}
+	&[data-name$=".exe"]:after { .windows-icon; }
+	&[data-name$=".com"]:after { .windows-icon; }
+	&[data-name$=".reg"]:after { .windows-icon; .medium-blue;}
+
+	// TeX
+	&[data-name$=".tex"]:after { .tex-icon; .medium-blue; }
+	&[data-name$=".sty"]:after { .tex-icon; .medium-red; }
+	&[data-name$=".cls"]:after { .tex-icon; .medium-orange; }
+	&[data-name$=".bib"]:after { .bibtex-icon; .medium-yellow; }
+
+	// Seperated Value files
+	&[data-name$=".csv"]:after { .graph-icon; .light-red; }
+	&[data-name$=".tsv"]:after { .graph-icon; .light-green; }
+
+	// Gnuplot
+	&[data-name$=".gp"]:after,
+	&[data-name$=".gnuplot"]:after { .graph-icon; .medium-red; }
+
+	// MAXScript
+	&[data-name$=".ms"]:after,
+	&[data-name$=".mce"]:after,
+	&[data-name$=".mcr"]:after { .maxscript-icon; .dark-blue; }
+
+	// Kivy
+	&[data-name$=".kv"]:after { .kivy-icon; .dark-maroon; }
+
+	// Crystal
+	&[data-name$=".cr"]:after,
+	&[data-name$=".ecr"]:after { .crystal-icon; .medium-cyan; }
+
+	// Gradle
+	&[data-name$=".gradle"]:after { .gradle-icon; .medium-blue; }
+
+	// Groovy
+	&[data-name$=".groovy"]:after,
+	&[data-name$=".grt"]:after,
+	&[data-name$=".gtpl"]:after,
+	&[data-name$=".gsp"]:after,
+	&[data-name$=".gvy"]:after { .groovy-icon; .light-blue; }
+
+	// R
+	&[data-name$=".rd"]:after,
+	&[data-name$=".rsx"]:after,
+	&[data-name$=".Rprofile"]:after,
+	&[data-name$=".R"]:after,
+	&[data-name$=".r"]:after { .r-icon; .medium-blue; }
+
+	// Vue
+	&[data-name$=".vue"]:after { .vue-icon; .light-green; }
+
+	// Haxe
+	&[data-name$=".hx"]:after,
+	&[data-name$=".hxsl"]:after { .haxe-icon; .medium-orange; }
+
+	// Ada
+	&[data-name$=".ada"]:after,
+	&[data-name$=".adb"]:after,
+	&[data-name$=".ads"]:after { .ada-icon; .medium-blue; }
+
+	// APL / Dyalog APL
+	&[data-name$=".apl"]:after{ .apl-icon; .dark-red; }
+	&[data-name$=".dyalog"]:after { .dyalog-icon; .medium-orange; }
+
+	// FORTRAN
+	&[data-name$=".f"]:after{ .fortran-icon; .medium-maroon; }
+	&[data-name$=".f90"]:after{ .fortran-icon; .medium-green;}
+	&[data-name$=".f03"]:after{ .fortran-icon; .medium-red;}
+	&[data-name$=".f08"]:after{ .fortran-icon; .medium-blue; }
+	&[data-name$=".f77"]:after{ .fortran-icon; .medium-maroon; }
+	&[data-name$=".f95"]:after{ .fortran-icon; .dark-pink; }
+	&[data-name$=".for"]:after{ .fortran-icon; .dark-cyan; }
+	&[data-name$=".fpp"]:after{ .fortran-icon; .dark-yellow; }
+
+	// LISP
+	&[data-name$=".lsp"]:after{ .lisp-icon; .medium-red; }
+	&[data-name$=".lisp"]:after { .lisp-icon; .dark-red; }
+	&[data-name$=".cl"]:after { .lisp-icon; .medium-orange;}
+	&[data-name$=".l"]:after{ .lisp-icon; .medium-maroon;}
+	&[data-name$=".ny"]:after { .lisp-icon; .medium-blue;}
+
+}

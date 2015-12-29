@@ -25,7 +25,8 @@ module.exports = PinnedTabs =
 
     activate: (state) ->
         @setCommands()
-        @setObservers()
+        @configObservers()
+        @observers()
 
         # Recover the serialized session or start a new serializable state.
         @PinnedTabsState =
@@ -73,7 +74,7 @@ module.exports = PinnedTabs =
         @subscriptions.add atom.commands.add 'atom-workspace', 'pinned-tabs:pin-selected': => @pinSelected()
 
     # Add an event listener for when the value of the settings are changed.
-    setObservers: ->
+    configObservers: ->
         body = document.querySelector 'body'
         atom.config.observe 'pinned-tabs.disableTabAnimation', (newValue) ->
             if newValue
@@ -92,6 +93,15 @@ module.exports = PinnedTabs =
             else
                 body.classList.add 'pinned-icons-colorless'
 
+    #
+    observers: ->
+        self = this # This object has to be stored in self because the callback function will create its own 'this'
+        atom.workspace.onDidAddPaneItem (event) ->
+            setTimeout (->
+                r = self.getPaneInformation document.querySelector('.tab-bar .tab.active'), event.index
+                r.pane.moveItem r.item, r.index
+            ), 1
+
 
     # Method to pin the active tab.
     pinActive: ->
@@ -103,44 +113,57 @@ module.exports = PinnedTabs =
 
     # Method that pins/unpins a tab given its element.
     pin: (e) ->
-        # Get necessary DOM elements
-        tabbar = e.parentNode
-        pane = tabbar.parentNode
-        axis = pane.parentNode
-
-        # Get the index of the selected tab and the
-        # corresponding pane.
-        selectedIndex = Array.prototype.indexOf.call tabbar.children, e
-        paneIndex = Array.prototype.indexOf.call axis.children, pane
+        #
+        r = @getPaneInformation e
 
         # Calculate the new index for this tab based
         # on the amount of pinned tabs within this pane.
-        newIndex = e.parentNode.querySelectorAll('.pinned').length
         if e.classList.contains 'pinned'
             # If the element has the element 'pinned', it
             # is currently being unpinned. So the new index
             # is one off when look at the amount of pinned
             # tabs, because it actually includes the tab
             # that is being unpinned.
-            newIndex -= 1
+            r.index -= 1
 
             # Removed one pinned tab from the state key for this pane.
-            @PinnedTabsState.data[paneIndex] -= 1
+            @PinnedTabsState.data[r.paneIndex] -= 1
         else
             # Initialize the state kye for this pane if needed.
-            @PinnedTabsState.data[paneIndex] = 0 if @PinnedTabsState.data[paneIndex] == undefined
+            @PinnedTabsState.data[r.paneIndex] = 0 if @PinnedTabsState.data[r.paneIndex] == undefined
 
             # Add one pinned tab from the state key for this pane.
-            @PinnedTabsState.data[paneIndex] += 1
+            @PinnedTabsState.data[r.paneIndex] += 1
 
-        # Actually move the item to its new index.
-        #pane = atom.workspace.getActivePane()
-        pane = atom.workspace.getPanes()[paneIndex / 2]
-        item = pane.itemAtIndex selectedIndex
-        pane.moveItem item, newIndex
+        #
+        r.pane.moveItem r.item, r.index
 
         # Finally, toggle the 'pinned' class on the tab after a
         # timout of 1 millisecond. This will ensure the animation
         # of pinning the tab will run.
         callback = -> e.classList.toggle 'pinned'
         setTimeout callback, 1
+
+
+    #
+    getPaneInformation: (e, i) ->
+        #
+        tabbar = e.parentNode
+        pane = tabbar.parentNode
+        axis = pane.parentNode
+
+        #
+        selectedIndex = i || Array.prototype.indexOf.call tabbar.children, e
+        paneIndex = Array.prototype.indexOf.call axis.children, pane
+        newIndex = e.parentNode.querySelectorAll('.pinned').length
+
+        #
+        pane = atom.workspace.getPanes()[paneIndex / 2]
+        item = pane.itemAtIndex selectedIndex
+
+        return {
+            index: newIndex,
+            pane: pane,
+            paneIndex: paneIndex
+            item: item
+        };

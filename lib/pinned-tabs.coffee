@@ -98,8 +98,12 @@ module.exports = PinnedTabs =
         self = this # This object has to be stored in self because the callback function will create its own 'this'
         atom.workspace.onDidAddPaneItem (event) ->
             setTimeout (->
-                r = self.getPaneInformation document.querySelector('.tab-bar .tab.active'), event.index
-                r.pane.moveItem r.item, r.index
+                # Get information about the tab
+                r = self.getTabInformation document.querySelector('.tab-bar .tab.active'), event.index
+
+                # Move it if necessary
+                if r.newIndex > r.oldIndex
+                    r.pane.moveItem r.item, r.newIndex
             ), 1
 
 
@@ -113,8 +117,8 @@ module.exports = PinnedTabs =
 
     # Method that pins/unpins a tab given its element.
     pin: (e) ->
-        #
-        r = @getPaneInformation e
+        # Get information about the tab
+        r = @getTabInformation e
 
         # Calculate the new index for this tab based
         # on the amount of pinned tabs within this pane.
@@ -135,7 +139,7 @@ module.exports = PinnedTabs =
             # Add one pinned tab from the state key for this pane.
             @PinnedTabsState.data[r.paneIndex] += 1
 
-        #
+        # Move the tab to its new index
         r.pane.moveItem r.item, r.index
 
         # Finally, toggle the 'pinned' class on the tab after a
@@ -145,25 +149,27 @@ module.exports = PinnedTabs =
         setTimeout callback, 1
 
 
-    #
-    getPaneInformation: (e, i) ->
-        #
+    # Get information about a tab
+    getTabInformation: (e, i) ->
+        # Get related nodes
         tabbar = e.parentNode
         pane = tabbar.parentNode
         axis = pane.parentNode
 
-        #
+        # Get the index values of relevant elements
         selectedIndex = i || Array.prototype.indexOf.call tabbar.children, e
         paneIndex = Array.prototype.indexOf.call axis.children, pane
         newIndex = e.parentNode.querySelectorAll('.pinned').length
 
-        #
+        # Get the related pane & texteditor
         pane = atom.workspace.getPanes()[paneIndex / 2]
         item = pane.itemAtIndex selectedIndex
 
+        # Return relevant information
         return {
-            index: newIndex,
+            newIndex: newIndex,
+            oldIndex: i
             pane: pane,
-            paneIndex: paneIndex
+            paneIndex: paneIndex,
             item: item
         };

@@ -1,14 +1,11 @@
-@import "colors";
-@import "icon-variables";
-
-
 /*============================================================================*
-  ICONS BASED ON FILE EXTENSION
-
-  Based on the 'file-icons' package:
+  From file-icons, by Dan Brooker
   https://atom.io/packages/file-icons
 /*============================================================================*/
 
+
+@import "colors";
+@import "icon-variables";
 
 // General
 .tab-bar .tab .title:after {
@@ -23,9 +20,8 @@
 	top: 50% !important;
 	transform: translate(0, -50%) !important;
 
-	// Default settings
-	.default-color;
-	.default-icon;
+	// Default icon
+	.octicons; content: "\f05e";
 }
 
 body.pinned-icons-colorless {

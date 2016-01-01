@@ -99,12 +99,25 @@ module.exports = PinnedTabs =
         atom.workspace.onDidAddPaneItem (event) ->
             setTimeout (->
                 # Get information about the tab
-                r = self.getTabInformation document.querySelector('.tab-bar .tab.active'), event.index
+                r = self.getTabInformation document.querySelector('.tab-bar .tab.active')
 
                 # Move it if necessary
-                if r.newIndex > r.oldIndex
-                    r.pane.moveItem r.item, r.newIndex
+                if r.pinIndex > r.curIndex
+                    r.pane.moveItem r.item, r.pinIndex
             ), 1
+
+        atom.workspace.onWillDestroyPaneItem (event) ->
+            #console.log event
+            paneIndex = (Array.prototype.indexOf.call atom.workspace.getPanes(), event.pane) * 2
+            tabIndex = Array.prototype.indexOf.call event.pane.getItems(), event.item
+            #console.log paneIndex, tabIndex
+
+            axis = document.querySelector('.tab-bar').parentNode.parentNode
+            paneNode = axis.children[paneIndex].querySelector('.tab-bar')
+            tabNode = paneNode.children[tabIndex]
+            if paneNode.children[tabIndex].classList.contains('pinned')
+                self.PinnedTabsState.data[paneIndex] -= 1
+
 
 
     # Method to pin the active tab.
@@ -122,13 +135,13 @@ module.exports = PinnedTabs =
 
         # Calculate the new index for this tab based
         # on the amount of pinned tabs within this pane.
-        if e.classList.contains 'pinned'
+        if r.isPinned
             # If the element has the element 'pinned', it
             # is currently being unpinned. So the new index
             # is one off when look at the amount of pinned
             # tabs, because it actually includes the tab
             # that is being unpinned.
-            r.newIndex -= 1
+            r.pinIndex -= 1
 
             # Removed one pinned tab from the state key for this pane.
             @PinnedTabsState.data[r.paneIndex] -= 1
@@ -140,7 +153,7 @@ module.exports = PinnedTabs =
             @PinnedTabsState.data[r.paneIndex] += 1
 
         # Move the tab to its new index
-        r.pane.moveItem r.item, r.newIndex
+        r.pane.moveItem r.item, r.pinIndex
 
         # Finally, toggle the 'pinned' class on the tab after a
         # timout of 1 millisecond. This will ensure the animation
@@ -150,26 +163,33 @@ module.exports = PinnedTabs =
 
 
     # Get information about a tab
-    getTabInformation: (e, i) ->
+    getTabInformation: (e) ->
         # Get related nodes
         tabbar = e.parentNode
-        pane = tabbar.parentNode
-        axis = pane.parentNode
+        paneNode = tabbar.parentNode
+        axis = paneNode.parentNode
 
         # Get the index values of relevant elements
-        selectedIndex = i || Array.prototype.indexOf.call tabbar.children, e
-        paneIndex = Array.prototype.indexOf.call axis.children, pane
-        newIndex = e.parentNode.querySelectorAll('.pinned').length
+        curIndex = Array.prototype.indexOf.call tabbar.children, e
+        paneIndex = Array.prototype.indexOf.call axis.children, paneNode
+        pinIndex = paneNode.querySelectorAll('.pinned').length
 
         # Get the related pane & texteditor
         pane = atom.workspace.getPanes()[paneIndex / 2]
-        item = pane.itemAtIndex selectedIndex
+        item = pane.itemAtIndex curIndex
+
 
         # Return relevant information
         return {
-            newIndex: newIndex,
-            oldIndex: i
-            pane: pane,
+            curIndex: curIndex,
+            pinIndex: pinIndex,
             paneIndex: paneIndex,
-            item: item
-        };
+
+            itemNode: undefined,
+            paneNode: undefined,
+
+            item: item,
+            pane: pane,
+
+            isPinned: e.classList.contains 'pinned'
+        }

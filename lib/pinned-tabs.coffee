@@ -128,7 +128,7 @@ module.exports = PinnedTabs =
             # is one off when look at the amount of pinned
             # tabs, because it actually includes the tab
             # that is being unpinned.
-            r.index -= 1
+            r.newIndex -= 1
 
             # Removed one pinned tab from the state key for this pane.
             @PinnedTabsState.data[r.paneIndex] -= 1
@@ -140,7 +140,7 @@ module.exports = PinnedTabs =
             @PinnedTabsState.data[r.paneIndex] += 1
 
         # Move the tab to its new index
-        r.pane.moveItem r.item, r.index
+        r.pane.moveItem r.item, r.newIndex
 
         # Finally, toggle the 'pinned' class on the tab after a
         # timout of 1 millisecond. This will ensure the animation

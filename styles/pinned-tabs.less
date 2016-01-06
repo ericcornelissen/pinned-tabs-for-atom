@@ -1,3 +1,11 @@
+@import "icon-variables";
+
+body.pinned-icons-colorless {
+	.tab-bar .tab .title:after {
+		color: #FFF !important;
+	}
+}
+
 body.pinned-tabs-enable-tabanimation .tab-bar .tab {
     /* Add a transition for the size of the tab */
     transition: max-width .3s ease !important;
@@ -9,10 +17,10 @@ body.pinned-tabs-enable-tabanimation .tab-bar .tab .title {
     -webkit-transition-delay: .025s !important;
 }
 
-body.pinned-tabs-enable-iconanimation .tab-bar .tab .title::after {
+body.pinned-tabs-enable-iconanimation .tab-bar .tab .title::after,
+body.pinned-tabs-enable-iconanimation .tab-bar .pinned.modified:hover .title::before {
     /* Add a transition for the icon of a pinned tab */
-    transition: opacity .3s ease,
-                left .3s ease !important;
+    transition: left .3s ease !important;
 }
 
 .tab-bar .tab {
@@ -46,11 +54,22 @@ body.pinned-tabs-enable-iconanimation .tab-bar .tab .title::after {
     /* Hide the title of the tab */
     font-size: 0 !important;
 }
-.tab-bar .pinned .title::before {
-    /* Hide the title of the tab */
-    font-size: 0 !important;
-}
 .tab-bar .pinned .title::after {
+    /* Show the tab icon */
+    left: 0 !important;
+    opacity: 1 !important;
+}
+.tab-bar .pinned.modified:hover .title::after {
+    /* Hide the original tab icon on hover when the tab has been edited */
+    left: -38px !important;
+}
+.tab-bar .pinned.modified:hover .title::before {
+    /* Modify the :before element to show it */
+    color: #FFF !important;
+    content: "\f058" !important;
+    .octicons !important;
+
+    /* Show a edited icon on hover when the tab has been edited */
     left: 0 !important;
     opacity: 1 !important;
 }
@@ -59,4 +78,23 @@ body.pinned-tabs-enable-iconanimation .tab-bar .tab .title::after {
     pointer-events: none !important;
     /* Scale the close-icon to make it invisible */
     transform: scale(0) !important;
+}
+
+.tab-bar .tab .title:after,
+.tab-bar .tab.pinned .title:before {
+	// Configure icon position
+	left: -38px;
+    display: block !important;
+	height: 100% !important;
+	opacity: 0;
+	position: absolute !important;
+	width: 38px !important;
+	text-align: center !important;
+	top: 50% !important;
+	transform: translate(0, -50%) !important;
+
+	// Default icon
+	color: #FFF;
+	content: "\f05e";
+	.octicons;
 }

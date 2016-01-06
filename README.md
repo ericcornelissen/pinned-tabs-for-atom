@@ -25,3 +25,7 @@ Or via Git clone
 cd ~/.atom/packages
 git clone https://github.com/ericcornelissen/pinned-tabs-for-atom --depth=1
 ```
+
+* * *
+
+Copyright © 2015-2016 Eric Cornelissen | MIT license

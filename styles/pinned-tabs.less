@@ -18,7 +18,7 @@ body.pinned-tabs-enable-tabanimation .tab-bar .tab .title {
 }
 
 body.pinned-tabs-enable-iconanimation .tab-bar .tab .title::after,
-body.pinned-tabs-enable-iconanimation .tab-bar .pinned.modified:hover .title::before {
+body.pinned-tabs-enable-iconanimation .tab-bar .pinned.modified .title::before {
     /* Add a transition for the icon of a pinned tab */
     transition: left .3s ease !important;
 }
@@ -54,24 +54,25 @@ body.pinned-tabs-enable-iconanimation .tab-bar .pinned.modified:hover .title::be
     /* Hide the title of the tab */
     font-size: 0 !important;
 }
+.tab-bar .pinned .title::before {
+    /* Modify the :before element to show it */
+    color: #FFF !important;
+    content: "\f058" !important;
+    .octicons !important;
+}
 .tab-bar .pinned .title::after {
     /* Show the tab icon */
     left: 0 !important;
     opacity: 1 !important;
 }
-.tab-bar .pinned.modified:hover .title::after {
-    /* Hide the original tab icon on hover when the tab has been edited */
-    left: -38px !important;
-}
 .tab-bar .pinned.modified:hover .title::before {
-    /* Modify the :before element to show it */
-    color: #FFF !important;
-    content: "\f058" !important;
-    .octicons !important;
-
     /* Show a edited icon on hover when the tab has been edited */
     left: 0 !important;
     opacity: 1 !important;
+}
+.tab-bar .pinned.modified:hover .title::after {
+    /* Hide the original tab icon on hover when the tab has been edited */
+    left: 38px !important;
 }
 .tab-bar .pinned .close-icon {
     /* Disable events on the close-icon */

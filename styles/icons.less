@@ -8,10 +8,13 @@
 
 .tab-bar .pinned .title {
 
-	// TODO
+	// Default
+	&:after { .text-icon; .white; }
+
+	// Todo
 	&[data-name$="TODO"]:after { .checklist-icon; .medium-yellow; }
 
-	// Makefile icon
+	// Makefile
 	&[data-name$="Makefile"]:after { .checklist-icon; .medium-yellow; }
 	&[data-name$="makefile"]:after { .checklist-icon; .medium-yellow; }
 	&[data-name$=".mk"]:after { .checklist-icon; .medium-yellow; }

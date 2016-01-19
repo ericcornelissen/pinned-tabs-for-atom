@@ -9,14 +9,19 @@ module.exports = PinnedTabs =
             type: 'boolean'
             default: true
             description: 'Untick this for colorless icons'
-        disableTabAnimation:
+        TabAnimation:
             title: 'Disable tab animation'
             description: 'Disable the animation used to pin a tab'
             type: 'boolean'
             default: false
-        disableIconAnimation:
+        IconAnimation:
             title: 'Disable icon animation'
             description: 'Disable the animation of the icon of a pinned tab'
+            type: 'boolean'
+            default: false
+        modifiedTab:
+            title: 'Disable the modified icon on pinned tabs'
+            description: 'Disable the modified on pinned tabs when they\'re hovered'
             type: 'boolean'
             default: false
 
@@ -76,12 +81,12 @@ module.exports = PinnedTabs =
     # Add an event listener for when the value of the settings are changed.
     configObservers: ->
         body = document.querySelector 'body'
-        atom.config.observe 'pinned-tabs.disableTabAnimation', (newValue) ->
+        atom.config.observe 'pinned-tabs.TabAnimation', (newValue) ->
             if newValue
                 body.classList.remove 'pinned-tabs-enable-tabanimation'
             else
                 body.classList.add 'pinned-tabs-enable-tabanimation'
-        atom.config.observe 'pinned-tabs.disableIconAnimation', (newValue) ->
+        atom.config.observe 'pinned-tabs.IconAnimation', (newValue) ->
             if newValue
                 body.classList.remove 'pinned-tabs-enable-iconanimation'
             else
@@ -92,6 +97,11 @@ module.exports = PinnedTabs =
                 body.classList.remove 'pinned-icons-colorless'
             else
                 body.classList.add 'pinned-icons-colorless'
+        atom.config.observe 'pinned-tabs.modifiedTab', (newValue) ->
+            if newValue
+                body.classList.remove 'pinned-tabs-enable-modified'
+            else
+                body.classList.add 'pinned-tabs-enable-modified'
 
     #
     observers: ->

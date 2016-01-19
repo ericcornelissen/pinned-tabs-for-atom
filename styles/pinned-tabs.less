@@ -2,100 +2,98 @@
 
 body.pinned-icons-colorless {
 	.tab-bar .tab .title:after {
-		color: #FFF !important;
+		color: #FFF;
 	}
 }
 
 body.pinned-tabs-enable-tabanimation .tab-bar .tab {
     /* Add a transition for the size of the tab */
-    transition: max-width .3s ease !important;
+    transition: max-width .3s ease;
 }
 body.pinned-tabs-enable-tabanimation .tab-bar .tab .title {
     /* Add transition for hiding the title of a pinned tab */
-    transition: opacity .3s ease !important;
+    transition: opacity .3s ease;
     /* The transition delay is there to make the unpin animation look smoother */
-    -webkit-transition-delay: .025s !important;
+    -webkit-transition-delay: .025s;
 }
 
-body.pinned-tabs-enable-iconanimation .tab-bar .tab .title::after,
+body.pinned-tabs-enable-iconanimation .tab-bar .pinned .title::after,
 body.pinned-tabs-enable-iconanimation .tab-bar .pinned.modified .title::before {
     /* Add a transition for the icon of a pinned tab */
     transition: left .3s ease !important;
 }
 
-.tab-bar .tab {
-    /* Modify the tab width to improve the animation of the icon for a pinned tab */
-    margin: 0 !important;
-    padding: 0 !important;
-    width: 100% !important;
+.tab-bar .tab .title::after,
+.tab-bar .pinned .title::before,
+.tab-bar .pinned.modified .title::before,
+.tab-bar .pinned.active .title::before {
+	/* Configure icon position */
+	border-width: 0 !important;
+    display: block !important;
+	left: -38px !important;
+	height: 100% !important;
+	position: absolute !important;
+	text-align: center !important;
+	top: 50% !important;
+	transform: translate(0, -50%) !important;
+	width: 38px !important;
+
+	/* Default icon */
+	color: #FFF;
+	content: "";
+	.octicons;
 }
-.tab-bar .tab .title {
-    /* Modify the title width to improve the animation of the icon for a pinned tab */
-    margin: 0 !important;
+
+.tab-bar .pinned {
+	/* Make pinned tabs a fixed width */
+	margin: 0 !important;
+	max-width: 38px !important;
+	min-width: 38px !important;
+	padding: 0 !important;
+	width: 38px;
+}
+.tab-bar .pinned .title {
+    /* Modify the title width to improve the position of the icon for a pinned tab */
+    margin: 0;
     padding: 0 !important;
     text-align: center !important;
     width: 100% !important;
 
+	/* Hide the title of the tab */
+	font-size: 0 !important;
+
     /* Make the title of the tab unclickable. Otherwise
        in some themes the title will be pinned instead
        of the tab */
-    pointer-events: none !important;
+    pointer-events: none;
 }
 
-.tab-bar .pinned {
-    /* Make pinned tabs a fixed width */
-    margin: 0 !important;
-    max-width: 38px !important;
-    min-width: 38px !important;
-    padding: 0 !important;
-    width: 38px !important;
-}
-.tab-bar .pinned .title {
-    /* Hide the title of the tab */
-    font-size: 0 !important;
-}
-.tab-bar .pinned .title::before {
-    /* Modify the :before element to show it */
-    color: #FFF !important;
-    content: "\f058" !important;
-    .octicons !important;
-}
 .tab-bar .pinned .title::after {
     /* Show the tab icon */
     left: 0 !important;
-    opacity: 1 !important;
-}
-.tab-bar .pinned.modified:hover .title::before {
-    /* Show a edited icon on hover when the tab has been edited */
-    left: 0 !important;
-    opacity: 1 !important;
 }
 .tab-bar .pinned.modified:hover .title::after {
     /* Hide the original tab icon on hover when the tab has been edited */
     left: 38px !important;
 }
+
+.tab-bar .pinned.modified .title::before {
+	/* Modify the :before element to show it */
+	color: #FFF !important;
+	content: "\f058" !important;
+	.octicons !important;
+}
+.tab-bar .pinned.modified:hover .title::before {
+    /* Shows a edited icon on hover when the tab has been edited */
+	left: 0 !important;
+	top: 0 !important;
+	transform: scale(1) !important;
+}
+
 .tab-bar .pinned .close-icon {
     /* Disable events on the close-icon */
     pointer-events: none !important;
     /* Scale the close-icon to make it invisible */
-    transform: scale(0) !important;
-}
-
-.tab-bar .tab .title:after,
-.tab-bar .tab.pinned .title:before {
-	// Configure icon position
-	left: -38px;
-    display: block !important;
-	height: 100% !important;
-	opacity: 0;
-	position: absolute !important;
-	width: 38px !important;
-	text-align: center !important;
-	top: 50% !important;
-	transform: translate(0, -50%) !important;
-
-	// Default icon
-	color: #FFF;
-	content: "\f05e";
-	.octicons;
+	transform: scale(0) !important;
+	display: none !important;
 }

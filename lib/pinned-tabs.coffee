@@ -103,7 +103,7 @@ module.exports = PinnedTabs =
             else
                 body.classList.add 'pinned-tabs-enable-modified'
 
-    #
+    # Observer panes
     observers: ->
         self = this # This object has to be stored in self because the callback function will create its own 'this'
         atom.workspace.onDidAddPaneItem (event) ->
@@ -117,17 +117,14 @@ module.exports = PinnedTabs =
             ), 1
 
         atom.workspace.onWillDestroyPaneItem (event) ->
-            #console.log event
             paneIndex = (Array.prototype.indexOf.call atom.workspace.getPanes(), event.pane) * 2
             tabIndex = Array.prototype.indexOf.call event.pane.getItems(), event.item
-            #console.log paneIndex, tabIndex
 
             axis = document.querySelector('.tab-bar').parentNode.parentNode
             paneNode = axis.children[paneIndex].querySelector('.tab-bar')
             tabNode = paneNode.children[tabIndex]
             if paneNode.children[tabIndex].classList.contains('pinned')
                 self.PinnedTabsState.data[paneIndex] -= 1
-
 
 
     # Method to pin the active tab.

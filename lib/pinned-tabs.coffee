@@ -77,6 +77,7 @@ module.exports = PinnedTabs =
         @subscriptions = new CompositeDisposable
         @subscriptions.add atom.commands.add 'atom-workspace', 'pinned-tabs:pin': => @pinActive()
         @subscriptions.add atom.commands.add 'atom-workspace', 'pinned-tabs:pin-selected': => @pinSelected()
+        @subscriptions.add atom.commands.add 'atom-workspace', 'pinned-tabs:close-unpinned': => @closeUnpinned()
 
     # Add an event listener for when the value of the settings are changed.
     configObservers: ->
@@ -122,7 +123,6 @@ module.exports = PinnedTabs =
 
             axis = document.querySelector('.tab-bar').parentNode.parentNode
             paneNode = axis.children[paneIndex].querySelector('.tab-bar')
-            tabNode = paneNode.children[tabIndex]
             if paneNode.children[tabIndex].classList.contains('pinned')
                 self.PinnedTabsState.data[paneIndex] -= 1
 
@@ -200,3 +200,16 @@ module.exports = PinnedTabs =
 
             isPinned: e.classList.contains 'pinned'
         }
+
+
+    #
+    closeUnpinned: ->
+        activePane = document.querySelector '.pane.active'
+        tabbar = activePane.querySelector '.tab-bar'
+
+        activePane = atom.workspace.getActivePane()
+        tabs = tabbar.querySelectorAll '.tab'
+        for i in [(tabs.length - 1)..0]
+            if !tabs[i].classList.contains('pinned')
+                console.log(activePane.itemAtIndex(i));
+                console.log(activePane.destroyItem(activePane.itemAtIndex(i)));

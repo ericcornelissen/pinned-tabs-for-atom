@@ -1,5 +1,5 @@
-# Add a pin/unpin option to the context menu of tabs.
 'context-menu':
+    # Add a pin/unpin option to the context menu of tabs.
     '.tab:not(.pinned)': [{
             'label': 'Pin tab'
             'command': 'pinned-tabs:pin-selected'
@@ -7,4 +7,10 @@
     '.tab.pinned': [{
             'label': 'Unpin tab'
             'command': 'pinned-tabs:pin-selected'
+        }]
+
+    # Add a 'Close Unpinned Tabs' option to the context menu of tabs.
+    '.tab': [{
+            'label': 'Close Unpinned Tabs'
+            'command': 'pinned-tabs:close-unpinned'
         }]

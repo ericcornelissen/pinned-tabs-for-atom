@@ -1,47 +1,47 @@
 @import "icon-variables";
 
-body.pinned-icons-colorless .tab-bar .tab.pinned .title:after {
+body.pinned-icons-colorless atom-pane-container atom-pane .tab-bar .tab.pinned .title:after {
 	/* Force colorless icons */
 	color: #FFF !important;
 }
 
-body.pinned-tabs-enable-tabanimation .tab-bar .tab {
+body.pinned-tabs-enable-tabanimation atom-pane-container atom-pane .tab-bar .tab {
     /* Add a transition for the size of the tab */
     transition: max-width .3s ease;
 }
-body.pinned-tabs-enable-tabanimation .tab-bar .tab .title {
+body.pinned-tabs-enable-tabanimation atom-pane-container atom-pane .tab-bar .tab .title {
     /* The transition delay is there to make the unpin animation look smoother */
-    -webkit-transition-delay: .025s !important;
+    -webkit-transition-delay: .025s;
 }
 
-body.pinned-tabs-enable-iconanimation .tab-bar .tab .title::after,
-body.pinned-tabs-enable-iconanimation .tab-bar .tab .title::before {
+body.pinned-tabs-enable-iconanimation atom-pane-container atom-pane .tab-bar .tab .title::after,
+body.pinned-tabs-enable-iconanimation atom-pane-container atom-pane .tab-bar .tab .title::before {
     /* Add a transition for the icon of a pinned tab */
     transition: left .3s ease !important;
 }
-.tab-bar .tab.pinned .title::after, .tab-bar .tab.pinned .title::before {
+atom-pane-container atom-pane .tab-bar .tab.pinned .title::after,
+atom-pane-container atom-pane .tab-bar .tab.pinned .title::before {
     /* Disable the transition for the icon of a pinned tab */
     transition: none;
 }
 
-body.pinned-tabs-enable-modified .tab-bar .tab.pinned.modified:hover .title::after {
+body.pinned-tabs-enable-modified atom-pane-container atom-pane .tab-bar .tab.pinned.modified:hover .title::after {
     /* Hide the original tab icon on hover when the tab has been edited */
     left: 38px !important;
 }
-body.pinned-tabs-enable-modified .tab-bar .tab.pinned .title::before {
+body.pinned-tabs-enable-modified atom-pane-container atom-pane .tab-bar .tab.pinned .title::before {
 	/* Modify the :before element to be an 'edited' icon */
-	color: #FFF !important;
 	content: "\f058" !important;
 	.octicons !important;
 }
-body.pinned-tabs-enable-modified .tab-bar .tab.pinned.modified:hover .title::before {
+body.pinned-tabs-enable-modified atom-pane-container atom-pane .tab-bar .tab.pinned.modified:hover .title::before {
     /* Shows a edited icon on hover when the tab has been edited */
 	left: 0 !important;
 	top: 0 !important;
 	transform: scale(1) !important;
 }
 
-.tab-bar .tab .title::after {
+atom-pane-container atom-pane .tab-bar .tab .title::after {
 	/* Required for existence */
 	content: "";
 	/* Configure icon position */
@@ -49,13 +49,13 @@ body.pinned-tabs-enable-modified .tab-bar .tab.pinned.modified:hover .title::bef
 	display: block !important;
 	left: -38px !important;
 	height: 100% !important;
-	position: absolute;
-	text-align: center;
+	position: absolute !important;
+	text-align: center !important;
 	top: 50% !important;
 	transform: translate(0, -50%) !important;
 	width: 38px !important;
 }
-.tab-bar .tab.pinned .title::before {
+atom-pane-container atom-pane .tab-bar .tab.pinned .title::before {
 	/* Configure icon position */
 	border-width: 0 !important;
     display: block !important;
@@ -68,30 +68,34 @@ body.pinned-tabs-enable-modified .tab-bar .tab.pinned.modified:hover .title::bef
 	width: 38px !important;
 }
 
-.tab-bar .tab .title {
+atom-pane-container atom-pane .tab-bar .tab {
+	/* Hides the icons when they're not inside the tab */
+	overflow: hidden !important;
+}
+atom-pane-container atom-pane .tab-bar .tab .title {
 	/* Make the title of the tab unclickable. Otherwise
 	   in some themes the title will be pinned instead
 	   of the tab */
 	pointer-events: none !important;
 }
-.tab-bar .tab.pinned {
+atom-pane-container atom-pane .tab-bar .tab.pinned {
 	/* Make pinned tabs a fixed width */
 	margin: 0;
 	max-width: 38px;
 	min-width: 38px;
 	padding: 0;
-	width: 38px;
+	width: 38px !important;
 }
-.tab-bar .tab.pinned .title {
+atom-pane-container atom-pane .tab-bar .tab.pinned .title {
 	/* Hide the title of the tab */
-	font-size: 0;
+	font-size: 0 !important;
 }
-.tab-bar .tab.pinned .title::after {
+atom-pane-container atom-pane .tab-bar .tab.pinned .title::after {
     /* Show the tab icon */
     left: 0 !important;
 }
 
-.tab-bar .pinned .close-icon {
+atom-pane-container atom-pane .tab-bar .pinned .close-icon {
     /* Disable events on the close-icon */
     pointer-events: none !important;
     /* Scale the close-icon to make it invisible */

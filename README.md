@@ -4,7 +4,7 @@ A simple package for the Atom text editor from GitHub that allows you to pin tab
 
 For the best experience of this package, I recommend using it with the [file-icons](https://atom.io/packages/file-icons) package.
 
-![preview gif](http://i.imgur.com/8qGDz8e.gif)
+![preview gif](http://i.imgur.com/oG3XdvJ.gif)
 
 * * *
 

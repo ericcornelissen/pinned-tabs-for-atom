@@ -213,7 +213,7 @@ module.exports = PinnedTabs =
         }
 
 
-    #
+    # Close all unpinned tabs
     closeUnpinned: ->
         activePane = document.querySelector '.pane.active'
         tabbar = activePane.querySelector '.tab-bar'
@@ -222,5 +222,5 @@ module.exports = PinnedTabs =
         tabs = tabbar.querySelectorAll '.tab'
         for i in [(tabs.length - 1)..0]
             if !tabs[i].classList.contains('pinned')
-                console.log(activePane.itemAtIndex(i));
-                console.log(activePane.destroyItem(activePane.itemAtIndex(i)));
+                activePane.itemAtIndex i
+                activePane.destroyItem activePane.itemAtIndex(i)

@@ -10,7 +10,7 @@
         }]
 
     # Add a 'Close Unpinned Tabs' option to the context menu of tabs.
-    '.tab': [{
+    'body.close-unpinned .tab': [{
             'label': 'Close Unpinned Tabs'
             'command': 'pinned-tabs:close-unpinned'
         }]

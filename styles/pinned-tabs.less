@@ -11,13 +11,13 @@ body.pinned-tabs-enable-tabanimation .tab-bar .tab {
 }
 body.pinned-tabs-enable-tabanimation .tab-bar .tab .title {
     /* The transition delay is there to make the unpin animation look smoother */
-    -webkit-transition-delay: .025s;
+    -webkit-transition-delay: .025s !important;
 }
 
-body.pinned-tabs-enable-iconanimation .tab-bar .tab.pinned .title::after,
-body.pinned-tabs-enable-iconanimation .tab-bar .tab.pinned .title::before {
+body.pinned-tabs-enable-iconanimation .tab-bar .tab .title::after,
+body.pinned-tabs-enable-iconanimation .tab-bar .tab .title::before {
     /* Add a transition for the icon of a pinned tab */
-    transition: left .3s ease;
+    transition: left .3s ease !important;
 }
 .tab-bar .tab.pinned .title::after, .tab-bar .tab.pinned .title::before {
     /* Disable the transition for the icon of a pinned tab */
@@ -42,14 +42,20 @@ body.pinned-tabs-enable-modified .tab-bar .tab.pinned.modified:hover .title::bef
 }
 
 .tab-bar .tab .title::after {
+	/* Required for existence */
+	content: "";
 	/* Configure icon position */
-    display: block !important;
+	border-width: 0;
+	display: block !important;
 	left: -38px !important;
+	height: 100%;
+	position: absolute;
+	text-align: center;
+	top: 50%;
+	transform: translate(0, -50%);
+	width: 38px;
 }
-.tab-bar .tab.pinned .title::after,
-.tab-bar .tab.pinned .title::before,
-.tab-bar .tab.pinned.modified .title::before,
-.tab-bar .tab.pinned.active .title::before {
+.tab-bar .tab.pinned .title::before {
 	/* Configure icon position */
 	border-width: 0 !important;
     display: block !important;

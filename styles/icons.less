@@ -6,13 +6,13 @@
 @import "colors";
 @import "icon-variables";
 
-.tab-bar .pinned .title {
+.tab-bar .tab .title {
 
 	// Default
-	&:after { .text-icon; .white; }
+	&:after { .text-icon; color: #FFF; }
 
 	// Settings
-	&.icon-tools:after { .tools-icon; .white; }
+	&.icon-tools:after { .tools-icon; color: #FFF; }
 
 	// Todo
 	&[data-name$="TODO"]:after { .checklist-icon; .medium-yellow; }
@@ -483,6 +483,6 @@
 	&[data-name$=".ny"]:after { .lisp-icon; .medium-blue; }
 
 	// LICENSE
-	&[data-name^="LICENSE"]:after { .law-icon; .white }
+	&[data-name^="LICENSE"]:after { .law-icon; color: #FFF; }
 
 }

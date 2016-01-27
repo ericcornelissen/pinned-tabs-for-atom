@@ -4,26 +4,31 @@ PinnedTabsState = require './pinned-tabs-state'
 module.exports = PinnedTabs =
     # Configuration of the package
     config:
-        coloredIcons:
-            title: 'Use colored icons'
-            type: 'boolean'
-            default: true
-            description: 'Untick this for colorless icons'
-        TabAnimation:
-            title: 'Disable tab animation'
-            description: 'Disable the animation used to pin a tab'
-            type: 'boolean'
-            default: false
-        IconAnimation:
+        iconAnimation:
             title: 'Disable icon animation'
-            description: 'Disable the animation of the icon of a pinned tab'
-            type: 'boolean'
+            description: 'Untick this to enable the icon animation'
             default: false
+            type: 'boolean'
+        tabAnimation:
+            title: 'Disable tab animation'
+            description: 'Untick this to enable the tab animation'
+            default: false
+            type: 'boolean'
+        coloredIcons:
+            title: 'Disable colored icons'
+            description: 'Untick this for colored icons'
+            default: false
+            type: 'boolean'
+        closeUnpinned:
+            title: 'Disable the \'Close Unpinned Tabs\' option'
+            description: 'Untick this to keep the option'
+            default: true
+            type: 'boolean'
         modifiedTab:
             title: 'Disable the modified icon on pinned tabs'
-            description: 'Disable the modified on pinned tabs when they\'re hovered'
-            type: 'boolean'
+            description: 'Untick this for the modified file-icon'
             default: false
+            type: 'boolean'
 
     # Attribute used to store the workspace state.
     PinnedTabsState: undefined
@@ -82,22 +87,27 @@ module.exports = PinnedTabs =
     # Add an event listener for when the value of the settings are changed.
     configObservers: ->
         body = document.querySelector 'body'
-        atom.config.observe 'pinned-tabs.TabAnimation', (newValue) ->
-            if newValue
-                body.classList.remove 'pinned-tabs-enable-tabanimation'
-            else
-                body.classList.add 'pinned-tabs-enable-tabanimation'
-        atom.config.observe 'pinned-tabs.IconAnimation', (newValue) ->
+        atom.config.observe 'pinned-tabs.iconAnimation', (newValue) ->
             if newValue
                 body.classList.remove 'pinned-tabs-enable-iconanimation'
             else
                 body.classList.add 'pinned-tabs-enable-iconanimation'
+        atom.config.observe 'pinned-tabs.tabAnimation', (newValue) ->
+            if newValue
+                body.classList.remove 'pinned-tabs-enable-tabanimation'
+            else
+                body.classList.add 'pinned-tabs-enable-tabanimation'
         atom.config.observe 'pinned-tabs.coloredIcons', (newValue) =>
+            if newValue
+                body.classList.add 'pinned-icons-colorless'
+            else
+                body.classList.remove 'pinned-icons-colorless'
+        atom.config.observe 'pinned-tabs.closeUnpinned', (newValue) =>
             body = document.querySelector 'body'
             if newValue
-                body.classList.remove 'pinned-icons-colorless'
+                body.classList.remove 'close-unpinned'
             else
-                body.classList.add 'pinned-icons-colorless'
+                body.classList.add 'close-unpinned'
         atom.config.observe 'pinned-tabs.modifiedTab', (newValue) ->
             if newValue
                 body.classList.remove 'pinned-tabs-enable-modified'
@@ -122,9 +132,10 @@ module.exports = PinnedTabs =
             tabIndex = Array.prototype.indexOf.call event.pane.getItems(), event.item
 
             axis = document.querySelector('.tab-bar').parentNode.parentNode
-            paneNode = axis.children[paneIndex].querySelector('.tab-bar')
-            if paneNode.children[tabIndex].classList.contains('pinned')
-                self.PinnedTabsState.data[paneIndex] -= 1
+            if axis.children[paneIndex]
+                paneNode = axis.children[paneIndex].querySelector('.tab-bar')
+                if paneNode.children[tabIndex].classList.contains('pinned')
+                    self.PinnedTabsState.data[paneIndex] -= 1
 
 
     # Method to pin the active tab.

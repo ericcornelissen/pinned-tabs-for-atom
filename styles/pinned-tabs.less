@@ -14,34 +14,34 @@ body.pinned-tabs-enable-tabanimation atom-pane-container atom-pane .tab-bar .tab
     -webkit-transition-delay: .025s;
 }
 
-body.pinned-tabs-enable-iconanimation atom-pane-container atom-pane .tab-bar .tab .title::after,
-body.pinned-tabs-enable-iconanimation atom-pane-container atom-pane .tab-bar .tab .title::before {
+body.pinned-tabs-enable-iconanimation atom-pane-container atom-pane .tab-bar .tab .title:after,
+body.pinned-tabs-enable-iconanimation atom-pane-container atom-pane .tab-bar .tab .title:before {
     /* Add a transition for the icon of a pinned tab */
     transition: left .3s ease !important;
 }
-atom-pane-container atom-pane .tab-bar .tab.pinned .title::after,
-atom-pane-container atom-pane .tab-bar .tab.pinned .title::before {
+atom-pane-container atom-pane .tab-bar .tab.pinned .title:after,
+atom-pane-container atom-pane .tab-bar .tab.pinned .title:before {
     /* Disable the transition for the icon of a pinned tab */
     transition: none;
 }
 
-body.pinned-tabs-enable-modified atom-pane-container atom-pane .tab-bar .tab.pinned.modified:hover .title::after {
+body.pinned-tabs-enable-modified atom-pane-container atom-pane .tab-bar .tab.pinned.modified:hover .title:after {
     /* Hide the original tab icon on hover when the tab has been edited */
     left: 38px !important;
 }
-body.pinned-tabs-enable-modified atom-pane-container atom-pane .tab-bar .tab.pinned .title::before {
+body.pinned-tabs-enable-modified atom-pane-container atom-pane .tab-bar .tab.pinned .title:before {
 	/* Modify the :before element to be an 'edited' icon */
 	content: "\f058" !important;
 	.octicons !important;
 }
-body.pinned-tabs-enable-modified atom-pane-container atom-pane .tab-bar .tab.pinned.modified:hover .title::before {
+body.pinned-tabs-enable-modified atom-pane-container atom-pane .tab-bar .tab.pinned.modified:hover .title:before {
     /* Shows a edited icon on hover when the tab has been edited */
 	left: 0 !important;
 	top: 0 !important;
 	transform: scale(1) !important;
 }
 
-atom-pane-container atom-pane .tab-bar .tab .title::after {
+atom-pane-container atom-pane .tab-bar .tab .title:after {
 	/* Required for existence */
 	content: "";
 	/* Configure icon position */
@@ -55,7 +55,7 @@ atom-pane-container atom-pane .tab-bar .tab .title::after {
 	transform: translate(0, -50%) !important;
 	width: 38px !important;
 }
-atom-pane-container atom-pane .tab-bar .tab.pinned .title::before {
+atom-pane-container atom-pane .tab-bar .tab.pinned .title:before {
 	/* Configure icon position */
 	border-width: 0 !important;
     display: block !important;
@@ -90,7 +90,7 @@ atom-pane-container atom-pane .tab-bar .tab.pinned .title {
 	/* Hide the title of the tab */
 	font-size: 0 !important;
 }
-atom-pane-container atom-pane .tab-bar .tab.pinned .title::after {
+atom-pane-container atom-pane .tab-bar .tab.pinned .title:after {
     /* Show the tab icon */
     left: 0 !important;
 }

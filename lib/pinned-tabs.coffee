@@ -120,7 +120,8 @@ module.exports = PinnedTabs =
         atom.workspace.onDidAddPaneItem (event) ->
             setTimeout (->
                 # Get information about the tab
-                r = self.getTabInformation document.querySelector('.tab-bar .tab.active')
+                return unless e = document.querySelector('.tab-bar .tab.active')
+                r = self.getTabInformation e
 
                 # Move it if necessary
                 if r.pinIndex > r.curIndex
@@ -128,14 +129,15 @@ module.exports = PinnedTabs =
             ), 1
 
         atom.workspace.onWillDestroyPaneItem (event) ->
+            # Get the index of the pane item (tab) that is being destoryed
             paneIndex = (Array.prototype.indexOf.call atom.workspace.getPanes(), event.pane) * 2
             tabIndex = Array.prototype.indexOf.call event.pane.getItems(), event.item
 
-            axis = document.querySelector('.tab-bar').parentNode.parentNode
-            if axis.children[paneIndex]
-                paneNode = axis.children[paneIndex].querySelector('.tab-bar')
-                if paneNode.children[tabIndex].classList.contains('pinned')
-                    self.PinnedTabsState.data[paneIndex] -= 1
+            # Decrease the pinned tab counter if it was a pinned tab
+            return unless axis = document.querySelector('.tab-bar').parentNode.parentNode
+            paneNode = axis.children[paneIndex].querySelector('.tab-bar')
+            if paneNode.children[tabIndex].classList.contains('pinned')
+                self.PinnedTabsState.data[paneIndex] -= 1
 
 
     # Method to pin the active tab.

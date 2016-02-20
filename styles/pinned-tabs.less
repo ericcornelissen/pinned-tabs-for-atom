@@ -1,4 +1,4 @@
-@import "icon-variables";
+@import "../node_modules/file-icons/styles/icons.less";
 
 body.pinned-icons-colorless atom-pane-container atom-pane .tab-bar .tab.pinned .title:after {
 	/* Force colorless icons */
@@ -27,23 +27,19 @@ atom-pane-container atom-pane .tab-bar .tab.pinned .title:before {
 
 body.pinned-tabs-enable-modified atom-pane-container atom-pane .tab-bar .tab.pinned.modified:hover .title:after {
     /* Hide the original tab icon on hover when the tab has been edited */
-    left: 38px !important;
-}
-body.pinned-tabs-enable-modified atom-pane-container atom-pane .tab-bar .tab.pinned .title:before {
-	/* Modify the :before element to be an 'edited' icon */
-	content: "\f058" !important;
-	.octicons !important;
+    left: 0 !important;
 }
 body.pinned-tabs-enable-modified atom-pane-container atom-pane .tab-bar .tab.pinned.modified:hover .title:before {
     /* Shows a edited icon on hover when the tab has been edited */
-	left: 0 !important;
+	left: 38px !important;
 	top: 0 !important;
 	transform: scale(1) !important;
 }
 
 atom-pane-container atom-pane .tab-bar .tab .title:after {
-	/* Required for existence */
-	content: "";
+	/* Set the edit icon */
+	content: "\f058" !important;
+	.octicons !important;
 	/* Configure icon position */
 	border-width: 0 !important;
 	display: block !important;
@@ -59,7 +55,7 @@ atom-pane-container atom-pane .tab-bar .tab.pinned .title:before {
 	/* Configure icon position */
 	border-width: 0 !important;
     display: block !important;
-	left: -38px !important;
+	left: 0 !important;
 	height: 100% !important;
 	position: absolute !important;
 	text-align: center !important;
@@ -90,12 +86,7 @@ atom-pane-container atom-pane .tab-bar .tab.pinned .title {
 	/* Hide the title of the tab */
 	font-size: 0 !important;
 }
-atom-pane-container atom-pane .tab-bar .tab.pinned .title:after {
-    /* Show the tab icon */
-    left: 0 !important;
-}
-
-atom-pane-container atom-pane .tab-bar .pinned .close-icon {
+atom-pane-container atom-pane .tab-bar .tab.pinned .close-icon {
     /* Disable events on the close-icon */
     pointer-events: none !important;
     /* Scale the close-icon to make it invisible */

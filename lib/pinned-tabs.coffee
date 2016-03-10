@@ -4,14 +4,9 @@ PinnedTabsState = require './pinned-tabs-state'
 module.exports = PinnedTabs =
     # Configuration of the package
     config:
-        iconAnimation:
-            title: 'Disable icon animation'
-            description: 'Untick this to enable the icon animation'
-            default: false
-            type: 'boolean'
-        tabAnimation:
-            title: 'Disable tab animation'
-            description: 'Untick this to enable the tab animation'
+        animation:
+            title: 'Disable animations'
+            description: 'Untick this to enable all animation related to Pinned Tabs'
             default: false
             type: 'boolean'
         coloredIcons:
@@ -87,16 +82,11 @@ module.exports = PinnedTabs =
     # Add an event listener for when the value of the settings are changed.
     configObservers: ->
         body = document.querySelector 'body'
-        atom.config.observe 'pinned-tabs.iconAnimation', (newValue) ->
+        atom.config.observe 'pinned-tabs.animation', (newValue) ->
             if newValue
-                body.classList.remove 'pinned-tabs-enable-iconanimation'
+                body.classList.remove 'pinned-tabs-enable-animation'
             else
-                body.classList.add 'pinned-tabs-enable-iconanimation'
-        atom.config.observe 'pinned-tabs.tabAnimation', (newValue) ->
-            if newValue
-                body.classList.remove 'pinned-tabs-enable-tabanimation'
-            else
-                body.classList.add 'pinned-tabs-enable-tabanimation'
+                body.classList.add 'pinned-tabs-enable-animation'
         atom.config.observe 'pinned-tabs.coloredIcons', (newValue) =>
             if newValue
                 body.classList.add 'pinned-icons-colorless'

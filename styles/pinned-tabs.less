@@ -5,17 +5,13 @@ body.pinned-icons-colorless atom-pane-container atom-pane .tab-bar .tab.pinned .
 	color: #FFF !important;
 }
 
-body.pinned-tabs-enable-tabanimation atom-pane-container atom-pane .tab-bar .tab {
+body.pinned-tabs-enable-animation atom-pane-container atom-pane .tab-bar .tab {
     /* Add a transition for the size of the tab */
     transition: max-width .3s ease;
 }
-body.pinned-tabs-enable-tabanimation atom-pane-container atom-pane .tab-bar .tab .title {
-    /* The transition delay is there to make the unpin animation look smoother */
-    -webkit-transition-delay: .025s;
-}
 
-body.pinned-tabs-enable-iconanimation atom-pane-container atom-pane .tab-bar .tab .title:after,
-body.pinned-tabs-enable-iconanimation atom-pane-container atom-pane .tab-bar .tab .title:before {
+body.pinned-tabs-enable-animation atom-pane-container atom-pane .tab-bar .tab .title:after,
+body.pinned-tabs-enable-animation atom-pane-container atom-pane .tab-bar .tab .title:before {
     /* Add a transition for the icon of a pinned tab */
     transition: left .3s ease !important;
 }

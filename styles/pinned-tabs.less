@@ -1,4 +1,5 @@
-@import "../node_modules/file-icons/styles/icons.less";
+@import "../node_modules/file-icons/styles/file-icons";
+@import "../node_modules/file-icons/styles/icons";
 
 body.pinned-icons-colorless atom-pane-container atom-pane .tab-bar .tab.pinned .title:before {
 	/* Force colorless icons */
@@ -7,39 +8,41 @@ body.pinned-icons-colorless atom-pane-container atom-pane .tab-bar .tab.pinned .
 
 body.pinned-tabs-enable-tabanimation atom-pane-container atom-pane .tab-bar .tab {
     /* Add a transition for the size of the tab */
-    transition: max-width .3s ease;
-}
-body.pinned-tabs-enable-tabanimation atom-pane-container atom-pane .tab-bar .tab .title {
-    /* The transition delay is there to make the unpin animation look smoother */
-    -webkit-transition-delay: .025s;
+    transition: max-width .2s ease;
 }
 
-body.pinned-tabs-enable-iconanimation.pinned-tabs-enable-modified atom-pane-container atom-pane .tab-bar .tab.pinned.modified:hover .title:before {
-	/* Use the modified-in animation for modified pinned tabs */
-	animation: modified-in .5s;
+body.pinned-tabs-enable-iconanimation atom-pane-container atom-pane .tab-bar .tab .title:before,
+body.pinned-tabs-enable-iconanimation atom-pane-container atom-pane .tab-bar .tab .title:after {
+	transition: left .2s ease,
+				margin .2s ease;
 }
-body.pinned-tabs-enable-modified atom-pane-container atom-pane .tab-bar .tab.pinned.modified:hover .title:before {
-    /* Shows a edited icon on hover when the tab has been edited */
-	content: "\f058" !important;
-	.octicons !important;
+body.pinned-tabs-enable-iconanimation.pinned-tabs-enable-modified atom-pane-container atom-pane .tab-bar .tab.pinned.modified:hover .title:before {
+	margin-left: 38px !important;
+}
+body.pinned-tabs-enable-modified atom-pane-container atom-pane .tab-bar .tab.pinned.modified:hover .title:after {
+	left: 0 !important;
 }
 
 atom-pane-container atom-pane .tab-bar .tab.pinned .title:before {
-	/* Run the modified-out animation by default, which will
-	   undo the effect of modified-in animation. This animation
-	   is ignored if the modified-in animation is never run. */
-	animation: modified-out .5s;
-
-	/* Configure icon position */
 	border-width: 0 !important;
     display: block !important;
 	left: 0 !important;
 	height: 100% !important;
 	margin: 0 !important;
-	position: absolute !important;
 	text-align: center !important;
-	top: 50% !important;
-	transform: translate(0, -50%) !important;
+	top: 0 !important;
+	transition: left .2s ease;
+	width: 38px !important;
+}
+atom-pane-container atom-pane .tab-bar .tab.pinned .title:after {
+	.octicons !important;
+	background-color: transparent !important;
+	content: "\f058" !important;
+	height: 100% !important;
+	left: -38px !important;
+	margin: 0 !important;
+	position: absolute !important;
+	top: 0 !important;
 	width: 38px !important;
 }
 
@@ -52,10 +55,12 @@ atom-pane-container atom-pane .tab-bar .tab.pinned {
 	margin: 0;
 	max-width: 38px;
 	min-width: 38px;
+    transition: max-width .3s ease;
 	padding: 0;
 	width: 38px !important;
 }
 atom-pane-container atom-pane .tab-bar .tab.pinned .title {
+	padding: 0 !important;
 	/* Hide the title of the tab */
 	font-size: 0 !important;
 	/* Make the title of the tab unclickable. Otherwise
@@ -68,17 +73,4 @@ atom-pane-container atom-pane .tab-bar .tab.pinned .close-icon {
     pointer-events: none !important;
     /* Scale the close-icon to make it invisible */
 	transform: scale(0) !important;
-}
-
-
-/* Animations for the modified pinned tab */
-@keyframes modified-in {
-	50% { left: 38px; }
-	51% { left: -38px; }
-	100% { left: 0; }
-}
-@keyframes modified-out {
-	50% { left: -38px; }
-	51% { left: 38px; }
-	100% { left: 0; }
 }

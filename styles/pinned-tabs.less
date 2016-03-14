@@ -44,6 +44,11 @@ body.pinned-tabs-enable-iconanimation.pinned-tabs-enable-modified atom-pane-cont
 }
 
 atom-pane-container atom-pane .tab-bar .tab.pinned .title:before {
+	/* Animate the icon in when the tab
+	   is being pinned */
+	animation: show-pinned-icon .2s ease;
+
+	/* Position the icon of a pinned tab */
 	border-width: 0 !important;
     display: block !important;
 	left: 0 !important;
@@ -90,4 +95,10 @@ atom-pane-container atom-pane .tab-bar .tab.pinned .close-icon {
     pointer-events: none !important;
     /* Scale the close-icon to make it invisible */
 	transform: scale(0) !important;
+}
+
+/* Animation to show the icon of a pinned tab */
+@keyframes show-pinned-icon {
+	from { left: -38px; }
+	to	 { left: 0px; }
 }

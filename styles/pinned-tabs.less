@@ -73,23 +73,23 @@ atom-pane-container atom-pane .tab-bar .tab {
 	/* Hides the icons when they're not inside the tab */
 	overflow: hidden !important;
 }
-atom-pane-container atom-pane .tab-bar .tab.pinned {
-	/* Make pinned tabs a fixed width */
-	margin: 0;
-	max-width: 38px;
-	min-width: 38px;
-    transition: max-width .3s ease;
-	padding: 0;
-	width: 38px !important;
-}
-atom-pane-container atom-pane .tab-bar .tab.pinned .title {
-	padding: 0 !important;
-	/* Hide the title of the tab */
-	font-size: 0 !important;
+atom-pane-container atom-pane .tab-bar .tab .title {
 	/* Make the title of the tab unclickable. Otherwise
 	   in some themes the title will be pinned instead
 	   of the tab */
 	pointer-events: none !important;
+}
+atom-pane-container atom-pane .tab-bar .tab.pinned {
+	/* Make pinned tabs a fixed width */
+	margin: 0 !important;
+	max-width: 38px !important;
+	min-width: 38px !important;
+	padding: 0 !important;
+	width: 38px !important;
+}
+atom-pane-container atom-pane .tab-bar .tab.pinned .title {
+	padding: 0 !important;
+	font-size: 0 !important; /* Hide the title of the tab */
 }
 atom-pane-container atom-pane .tab-bar .tab.pinned .close-icon {
     /* Disable events on the close-icon */

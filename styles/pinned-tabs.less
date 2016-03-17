@@ -1,5 +1,10 @@
-@import "../node_modules/file-icons/styles/file-icons";
-@import "../node_modules/file-icons/styles/icons";
+body:not(.file-icons-tab-pane-icon) .tab-bar .tab.pinned .title::before {
+    font-family: 'Octicons Regular';
+    content: '\f011';
+    font-style: normal !important;
+    font-size: medium;
+    text-align: center;
+}
 
 body.pinned-icons-colorless atom-pane-container atom-pane .tab-bar .tab.pinned .title:before {
 	/* Force colorless icons */

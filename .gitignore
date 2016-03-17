@@ -1,3 +1,2 @@
 .DS_Store
 npm-debug.log
-# node_modules, for now this should be included as the dependencie is not fully working yet

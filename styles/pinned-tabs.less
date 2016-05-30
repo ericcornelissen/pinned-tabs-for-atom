@@ -57,32 +57,8 @@ body.pinned-tabs-enable-modified atom-pane-container atom-pane .tab-bar .tab.pin
 	width: 10px !important;
 }
 
-atom-pane-container atom-pane .tab-bar .tab.pinned .title:before {
-	/* Position the icon of a pinned tab */
-	border-width: 0 !important;
-    box-sizing: padding-box;
-    display: block !important;
-	left: 0 !important;
-	height: 100% !important;
-	margin: 0 !important;
-	text-align: center !important;
-    line-height: inherit !important;
-	position: absolute !important;
-	top: 0 !important;
-	width: 38px !important;
-}
-atom-pane-container atom-pane .tab-bar .tab.pinned .title:after {
-	/* Hide any ':after's as there is no place
-	   for these when the tab is pinned */
-	left: -38px;
-	margin: 0;
-	padding: 0;
-	position: absolute;
-}
-
 atom-pane-container atom-pane .tab-bar .tab {
-	/* Hides the icons when they're not inside the tab */
-	overflow: hidden !important;
+	z-index: 2;
 }
 atom-pane-container atom-pane .tab-bar .tab .title {
 	/* Make the title of the tab unclickable. Otherwise
@@ -98,6 +74,9 @@ atom-pane-container atom-pane .tab-bar .tab.pinned {
 	padding: 0 !important;
 	width: 38px !important;
 }
+atom-pane-container atom-pane .tab-bar .tab.active {
+	z-index: 3;
+}
 atom-pane-container atom-pane .tab-bar .tab.pinned .title {
 	padding: 0 !important;
 	font-size: 0 !important; /* Hide the title of the tab */
@@ -107,6 +86,30 @@ atom-pane-container atom-pane .tab-bar .tab.pinned .close-icon {
     pointer-events: none !important;
     /* Scale the close-icon to make it invisible */
 	transform: scale(0) !important;
+}
+
+atom-pane-container atom-pane .tab-bar .tab.pinned .title:before {
+	/* Position the icon of a pinned tab */
+	border-width: 0 !important;
+	box-sizing: padding-box;
+	display: block !important;
+	left: 0 !important;
+	height: 100% !important;
+	margin: 0 !important;
+	text-align: center !important;
+	line-height: inherit !important;
+	position: absolute !important;
+	top: 0 !important;
+	width: 38px !important;
+	z-index: 0;
+}
+atom-pane-container atom-pane .tab-bar .tab.pinned .title:after {
+	/* Hide any ':after's as there is no place
+	   for these when the tab is pinned */
+	left: -38px;
+	margin: 0;
+	padding: 0;
+	position: absolute;
 }
 
 /* Animation to show the icon of a pinned tab */

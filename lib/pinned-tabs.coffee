@@ -126,9 +126,12 @@ module.exports = PinnedTabs =
 
             # Decrease the pinned tab counter if it was a pinned tab
             return unless axis = document.querySelector('.tab-bar').parentNode.parentNode
-            paneNode = axis.children[paneIndex].querySelector('.tab-bar')
-            if paneNode.children[tabIndex].classList.contains('pinned')
-                self.PinnedTabsState.data[paneIndex] -= 1
+            try
+                paneNode = axis.children[paneIndex].querySelector('.tab-bar')
+                if paneNode.children[tabIndex].classList.contains('pinned')
+                    self.PinnedTabsState.data[paneIndex] -= 1
+            catch error
+                return
 
 
     # Method to pin the active tab.

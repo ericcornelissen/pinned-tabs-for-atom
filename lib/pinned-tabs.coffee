@@ -106,22 +106,23 @@ module.exports = PinnedTabs =
 
     # Observer panes
     observers: ->
-        self = this # This object has to be stored in self because the callback function will create its own 'this'
+        self = this
+
         atom.workspace.onDidAddPaneItem (event) ->
             setTimeout (->
                 # Get information about the tab
                 return unless e = document.querySelector('.tab-bar .tab.active')
-                r = self.getTabInformation e
+                tab = self.getTabInformation e
 
                 # Move it if necessary
-                if r.pinIndex > r.curIndex
-                    r.pane.moveItem r.item, r.pinIndex
+                if tab.pinIndex > tab.curIndex
+                    tab.pane.moveItem(tab.item, tab.pinIndex)
             ), 1
 
         atom.workspace.onWillDestroyPaneItem (event) ->
             # Get the index of the pane item (tab) that is being destoryed
-            paneIndex = (Array.prototype.indexOf.call atom.workspace.getPanes(), event.pane) * 2
-            tabIndex = Array.prototype.indexOf.call event.pane.getItems(), event.item
+            paneIndex = Array.prototype.indexOf.call(atom.workspace.getPanes(), event.pane) * 2
+            tabIndex = Array.prototype.indexOf.call(event.pane.getItems(), event.item)
 
             # Decrease the pinned tab counter if it was a pinned tab
             return unless axis = document.querySelector('.tab-bar').parentNode.parentNode
@@ -141,29 +142,32 @@ module.exports = PinnedTabs =
     # Method that pins/unpins a tab given its element.
     pin: (e) ->
         # Get information about the tab
-        r = @getTabInformation e
+        try
+            tab = @getTabInformation e
+        catch error
+            return
 
         # Calculate the new index for this tab based
         # on the amount of pinned tabs within this pane.
-        if r.isPinned
+        if tab.isPinned
             # If the element has the element 'pinned', it
             # is currently being unpinned. So the new index
             # is one off when look at the amount of pinned
             # tabs, because it actually includes the tab
             # that is being unpinned.
-            r.pinIndex -= 1
+            tab.pinIndex -= 1
 
             # Removed one pinned tab from the state key for this pane.
-            @PinnedTabsState.data[r.paneIndex] -= 1
+            @PinnedTabsState.data[tab.paneIndex] -= 1
         else
             # Initialize the state kye for this pane if needed.
-            @PinnedTabsState.data[r.paneIndex] = 0 if @PinnedTabsState.data[r.paneIndex] == undefined
+            @PinnedTabsState.data[tab.paneIndex] = 0 if @PinnedTabsState.data[tab.paneIndex] == undefined
 
             # Add one pinned tab from the state key for this pane.
-            @PinnedTabsState.data[r.paneIndex] += 1
+            @PinnedTabsState.data[tab.paneIndex] += 1
 
         # Move the tab to its new index
-        r.pane.moveItem r.item, r.pinIndex
+        tab.pane.moveItem(tab.item, tab.pinIndex)
 
         # Finally, toggle the 'pinned' class on the tab after a
         # timout of 1 millisecond. This will ensure the animation
@@ -180,16 +184,14 @@ module.exports = PinnedTabs =
         axis = paneNode.parentNode
 
         # Get the index values of relevant elements
-        curIndex = Array.prototype.indexOf.call tabbar.children, e
-        paneIndex = Array.prototype.indexOf.call axis.children, paneNode
+        curIndex = Array.prototype.indexOf.call(tabbar.children, e)
+        paneIndex = Array.prototype.indexOf.call(axis.children, paneNode)
         pinIndex = paneNode.querySelectorAll('.pinned').length
 
         # Get the related pane & texteditor
         pane = atom.workspace.getPanes()[paneIndex / 2]
         item = pane.itemAtIndex curIndex
 
-
-        # Return relevant information
         return {
             curIndex: curIndex,
             pinIndex: pinIndex,

@@ -2,7 +2,6 @@ PinnedTabsState = require './pinned-tabs-state'
 {CompositeDisposable} = require 'atom'
 
 module.exports = PinnedTabs =
-    # Configuration of the package
     config:
         animation:
             title: 'Disable animations'
@@ -14,7 +13,7 @@ module.exports = PinnedTabs =
             description: 'Untick this for colored icons'
             default: false
             type: 'boolean'
-        closeUnpinned:
+        closeUnpinnedTabs:
             title: 'Disable the \'Close Unpinned Tabs\' option'
             description: 'Untick this to keep the option'
             default: true
@@ -25,12 +24,12 @@ module.exports = PinnedTabs =
             default: false
             type: 'boolean'
 
-    # Attribute used to store the workspace state.
     PinnedTabsState: undefined
 
+
+	# Core
     activate: (state) ->
         @setCommands()
-        @configObservers()
         @observers()
 
         # Recover the serialized session or start a new serializable state.
@@ -53,7 +52,7 @@ module.exports = PinnedTabs =
                 try
                     # Find the pane and tab-bar DOM objects for
                     # this pane.
-                    pane = panes.children[parseInt key, 10]
+                    pane = panes.children[parseInt(key, 10)]
                     tabbar = pane.querySelector '.tab-bar'
 
                     # Pin the first N tabs, since pinned tabs are
@@ -70,16 +69,14 @@ module.exports = PinnedTabs =
     serialize: ->
         @PinnedTabsState.serialize()
 
-
-    # Register commands for this package.
     setCommands: ->
         @subscriptions = new CompositeDisposable
         @subscriptions.add atom.commands.add 'atom-workspace', 'pinned-tabs:pin': => @pinActive()
         @subscriptions.add atom.commands.add 'atom-workspace', 'pinned-tabs:pin-selected': => @pinSelected()
-        @subscriptions.add atom.commands.add 'atom-workspace', 'pinned-tabs:close-unpinned': => @closeUnpinned()
+        @subscriptions.add atom.commands.add 'atom-workspace', 'pinned-tabs:close-unpinned': => @closeUnpinnedTabs()
 
-    # Add an event listener for when the value of the settings are changed.
-    configObservers: ->
+    observers: ->
+        # Config observers
         body = document.querySelector 'body'
         atom.config.observe 'pinned-tabs.animation', (newValue) ->
             if newValue
@@ -91,7 +88,7 @@ module.exports = PinnedTabs =
                 body.classList.add 'pinned-icons-colorless'
             else
                 body.classList.remove 'pinned-icons-colorless'
-        atom.config.observe 'pinned-tabs.closeUnpinned', (newValue) =>
+        atom.config.observe 'pinned-tabs.closeUnpinnedTabs', (newValue) =>
             body = document.querySelector 'body'
             if newValue
                 body.classList.remove 'close-unpinned'
@@ -103,8 +100,7 @@ module.exports = PinnedTabs =
             else
                 body.classList.add 'pinned-tabs-enable-modified'
 
-    # Observer panes
-    observers: ->
+        # General observers
         atom.workspace.onDidAddPaneItem (event) =>
             setTimeout (=>
                 # Get information about the tab
@@ -130,85 +126,7 @@ module.exports = PinnedTabs =
             catch error
                 return
 
-
-    # Method to pin the active tab.
-    pinActive: ->
-        @pin document.querySelector('.tab-bar .tab.active')
-
-    # Method to pin the selected (via contextmenu) tab.
-    pinSelected: ->
-        @pin atom.contextMenu.activeElement
-
-    # Method that pins/unpins a tab given its element.
-    pin: (e) ->
-        # Get information about the tab
-        try
-            tab = @getTabInformation e
-        catch error
-            return
-
-        # Calculate the new index for this tab based
-        # on the amount of pinned tabs within this pane.
-        if tab.isPinned
-            # If the element has the element 'pinned', it
-            # is currently being unpinned. So the new index
-            # is one off when look at the amount of pinned
-            # tabs, because it actually includes the tab
-            # that is being unpinned.
-            tab.pinIndex -= 1
-
-            # Removed one pinned tab from the state key for this pane.
-            @PinnedTabsState.data[tab.paneIndex] -= 1
-        else
-            # Initialize the state kye for this pane if needed.
-            @PinnedTabsState.data[tab.paneIndex] = 0 if @PinnedTabsState.data[tab.paneIndex] == undefined
-
-            # Add one pinned tab from the state key for this pane.
-            @PinnedTabsState.data[tab.paneIndex] += 1
-
-        # Move the tab to its new index
-        tab.pane.moveItem(tab.item, tab.pinIndex)
-
-        # Finally, toggle the 'pinned' class on the tab after a
-        # timout of 1 millisecond. This will ensure the animation
-        # of pinning the tab will run.
-        callback = -> e.classList.toggle 'pinned'
-        setTimeout callback, 1
-
-
-    # Get information about a tab
-    getTabInformation: (e) ->
-        # Get related nodes
-        tabbar = e.parentNode
-        paneNode = tabbar.parentNode
-        axis = paneNode.parentNode
-
-        # Get the index values of relevant elements
-        curIndex = Array.prototype.indexOf.call(tabbar.children, e)
-        paneIndex = Array.prototype.indexOf.call(axis.children, paneNode)
-        pinIndex = paneNode.querySelectorAll('.pinned').length
-
-        # Get the related pane & texteditor
-        pane = atom.workspace.getPanes()[paneIndex / 2]
-        item = pane.itemAtIndex curIndex
-
-        return {
-            curIndex: curIndex,
-            pinIndex: pinIndex,
-            paneIndex: paneIndex,
-
-            itemNode: undefined,
-            paneNode: undefined,
-
-            item: item,
-            pane: pane,
-
-            isPinned: e.classList.contains 'pinned'
-        }
-
-
-    # Close all unpinned tabs
-    closeUnpinned: ->
+    closeUnpinnedTabs: ->
         activePane = document.querySelector '.pane.active'
         tabbar = activePane.querySelector '.tab-bar'
 
@@ -218,3 +136,58 @@ module.exports = PinnedTabs =
             if !tabs[i].classList.contains('pinned')
                 activePane.itemAtIndex i
                 activePane.destroyItem activePane.itemAtIndex(i)
+
+
+	# Pin tabs
+    pinActive: ->
+        @pin document.querySelector('.tab-bar .tab.active')
+
+    pinSelected: ->
+        @pin atom.contextMenu.activeElement
+
+    pin: (e) ->
+        return unless tab = @getTabInformation e
+
+        if tab.isPinned
+            @PinnedTabsState.data[tab.paneIndex] -= 1
+            tab.pane.moveItem(tab.item, tab.unpinIndex)
+        else
+            # Initialize the state key for this pane if needed.
+            @PinnedTabsState.data[tab.paneIndex] = 0 if @PinnedTabsState.data[tab.paneIndex] == undefined
+
+            @PinnedTabsState.data[tab.paneIndex] += 1
+            tab.pane.moveItem(tab.item, tab.pinIndex)
+
+        setTimeout (->
+            e.classList.toggle 'pinned'
+        ), 1
+
+
+    # Utility
+    getTabInformation: (e) ->
+        tabbarNode = e.parentNode
+        paneNode = tabbarNode.parentNode
+        axisNode = paneNode.parentNode
+
+        tabIndex = Array.prototype.indexOf.call(tabbarNode.children, e)
+        paneIndex = Array.prototype.indexOf.call(axisNode.children, paneNode)
+        pinIndex = paneNode.querySelectorAll('.pinned').length
+
+        pane = atom.workspace.getPanes()[paneIndex / 2]
+        item = pane.itemAtIndex(tabIndex)
+
+        return {
+            tabIndex: tabIndex,
+            paneIndex: paneIndex,
+
+            pinIndex: pinIndex,
+            unpinIndex: pinIndex - 1,
+
+            itemNode: undefined,
+            paneNode: undefined,
+
+            item: item,
+            pane: pane,
+
+            isPinned: e.classList.contains 'pinned'
+        }

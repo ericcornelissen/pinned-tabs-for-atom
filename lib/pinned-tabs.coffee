@@ -3,22 +3,22 @@ PinnedTabsState = require './pinned-tabs-state'
 
 module.exports = PinnedTabs =
     config:
-        animation:
+        animated:
             title: 'Disable animations'
             description: 'Untick this to enable all animation related to Pinned Tabs'
             default: false
             type: 'boolean'
-        coloredIcons:
+        colored:
             title: 'Disable colored icons'
             description: 'Untick this for colored icons'
             default: false
             type: 'boolean'
-        closeUnpinnedTabs:
+        closeUnpinned:
             title: 'Disable the \'Close Unpinned Tabs\' option'
             description: 'Untick this to keep the option'
             default: true
             type: 'boolean'
-        modifiedTab:
+        modified:
             title: 'Disable the modified icon on pinned tabs'
             description: 'Untick this for the modified file-icon'
             default: false
@@ -29,8 +29,9 @@ module.exports = PinnedTabs =
 
 	# Core
     activate: (state) ->
-        @setCommands()
         @observers()
+        @prepareConfig()
+        @setCommands()
 
         # Recover the serialized session or start a new serializable state.
         @PinnedTabsState =
@@ -76,30 +77,6 @@ module.exports = PinnedTabs =
         @subscriptions.add atom.commands.add 'atom-workspace', 'pinned-tabs:close-unpinned': => @closeUnpinnedTabs()
 
     observers: ->
-        # Config observers
-        body = document.querySelector 'body'
-        atom.config.observe 'pinned-tabs.animation', (newValue) ->
-            if newValue
-                body.classList.remove 'pinned-tabs-enable-animation'
-            else
-                body.classList.add 'pinned-tabs-enable-animation'
-        atom.config.observe 'pinned-tabs.coloredIcons', (newValue) =>
-            if newValue
-                body.classList.add 'pinned-icons-colorless'
-            else
-                body.classList.remove 'pinned-icons-colorless'
-        atom.config.observe 'pinned-tabs.closeUnpinnedTabs', (newValue) =>
-            body = document.querySelector 'body'
-            if newValue
-                body.classList.remove 'close-unpinned'
-            else
-                body.classList.add 'close-unpinned'
-        atom.config.observe 'pinned-tabs.modifiedTab', (newValue) ->
-            if newValue
-                body.classList.remove 'pinned-tabs-enable-modified'
-            else
-                body.classList.add 'pinned-tabs-enable-modified'
-
         # General observers
         atom.workspace.onDidAddPaneItem (event) =>
             setTimeout (=>
@@ -162,8 +139,6 @@ module.exports = PinnedTabs =
             e.classList.toggle 'pinned'
         ), 1
 
-
-    # Utility
     getTabInformation: (e) ->
         tabbarNode = e.parentNode
         paneNode = tabbarNode.parentNode
@@ -191,3 +166,42 @@ module.exports = PinnedTabs =
 
             isPinned: e.classList.contains 'pinned'
         }
+
+
+    # Configuration
+    prepareConfig: ->
+        animated = 'pinned-tabs.animated'
+        atom.config.onDidChange animated, ({newValue, oldValue}) =>
+            @animated newValue
+        @animated atom.config.get(animated)
+
+        coloredIcons = 'pinned-tabs.colored'
+        atom.config.onDidChange coloredIcons, ({newValue, oldValue}) =>
+            @colored newValue
+        @colored atom.config.get(coloredIcons)
+
+        closeUnpinned = 'pinned-tabs.closeUnpinned'
+        atom.config.onDidChange closeUnpinned, ({newValue, oldValue}) =>
+            @closeUnpinned newValue
+        @closeUnpinned atom.config.get(closeUnpinned)
+
+        modified = 'pinned-tabs.modified'
+        atom.config.onDidChange modified, ({newValue, oldValue}) =>
+            @modified newValue
+        @modified atom.config.get(modified)
+
+    animated: (enable) ->
+        body = document.querySelector 'body'
+        body.classList.toggle 'pinned-tabs-animated', !enable
+
+    colored: (enable) ->
+        body = document.querySelector 'body'
+        body.classList.toggle 'pinned-tabs-not-colored', enable
+
+    closeUnpinned: (enable) ->
+        body = document.querySelector 'body'
+        body.classList.toggle 'close-unpinned', !enable
+
+    modified: (enable) ->
+        body = document.querySelector 'body'
+        body.classList.toggle 'pinned-tabs-modified', !enable

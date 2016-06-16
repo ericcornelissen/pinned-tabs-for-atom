@@ -9,16 +9,16 @@ body:not(.file-icons-tab-pane-icon) .tab-bar .tab.pinned .title::before {
     text-align: center;
 }
 
-body.pinned-icons-colorless atom-pane-container atom-pane .tab-bar .tab.pinned .title:before {
+body.pinned-icons-not-colored atom-pane-container atom-pane .tab-bar .tab.pinned .title:before {
 	/* Force colorless icons */
 	color: #FFF !important;
 }
 
-body.pinned-tabs-enable-animation atom-pane-container atom-pane .tab-bar .tab {
+body.pinned-tabs-animated atom-pane-container atom-pane .tab-bar .tab {
     /* Add a transition for the size of the tab */
     transition: max-width .3s ease;
 }
-body.pinned-tabs-enable-animation atom-pane-container atom-pane .tab-bar .tab .title:before {
+body.pinned-tabs-animated atom-pane-container atom-pane .tab-bar .tab .title:before {
 	/* This transition is need when going
 	   from the edited icon to the file-
 	   type icon */
@@ -26,12 +26,12 @@ body.pinned-tabs-enable-animation atom-pane-container atom-pane .tab-bar .tab .t
 				border-radius 0s .15s ease,
 				font-size .15s ease;
 }
-body.pinned-tabs-enable-animation atom-pane-container atom-pane .tab-bar .tab.pinned .title:before {
+body.pinned-tabs-animated atom-pane-container atom-pane .tab-bar .tab.pinned .title:before {
 	/* Animate the icon in when the tab
 	   is being pinned */
 	animation: show-pinned-icon .2s ease;
 }
-body.pinned-tabs-enable-animation atom-pane-container atom-pane .tab-bar .tab.pinned.modified:hover .title:before {
+body.pinned-tabs-animated atom-pane-container atom-pane .tab-bar .tab.pinned.modified:hover .title:before {
 	/* This transition is needed when going
 	   from the file-type icon to the
 	   edited icon */
@@ -44,7 +44,7 @@ body.pinned-tabs-enable-animation atom-pane-container atom-pane .tab-bar .tab.pi
 				font-size .15s ease;
 }
 
-body.pinned-tabs-enable-modified atom-pane-container atom-pane .tab-bar .tab.pinned.modified:hover .title:before {
+body.pinned-tabs-modified atom-pane-container atom-pane .tab-bar .tab.pinned.modified:hover .title:before {
 	/* Makes a circle as the modified
 	   icon using the border */
 	background-color: transparent !important;

@@ -6,22 +6,17 @@ module.exports = PinnedTabs =
     config:
         animation:
             title: 'Disable animations'
-            description: 'Untick this to enable all animation related to Pinned Tabs'
-            default: false
-            type: 'boolean'
-        coloredIcons:
-            title: 'Disable colored icons'
-            description: 'Untick this for colored icons'
+            description: 'Tick this to disable all animation related to Pinned Tabs'
             default: false
             type: 'boolean'
         closeUnpinned:
             title: 'Disable the \'Close Unpinned Tabs\' option'
-            description: 'Untick this to keep the option'
+            description: 'Tick this to hide the \'Close Unpinned Tabs\' from the context menu'
             default: true
             type: 'boolean'
         modifiedTab:
             title: 'Disable the modified icon on pinned tabs'
-            description: 'Untick this for the modified file-icon'
+            description: 'Tick this to disable the modified icon when hovering over pinned tabs'
             default: false
             type: 'boolean'
 
@@ -87,11 +82,6 @@ module.exports = PinnedTabs =
                 body.classList.remove 'pinned-tabs-enable-animation'
             else
                 body.classList.add 'pinned-tabs-enable-animation'
-        atom.config.observe 'pinned-tabs.coloredIcons', (newValue) =>
-            if newValue
-                body.classList.add 'pinned-icons-colorless'
-            else
-                body.classList.remove 'pinned-icons-colorless'
         atom.config.observe 'pinned-tabs.closeUnpinned', (newValue) =>
             body = document.querySelector 'body'
             if newValue

@@ -38,37 +38,49 @@ module.exports = PinnedTabs =
             if state.deserializer == 'PinnedTabsState'
                 atom.deserializers.deserialize state
             else
-                new PinnedTabsState {}
+                new PinnedTabsState({})
 
         # Restore the serialized session.
         # This timeout ensures that the DOM elements can be edited.
         setTimeout (=>
-            # Get the panes DOM object.
-            panes = document.querySelector '.panes .pane-row'
-            panes = document.querySelector('.panes') if panes == null
-
-            # Loop through each pane that the previous
-            # state has information about.
-            for key of this.PinnedTabsState.data
+            panes = document.querySelector('.panes')
+            oldState = this.PinnedTabsState.data
+            for key of oldState
                 try
-                    # Find the pane and tab-bar DOM objects for
-                    # this pane.
                     pane = panes.children[parseInt(key, 10)]
                     tabbar = pane.querySelector '.tab-bar'
-
-                    # Pin the first N tabs, since pinned tabs are
-                    # always the left-most tabs. The N is given
-                    # by the previous state.
-                    for i in [0...this.PinnedTabsState.data[key]]
+                    for i in [0...oldState[key]]
                         tabbar.children[i].classList.add 'pinned'
                 catch
-                    # If an error occured, the workspace has changed
-                    # and the old configuration should be ignored.
-                    delete this.PinnedTabsState.data[key]
+                    delete oldState[key]
             ), 1
 
     serialize: ->
         @PinnedTabsState.serialize()
+
+
+    # Utility
+    observers: ->
+        # Move new tabs after pinned tabs
+        atom.workspace.onDidAddPaneItem () =>
+            setTimeout (=>
+                e = document.querySelector('.tab-bar .tab.active')
+                return unless tab = this.getTabInformation e
+
+                if tab.pinIndex > tab.curIndex
+                    tab.pane.moveItem(tab.item, tab.pinIndex)
+            ), 1
+
+        # Reduce the amount of pinned tabs when one is destoryed
+        atom.workspace.onWillDestroyPaneItem (event) ->
+            paneIndex = Array.prototype.indexOf.call(atom.workspace.getPanes(), event.pane) * 2
+            tabIndex = Array.prototype.indexOf.call(event.pane.getItems(), event.item)
+
+            return unless axis = document.querySelector('.tab-bar').parentNode.parentNode
+            try
+                paneNode = axis.children[paneIndex].querySelector('.tab-bar')
+                if paneNode.children[tabIndex].classList.contains('pinned')
+                    self.PinnedTabsState.data[paneIndex] -= 1
 
     setCommands: ->
         @subscriptions = new CompositeDisposable
@@ -76,33 +88,8 @@ module.exports = PinnedTabs =
         @subscriptions.add atom.commands.add 'atom-workspace', 'pinned-tabs:pin-selected': => @pinSelected()
         @subscriptions.add atom.commands.add 'atom-workspace', 'pinned-tabs:close-unpinned': => @closeUnpinnedTabs()
 
-    observers: ->
-        # General observers
-        atom.workspace.onDidAddPaneItem (event) =>
-            setTimeout (=>
-                # Get information about the tab
-                return unless e = document.querySelector('.tab-bar .tab.active')
-                tab = this.getTabInformation e
 
-                # Move it if necessary
-                if tab.pinIndex > tab.curIndex
-                    tab.pane.moveItem(tab.item, tab.pinIndex)
-            ), 1
-
-        atom.workspace.onWillDestroyPaneItem (event) ->
-            # Get the index of the pane item (tab) that is being destoryed
-            paneIndex = Array.prototype.indexOf.call(atom.workspace.getPanes(), event.pane) * 2
-            tabIndex = Array.prototype.indexOf.call(event.pane.getItems(), event.item)
-
-            # Decrease the pinned tab counter if it was a pinned tab
-            return unless axis = document.querySelector('.tab-bar').parentNode.parentNode
-            try
-                paneNode = axis.children[paneIndex].querySelector('.tab-bar')
-                if paneNode.children[tabIndex].classList.contains('pinned')
-                    self.PinnedTabsState.data[paneIndex] -= 1
-            catch error
-                return
-
+	# Pin tabs
     closeUnpinnedTabs: ->
         activePane = document.querySelector '.pane.active'
         tabbar = activePane.querySelector '.tab-bar'
@@ -114,8 +101,6 @@ module.exports = PinnedTabs =
                 activePane.itemAtIndex i
                 activePane.destroyItem activePane.itemAtIndex(i)
 
-
-	# Pin tabs
     pinActive: ->
         @pin document.querySelector('.tab-bar .tab.active')
 
@@ -140,6 +125,7 @@ module.exports = PinnedTabs =
         ), 1
 
     getTabInformation: (e) ->
+        return if e == null
         tabbarNode = e.parentNode
         paneNode = tabbarNode.parentNode
         axisNode = paneNode.parentNode

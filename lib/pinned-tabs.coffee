@@ -41,16 +41,15 @@ module.exports = PinnedTabs =
                 new PinnedTabsState {}
 
         # Restore the serialized session.
-        self = this # This object has to be stored in self because the callback function will create its own 'this'
         # This timeout ensures that the DOM elements can be edited.
-        setTimeout (->
+        setTimeout (=>
             # Get the panes DOM object.
             panes = document.querySelector '.panes .pane-row'
             panes = document.querySelector('.panes') if panes == null
 
             # Loop through each pane that the previous
             # state has information about.
-            for key of self.PinnedTabsState.data
+            for key of this.PinnedTabsState.data
                 try
                     # Find the pane and tab-bar DOM objects for
                     # this pane.
@@ -60,12 +59,12 @@ module.exports = PinnedTabs =
                     # Pin the first N tabs, since pinned tabs are
                     # always the left-most tabs. The N is given
                     # by the previous state.
-                    for i in [0...self.PinnedTabsState.data[key]]
+                    for i in [0...this.PinnedTabsState.data[key]]
                         tabbar.children[i].classList.add 'pinned'
                 catch
                     # If an error occured, the workspace has changed
                     # and the old configuration should be ignored.
-                    delete self.PinnedTabsState.data[key]
+                    delete this.PinnedTabsState.data[key]
             ), 1
 
     serialize: ->
@@ -106,13 +105,11 @@ module.exports = PinnedTabs =
 
     # Observer panes
     observers: ->
-        self = this
-
-        atom.workspace.onDidAddPaneItem (event) ->
-            setTimeout (->
+        atom.workspace.onDidAddPaneItem (event) =>
+            setTimeout (=>
                 # Get information about the tab
                 return unless e = document.querySelector('.tab-bar .tab.active')
-                tab = self.getTabInformation e
+                tab = this.getTabInformation e
 
                 # Move it if necessary
                 if tab.pinIndex > tab.curIndex

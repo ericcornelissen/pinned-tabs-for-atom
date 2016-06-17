@@ -40,21 +40,25 @@ module.exports = PinnedTabs =
             else
                 new PinnedTabsState { }
 
+        if @PinnedTabsState._reset_ == undefined
+            @PinnedTabsState._reset_ = true
+            @PinnedTabsState.data = {}
+
         # Restore the serialized session.
         # This timeout ensures that the DOM elements can be edited.
         setTimeout (=>
             tabbars = document.querySelectorAll '.tab-bar'
             state = this.PinnedTabsState.data
-            console.log(state)
+
             for index of state
-                if state[index] < 0 || isNaN(state[index]) || index >= tabbars.length
+                if state[index] < 0 || isNaN(state[index]) || index > tabbars.length
                     delete state[index]
                     continue
 
                 tabbar = tabbars[index]
                 for i in [0...state[index]]
-                    console.log(tabbar.children);
-                    tabbar.children[i].classList.add 'pinned'
+                    if i < tabbar.children.length
+                        tabbar.children[i].classList.add 'pinned'
             ), 1
 
     serialize: ->
@@ -77,9 +81,14 @@ module.exports = PinnedTabs =
         atom.workspace.onWillDestroyPaneItem (event) =>
             tabIndex = Array.prototype.indexOf.call(event.pane.getItems(), event.item)
             textEditor = event.item.element
-            atomPane = textEditor.parentNode.parentNode
 
-            tabbarNode = atomPane.querySelector('.tab-bar')
+            # If a tab has not been opened yet, it is not yet in the DOM,
+            # so get the active element of the pane (which is opened by definition)
+            if textEditor.parentNode == null
+                textEditor = event.pane.activeItem.element
+
+            atomPane = textEditor.parentNode.parentNode
+            tabbarNode = atomPane.querySelector '.tab-bar'
             tabbars = document.querySelectorAll '.tab-bar'
             tabbarIndex = Array.prototype.indexOf.call(tabbars, tabbarNode)
 

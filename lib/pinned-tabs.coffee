@@ -43,16 +43,18 @@ module.exports = PinnedTabs =
         # Restore the serialized session.
         # This timeout ensures that the DOM elements can be edited.
         setTimeout (=>
-            panes = document.querySelector('.panes')
-            oldState = this.PinnedTabsState.data
-            for key of oldState
-                try
-                    pane = panes.children[parseInt(key, 10)]
-                    tabbar = pane.querySelector '.tab-bar'
-                    for i in [0...oldState[key]]
-                        tabbar.children[i].classList.add 'pinned'
-                catch
-                    delete oldState[key]
+            tabbars = document.querySelectorAll '.tab-bar'
+            state = this.PinnedTabsState.data
+            console.log(state)
+            for index of state
+                if state[index] < 0 || isNaN(state[index]) || index >= tabbars.length
+                    delete state[index]
+                    continue
+
+                tabbar = tabbars[index]
+                for i in [0...state[index]]
+                    console.log(tabbar.children);
+                    tabbar.children[i].classList.add 'pinned'
             ), 1
 
     serialize: ->
@@ -73,14 +75,16 @@ module.exports = PinnedTabs =
 
         # Reduce the amount of pinned tabs when one is destoryed
         atom.workspace.onWillDestroyPaneItem (event) =>
-            paneIndex = Array.prototype.indexOf.call(atom.workspace.getPanes(), event.pane) * 2
             tabIndex = Array.prototype.indexOf.call(event.pane.getItems(), event.item)
+            textEditor = event.item.element
+            atomPane = textEditor.parentNode.parentNode
 
-            return unless axis = document.querySelector('.tab-bar').parentNode.parentNode
-            try
-                paneNode = axis.children[paneIndex].querySelector('.tab-bar')
-                if paneNode.children[tabIndex].classList.contains('pinned')
-                    this.PinnedTabsState.data[paneIndex] -= 1
+            tabbarNode = atomPane.querySelector('.tab-bar')
+            tabbars = document.querySelectorAll '.tab-bar'
+            tabbarIndex = Array.prototype.indexOf.call(tabbars, tabbarNode)
+
+            if tabbarNode.children[tabIndex].classList.contains('pinned')
+                @PinnedTabsState.data[tabbarIndex] -= 1
 
     setCommands: ->
         @subscriptions = new CompositeDisposable
@@ -108,50 +112,49 @@ module.exports = PinnedTabs =
         @pin atom.contextMenu.activeElement
 
     pin: (e) ->
-        return unless tab = @getTabInformation e
+        return unless info = @getTabInformation e
 
         # Initialize the state key for this pane if needed
-        if @PinnedTabsState.data[tab.paneIndex] == undefined || isNaN(@PinnedTabsState.data[tab.paneIndex])
-            @PinnedTabsState.data[tab.paneIndex] = 0
+        if @PinnedTabsState.data[info.tabbarIndex] == undefined || isNaN(@PinnedTabsState.data[info.tabbarIndex])
+            @PinnedTabsState.data[info.tabbarIndex] = 0
 
-        if tab.isPinned
-            @PinnedTabsState.data[tab.paneIndex] -= 1
-            tab.pane.moveItem(tab.item, tab.unpinIndex)
+        if info.tabIsPinned
+            @PinnedTabsState.data[info.tabbarIndex] -= 1
+            info.pane.moveItem(info.item, info.unpinIndex)
         else
-            @PinnedTabsState.data[tab.paneIndex] += 1
-            tab.pane.moveItem(tab.item, tab.pinIndex)
+            @PinnedTabsState.data[info.tabbarIndex] += 1
+            info.pane.moveItem(info.item, info.pinIndex)
 
-        setTimeout (->
-            e.classList.toggle 'pinned'
-        ), 1
+        setTimeout (-> e.classList.toggle 'pinned' ), 1
 
     getTabInformation: (e) ->
         return if e == null
+
         tabbarNode = e.parentNode
         paneNode = tabbarNode.parentNode
         axisNode = paneNode.parentNode
 
+        pinIndex = tabbarNode.querySelectorAll('.pinned').length
+        tabbars = document.querySelectorAll('.tab-bar')
+
         tabIndex = Array.prototype.indexOf.call(tabbarNode.children, e)
+        tabbarIndex = Array.prototype.indexOf.call(tabbars, tabbarNode)
         paneIndex = Array.prototype.indexOf.call(axisNode.children, paneNode)
-        pinIndex = paneNode.querySelectorAll('.pinned').length
 
         pane = atom.workspace.getPanes()[paneIndex / 2]
         item = pane.itemAtIndex(tabIndex)
 
         return {
             tabIndex: tabIndex,
-            paneIndex: paneIndex,
+            tabbarIndex: tabbarIndex,
 
             pinIndex: pinIndex,
             unpinIndex: pinIndex - 1,
 
-            itemNode: undefined,
-            paneNode: undefined,
-
             item: item,
             pane: pane,
 
-            isPinned: e.classList.contains 'pinned'
+            tabIsPinned: e.classList.contains 'pinned'
         }
 
 

@@ -1,7 +1,4 @@
-{CompositeDisposable} = require 'atom'
-
-module.exports =
-class PinnedTabsState
+module.exports = class PinnedTabsState
     # Add the serializer of this class to atom library of serializers.
     atom.deserializers.add(this)
 

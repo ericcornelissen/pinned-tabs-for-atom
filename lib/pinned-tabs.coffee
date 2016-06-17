@@ -38,7 +38,7 @@ module.exports = PinnedTabs =
             if state.deserializer == 'PinnedTabsState'
                 atom.deserializers.deserialize state
             else
-                new PinnedTabsState({})
+                new PinnedTabsState { }
 
         # Restore the serialized session.
         # This timeout ensures that the DOM elements can be edited.
@@ -67,12 +67,12 @@ module.exports = PinnedTabs =
                 e = document.querySelector('.tab-bar .tab.active')
                 return unless tab = this.getTabInformation e
 
-                if tab.pinIndex > tab.curIndex
+                if tab.pinIndex > tab.tabIndex
                     tab.pane.moveItem(tab.item, tab.pinIndex)
             ), 1
 
         # Reduce the amount of pinned tabs when one is destoryed
-        atom.workspace.onWillDestroyPaneItem (event) ->
+        atom.workspace.onWillDestroyPaneItem (event) =>
             paneIndex = Array.prototype.indexOf.call(atom.workspace.getPanes(), event.pane) * 2
             tabIndex = Array.prototype.indexOf.call(event.pane.getItems(), event.item)
 
@@ -80,7 +80,7 @@ module.exports = PinnedTabs =
             try
                 paneNode = axis.children[paneIndex].querySelector('.tab-bar')
                 if paneNode.children[tabIndex].classList.contains('pinned')
-                    self.PinnedTabsState.data[paneIndex] -= 1
+                    this.PinnedTabsState.data[paneIndex] -= 1
 
     setCommands: ->
         @subscriptions = new CompositeDisposable
@@ -98,7 +98,7 @@ module.exports = PinnedTabs =
         tabs = tabbar.querySelectorAll '.tab'
         for i in [(tabs.length - 1)..0]
             if !tabs[i].classList.contains('pinned')
-                activePane.itemAtIndex i
+                #activePane.itemAtIndex i
                 activePane.destroyItem activePane.itemAtIndex(i)
 
     pinActive: ->
@@ -110,13 +110,14 @@ module.exports = PinnedTabs =
     pin: (e) ->
         return unless tab = @getTabInformation e
 
+        # Initialize the state key for this pane if needed
+        if @PinnedTabsState.data[tab.paneIndex] == undefined || isNaN(@PinnedTabsState.data[tab.paneIndex])
+            @PinnedTabsState.data[tab.paneIndex] = 0
+
         if tab.isPinned
             @PinnedTabsState.data[tab.paneIndex] -= 1
             tab.pane.moveItem(tab.item, tab.unpinIndex)
         else
-            # Initialize the state key for this pane if needed.
-            @PinnedTabsState.data[tab.paneIndex] = 0 if @PinnedTabsState.data[tab.paneIndex] == undefined
-
             @PinnedTabsState.data[tab.paneIndex] += 1
             tab.pane.moveItem(tab.item, tab.pinIndex)
 

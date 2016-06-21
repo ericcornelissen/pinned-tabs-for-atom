@@ -86,8 +86,11 @@ module.exports = PinnedTabs =
 
             # If a tab has not been opened yet, it is not yet in the DOM,
             # so get the active element of the pane (which is opened by definition)
-            if textEditor.parentNode == null
+            if textEditor == undefined || textEditor.parentNode == null
                 textEditor = event.pane.activeItem.element
+
+                if textEditor == undefined
+                    return;
 
             atomPane = textEditor.parentNode.parentNode
             tabbarNode = atomPane.querySelector '.tab-bar'
@@ -113,7 +116,6 @@ module.exports = PinnedTabs =
         tabs = tabbar.querySelectorAll '.tab'
         for i in [(tabs.length - 1)..0]
             if !tabs[i].classList.contains('pinned')
-                #activePane.itemAtIndex i
                 activePane.destroyItem activePane.itemAtIndex(i)
 
     pinActive: ->

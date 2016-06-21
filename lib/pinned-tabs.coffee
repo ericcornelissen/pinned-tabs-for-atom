@@ -67,26 +67,6 @@ module.exports = PinnedTabs =
         @subscriptions.add atom.commands.add 'atom-workspace', 'pinned-tabs:pin-selected': => @pinSelected()
         @subscriptions.add atom.commands.add 'atom-workspace', 'pinned-tabs:close-unpinned': => @closeUnpinned()
 
-    # Add an event listener for when the value of the settings are changed.
-    configObservers: ->
-        body = document.querySelector 'body'
-        atom.config.observe 'pinned-tabs.animation', (newValue) ->
-            if newValue
-                body.classList.remove 'pinned-tabs-enable-animation'
-            else
-                body.classList.add 'pinned-tabs-enable-animation'
-        atom.config.observe 'pinned-tabs.closeUnpinned', (newValue) =>
-            body = document.querySelector 'body'
-            if newValue
-                body.classList.remove 'close-unpinned'
-            else
-                body.classList.add 'close-unpinned'
-        atom.config.observe 'pinned-tabs.modifiedTab', (newValue) ->
-            if newValue
-                body.classList.remove 'pinned-tabs-enable-modified'
-            else
-                body.classList.add 'pinned-tabs-enable-modified'
-
     # Observer panes
     observers: ->
         # Move new tabs after pinned tabs

@@ -43,7 +43,7 @@ module.exports = PinnedTabs =
         # This timeout ensures that the DOM elements can be edited.
         setTimeout (=>
             tabbars = document.querySelectorAll '.tab-bar'
-            state = this.PinnedTabsState.data
+            state = @PinnedTabsState.data
 
             for tabbar in tabbars
                 for i in [0...tabbar.children.length]
@@ -78,25 +78,8 @@ module.exports = PinnedTabs =
 
         # Reduce the amount of pinned tabs when one is destoryed
         atom.workspace.onWillDestroyPaneItem (event) =>
-            tabIndex = Array.prototype.indexOf.call(event.pane.getItems(), event.item)
-            textEditor = event.item.element
-
-            # If a tab has not been opened yet, it is not yet in the DOM,
-            # so get the active element of the pane (which is opened by definition)
-            if textEditor == undefined || textEditor.parentNode == null
-                textEditor = event.pane.activeItem.element
-
-                if textEditor == undefined
-                    return;
-
-            atomPane = textEditor.parentNode.parentNode
-            return if atomPane == null
-            tabbarNode = atomPane.querySelector '.tab-bar'
-            tabbars = document.querySelectorAll '.tab-bar'
-            tabbarIndex = Array.prototype.indexOf.call(tabbars, tabbarNode)
-
-            if tabbarNode.children[tabIndex].classList.contains('pinned')
-                @PinnedTabsState.data[tabbarIndex] -= 1
+            index = @PinnedTabsState.data.indexOf event.item.id
+            @PinnedTabsState.data.splice(index, 1) if index >= 0
 
     setCommands: ->
         @subscriptions = new CompositeDisposable

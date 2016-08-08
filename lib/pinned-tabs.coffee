@@ -93,6 +93,7 @@ module.exports = PinnedTabs =
                     return;
 
             atomPane = textEditor.parentNode.parentNode
+            return if atomPane == null
             tabbarNode = atomPane.querySelector '.tab-bar'
             tabbars = document.querySelectorAll '.tab-bar'
             tabbarIndex = Array.prototype.indexOf.call(tabbars, tabbarNode)

@@ -3,10 +3,10 @@ module.exports = class PinnedTabsState
     atom.deserializers.add(this)
 
     # The constructor of this class, sets the initial data attribute.
-    constructor: (@data, @_reset_) ->
+    constructor: (@data, @_reset) ->
 
     # The (static) deserialize method of this class.
-    @deserialize: ({data, _reset_}) -> new PinnedTabsState(data, _reset_)
+    @deserialize: ({data, _reset}) -> new PinnedTabsState(data, _reset)
 
     # The serialize method of this class, converts the an instance into a JSON string.
-    serialize: -> { deserializer: 'PinnedTabsState', data: @data, _reset_: @_reset_ }
+    serialize: -> { deserializer: 'PinnedTabsState', data: @data, _reset: @_reset }

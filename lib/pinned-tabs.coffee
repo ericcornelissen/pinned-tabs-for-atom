@@ -35,25 +35,22 @@ module.exports = PinnedTabs =
             else
                 new PinnedTabsState { }
 
-        if @PinnedTabsState._reset_ == undefined
-            @PinnedTabsState._reset_ = true
-            @PinnedTabsState.data = {}
+        if @PinnedTabsState._reset == undefined
+            @PinnedTabsState._reset = true
+            @PinnedTabsState.data = []
 
         # Restore the serialized session.
         # This timeout ensures that the DOM elements can be edited.
         setTimeout (=>
             tabbars = document.querySelectorAll '.tab-bar'
-            state = this.PinnedTabsState.data
+            state = @PinnedTabsState.data
 
-            for index of state
-                if state[index] < 0 || isNaN(state[index]) || index > tabbars.length
-                    delete state[index]
-                    continue
-
-                tabbar = tabbars[index]
-                for i in [0...state[index]]
-                    if i < tabbar.children.length
-                        tabbar.children[i].classList.add 'pinned'
+            for tabbar in tabbars
+                for i in [0...tabbar.children.length]
+                    tab = tabbar.children[i]
+                    info = @getTabInformation tab
+                    if state.indexOf(info.itemId) >= 0
+                        tab.classList.add 'pinned'
             ), 1
 
     serialize: ->
@@ -81,25 +78,8 @@ module.exports = PinnedTabs =
 
         # Reduce the amount of pinned tabs when one is destoryed
         atom.workspace.onWillDestroyPaneItem (event) =>
-            tabIndex = Array.prototype.indexOf.call(event.pane.getItems(), event.item)
-            textEditor = event.item.element
-
-            # If a tab has not been opened yet, it is not yet in the DOM,
-            # so get the active element of the pane (which is opened by definition)
-            if textEditor == undefined || textEditor.parentNode == null
-                textEditor = event.pane.activeItem.element
-
-                if textEditor == undefined
-                    return;
-
-            atomPane = textEditor.parentNode.parentNode
-            return if atomPane == null
-            tabbarNode = atomPane.querySelector '.tab-bar'
-            tabbars = document.querySelectorAll '.tab-bar'
-            tabbarIndex = Array.prototype.indexOf.call(tabbars, tabbarNode)
-
-            if tabbarNode.children[tabIndex].classList.contains('pinned')
-                @PinnedTabsState.data[tabbarIndex] -= 1
+            index = @PinnedTabsState.data.indexOf event.item.id
+            @PinnedTabsState.data.splice(index, 1) if index >= 0
 
     setCommands: ->
         @subscriptions = new CompositeDisposable
@@ -128,15 +108,12 @@ module.exports = PinnedTabs =
     pin: (e) ->
         return unless info = @getTabInformation e
 
-        # Initialize the state key for this pane if needed
-        if @PinnedTabsState.data[info.tabbarIndex] == undefined || isNaN(@PinnedTabsState.data[info.tabbarIndex])
-            @PinnedTabsState.data[info.tabbarIndex] = 0
-
         if info.tabIsPinned
-            @PinnedTabsState.data[info.tabbarIndex] -= 1
+            index = @PinnedTabsState.data.indexOf info.itemId
+            @PinnedTabsState.data.splice(index, 1) if index >= 0
             info.pane.moveItem(info.item, info.unpinIndex)
         else
-            @PinnedTabsState.data[info.tabbarIndex] += 1
+            @PinnedTabsState.data.push info.itemId
             info.pane.moveItem(info.item, info.pinIndex)
 
         setTimeout (-> e.classList.toggle 'pinned' ), 1
@@ -166,6 +143,7 @@ module.exports = PinnedTabs =
             unpinIndex: pinIndex - 1,
 
             item: item,
+            itemId: item.id,
             pane: pane,
 
             tabIsPinned: e.classList.contains 'pinned'

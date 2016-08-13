@@ -133,7 +133,7 @@ module.exports = PinnedTabs =
         paneIndex = Array.prototype.indexOf.call(axisNode.children, paneNode)
 
         pane = atom.workspace.getPanes()[paneIndex / 2]
-        item = pane.itemAtIndex(tabIndex)
+        item = pane.itemAtIndex(tabIndex) || {id: 0}
 
         return {
             tabIndex: tabIndex,

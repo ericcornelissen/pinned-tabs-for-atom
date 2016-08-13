@@ -35,8 +35,8 @@ module.exports = PinnedTabs =
             else
                 new PinnedTabsState { }
 
-        if @PinnedTabsState._reset == undefined
-            @PinnedTabsState._reset = true
+        if @PinnedTabsState.__reset == undefined
+            @PinnedTabsState.__reset = true
             @PinnedTabsState.data = []
 
         # Restore the serialized session.
@@ -49,7 +49,10 @@ module.exports = PinnedTabs =
                 for i in [0...tabbar.children.length]
                     tab = tabbar.children[i]
                     info = @getTabInformation tab
+
                     if state.indexOf(info.itemId) >= 0
+                        tab.classList.add 'pinned'
+                    else if state.indexOf(info.itemURI) >= 0
                         tab.classList.add 'pinned'
             ), 1
 
@@ -133,7 +136,10 @@ module.exports = PinnedTabs =
         paneIndex = Array.prototype.indexOf.call(axisNode.children, paneNode)
 
         pane = atom.workspace.getPanes()[paneIndex / 2]
-        item = pane.itemAtIndex(tabIndex) || {id: 0}
+        item = pane.itemAtIndex(tabIndex)
+
+        itemId = item.id if item
+        itemURI = item.getURI() if item && item.getURI
 
         return {
             tabIndex: tabIndex,
@@ -143,7 +149,7 @@ module.exports = PinnedTabs =
             unpinIndex: pinIndex - 1,
 
             item: item,
-            itemId: item.id,
+            itemId: itemId || itemURI,
             pane: pane,
 
             tabIsPinned: e.classList.contains 'pinned'

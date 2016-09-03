@@ -22,7 +22,6 @@ module.exports = PinnedTabs =
     PinnedTabsState: undefined
 
 
-	# Core
     activate: (state) ->
         @observers()
         @prepareConfig()
@@ -70,18 +69,21 @@ module.exports = PinnedTabs =
     # Observer panes
     observers: ->
         # Move new tabs after pinned tabs
-        atom.workspace.onDidAddPaneItem () =>
+        atom.workspace.onDidAddPaneItem (e) =>
             setTimeout (=>
-                e = document.querySelector('.tab-bar .tab.active')
-                return unless tab = this.getTabInformation e
+                tabs = e.pane.items
+                pinnedCounter = 0
+                for i in [0..(tabs.length - 1)]
+                    if @PinnedTabsState.data.indexOf(tabs[i].id) >= 0
+                        pinnedCounter += 1
 
-                if tab.pinIndex > tab.tabIndex
-                    tab.pane.moveItem(tab.item, tab.pinIndex)
+                if e.index < pinnedCounter
+                    e.pane.moveItem(e.item, pinnedCounter)
             ), 1
 
         # Reduce the amount of pinned tabs when one is destoryed
-        atom.workspace.onWillDestroyPaneItem (event) =>
-            index = @PinnedTabsState.data.indexOf event.item.id
+        atom.workspace.onWillDestroyPaneItem (e) =>
+            index = @PinnedTabsState.data.indexOf e.item.id
             @PinnedTabsState.data.splice(index, 1) if index >= 0
 
     setCommands: ->

@@ -1,5 +1,5 @@
 PinnedTabsState = require './pinned-tabs-state'
-{CompositeDisposable} = require 'atom'
+{Emitter, CompositeDisposable} = require 'atom'
 
 module.exports = PinnedTabs =
     config:
@@ -20,12 +20,19 @@ module.exports = PinnedTabs =
             type: 'boolean'
 
     PinnedTabsState: undefined
+    fCloseAllTabs: false
 
 
     activate: (state) ->
         @observers()
         @prepareConfig()
         @setCommands()
+
+        # Toggle flag for close-all-tabs command to prevent closing pinned tabs.
+        atom.commands.onWillDispatch (e) =>
+            @fCloseAllTabs = true if e.type == 'tabs:close-all-tabs'
+        atom.commands.onDidDispatch (e) =>
+            @fCloseAllTabs = false if e.type == 'tabs:close-all-tabs'
 
         # Recover the serialized session or start a new serializable state.
         @PinnedTabsState =
@@ -84,7 +91,11 @@ module.exports = PinnedTabs =
         # Reduce the amount of pinned tabs when one is destoryed
         atom.workspace.onWillDestroyPaneItem (e) =>
             index = @PinnedTabsState.data.indexOf e.item.id
-            @PinnedTabsState.data.splice(index, 1) if index >= 0
+            if index >= 0 # The tab to be closed is currently pinned.
+                if @fCloseAllTabs
+                    e.prevent()
+                else
+                    @PinnedTabsState.data.splice(index, 1)
 
     setCommands: ->
         @subscriptions = new CompositeDisposable

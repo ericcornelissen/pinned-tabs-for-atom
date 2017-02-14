@@ -53,7 +53,7 @@ module.exports = PinnedTabs =
                         tab.classList.add 'pinned'
                     else if state.indexOf(info.itemURI) >= 0
                         tab.classList.add 'pinned'
-            ), 1
+        ), 1
 
     serialize: ->
         @PinnedTabsState.serialize()
@@ -113,7 +113,7 @@ module.exports = PinnedTabs =
     pin: (e) ->
         return unless info = @getTabInformation e
 
-        if info.tabIsPinned
+        if info.isPinned
             index = @PinnedTabsState.data.indexOf info.itemId
             @PinnedTabsState.data.splice(index, 1) if index >= 0
             info.pane.moveItem(info.item, info.unpinIndex)
@@ -121,7 +121,7 @@ module.exports = PinnedTabs =
             @PinnedTabsState.data.push info.itemId
             info.pane.moveItem(info.item, info.pinIndex)
 
-        setTimeout (-> e.classList.toggle 'pinned' ), 1
+        setTimeout (-> e.classList.toggle 'pinned'), 1
 
     getTabInformation: (e) ->
         return if e == null
@@ -154,7 +154,7 @@ module.exports = PinnedTabs =
             itemId: itemId || itemURI,
             pane: pane,
 
-            tabIsPinned: e.classList.contains 'pinned'
+            isPinned: e.classList.contains 'pinned'
         }
 
 

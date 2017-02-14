@@ -4,19 +4,19 @@ PinnedTabsState = require './pinned-tabs-state'
 module.exports = PinnedTabs =
     config:
         animated:
-            title: 'Disable animations'
-            description: 'Tick this to disable all animation related to Pinned Tabs'
-            default: false
-            type: 'boolean'
-        closeUnpinned:
-            title: 'Disable the \'Close Unpinned Tabs\' option'
-            description: 'Tick this to hide the \'Close Unpinned Tabs\' from the context menu'
+            title: 'Enable animations'
+            description: 'Tick this to enable all animation related to pinned tabs'
             default: true
             type: 'boolean'
-        modified:
-            title: 'Disable the modified icon on pinned tabs'
-            description: 'Tick this to disable the modified icon when hovering over pinned tabs'
+        closeUnpinned:
+            title: 'Enable the \'Close Unpinned Tabs\' option'
+            description: 'Tick this to show the \'Close Unpinned Tabs\' from the context menu'
             default: false
+            type: 'boolean'
+        modified:
+            title: 'Enable the modified icon on pinned tabs'
+            description: 'Tick this to enable the modified icon when hovering over pinned tabs'
+            default: true
             type: 'boolean'
 
     PinnedTabsState: undefined
@@ -60,7 +60,7 @@ module.exports = PinnedTabs =
                         tab.classList.add 'pinned'
                     else if state.indexOf(info.itemURI) >= 0
                         tab.classList.add 'pinned'
-            ), 1
+        ), 1
 
     serialize: ->
         @PinnedTabsState.serialize()
@@ -124,7 +124,7 @@ module.exports = PinnedTabs =
     pin: (e) ->
         return unless info = @getTabInformation e
 
-        if info.tabIsPinned
+        if info.isPinned
             index = @PinnedTabsState.data.indexOf info.itemId
             @PinnedTabsState.data.splice(index, 1) if index >= 0
             info.pane.moveItem(info.item, info.unpinIndex)
@@ -132,7 +132,7 @@ module.exports = PinnedTabs =
             @PinnedTabsState.data.push info.itemId
             info.pane.moveItem(info.item, info.pinIndex)
 
-        setTimeout (-> e.classList.toggle 'pinned' ), 1
+        setTimeout (-> e.classList.toggle 'pinned'), 1
 
     getTabInformation: (e) ->
         return if e == null
@@ -165,7 +165,7 @@ module.exports = PinnedTabs =
             itemId: itemId || itemURI,
             pane: pane,
 
-            tabIsPinned: e.classList.contains 'pinned'
+            isPinned: e.classList.contains 'pinned'
         }
 
 
@@ -188,12 +188,12 @@ module.exports = PinnedTabs =
 
     animated: (enable) ->
         body = document.querySelector 'body'
-        body.classList.toggle 'pinned-tabs-animated', !enable
+        body.classList.toggle 'pinned-tabs-animated', enable
 
     closeUnpinned: (enable) ->
         body = document.querySelector 'body'
-        body.classList.toggle 'close-unpinned', !enable
+        body.classList.toggle 'close-unpinned', enable
 
     modified: (enable) ->
         body = document.querySelector 'body'
-        body.classList.toggle 'pinned-tabs-modified', !enable
+        body.classList.toggle 'pinned-tabs-modified', enable

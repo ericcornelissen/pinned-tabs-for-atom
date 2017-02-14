@@ -18,6 +18,11 @@ module.exports = PinnedTabs =
             description: 'Tick this to enable the modified icon when hovering over pinned tabs'
             default: true
             type: 'boolean'
+        preventCloseAll:
+            title: 'Prevent \'Close all tabs\' from closing pinned tabs'
+            description: 'Prevent the native \'Close all tabs\' from closing pinned tabs'
+            default: true
+            type: 'boolean'
 
     PinnedTabsState: undefined
     fCloseAllTabs: false
@@ -92,7 +97,7 @@ module.exports = PinnedTabs =
         atom.workspace.onWillDestroyPaneItem (e) =>
             index = @PinnedTabsState.data.indexOf e.item.id
             if index >= 0 # The tab to be closed is currently pinned.
-                if @fCloseAllTabs
+                if @fCloseAllTabs && atom.config.get('pinned-tabs.preventCloseAll')
                     e.prevent()
                 else
                     @PinnedTabsState.data.splice(index, 1)

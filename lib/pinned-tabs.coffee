@@ -4,19 +4,19 @@ PinnedTabsState = require './pinned-tabs-state'
 module.exports = PinnedTabs =
     config:
         animated:
-            title: 'Disable animations'
-            description: 'Tick this to disable all animation related to Pinned Tabs'
-            default: false
-            type: 'boolean'
-        closeUnpinned:
-            title: 'Disable the \'Close Unpinned Tabs\' option'
-            description: 'Tick this to hide the \'Close Unpinned Tabs\' from the context menu'
+            title: 'Enable animations'
+            description: 'Tick this to enable all animation related to pinned tabs'
             default: true
             type: 'boolean'
-        modified:
-            title: 'Disable the modified icon on pinned tabs'
-            description: 'Tick this to disable the modified icon when hovering over pinned tabs'
+        closeUnpinned:
+            title: 'Enable the \'Close Unpinned Tabs\' option'
+            description: 'Tick this to show the \'Close Unpinned Tabs\' from the context menu'
             default: false
+            type: 'boolean'
+        modified:
+            title: 'Enable the modified icon on pinned tabs'
+            description: 'Tick this to enable the modified icon when hovering over pinned tabs'
+            default: true
             type: 'boolean'
 
     PinnedTabsState: undefined
@@ -177,12 +177,12 @@ module.exports = PinnedTabs =
 
     animated: (enable) ->
         body = document.querySelector 'body'
-        body.classList.toggle 'pinned-tabs-animated', !enable
+        body.classList.toggle 'pinned-tabs-animated', enable
 
     closeUnpinned: (enable) ->
         body = document.querySelector 'body'
-        body.classList.toggle 'close-unpinned', !enable
+        body.classList.toggle 'close-unpinned', enable
 
     modified: (enable) ->
         body = document.querySelector 'body'
-        body.classList.toggle 'pinned-tabs-modified', !enable
+        body.classList.toggle 'pinned-tabs-modified', enable

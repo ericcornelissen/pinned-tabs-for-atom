@@ -1,64 +1,26 @@
-.tab-bar .tab.pinned .title:not(.icon)::before {
-  /* Set a default icon (text-file) for pinned tabs.
-   * The icons will change when the file-icons package
-   * is used. */
+.tab-bar .tab .title:not(.icon)::before {
+  /* Set a default icon for pinned tabs. */
   content: '\f011';
   font-family: 'Octicons Regular';
   font-size: medium;
   font-style: normal !important;
+  left: -38px;
+  position: absolute;
   text-align: center;
 }
 
-body.pinned-tabs-animated atom-pane-container atom-pane .tab-bar .tab {
-  /* Add a transition for the size of the tab. */
-  transition: max-width .3s ease;
+.tab-bar .tab {
+  z-index: 2;
 }
-body.pinned-tabs-animated atom-pane-container atom-pane .tab-bar .tab .title:before {
-  /* This transition is need when going from
-   * the edited icon to the file-type icon. */
-  transition: border .175s .15s ease,
-    border-radius 0s .15s ease,
-    font-size .15s ease;
-}
-body.pinned-tabs-animated atom-pane-container atom-pane .tab-bar .tab.pinned .title:before {
-  /* Animate the icon in when the is being pinned. */
-  animation: show-pinned-icon .2s ease;
-}
-body.pinned-tabs-animated atom-pane-container atom-pane .tab-bar .tab.pinned.modified:hover .title:before {
-  /* This transition is needed when going from
-   * the file-type icon to the edited icon. */
-  transition: border .175s .15s ease,
-    border-radius 0s .15s,
-    height 0s .15s,
-    left 0s .15s,
-    top 0s .15s,
-    width  0s .15s,
-    font-size .15s ease;
-}
-
-body.pinned-tabs-modified atom-pane-container atom-pane .tab-bar .tab.pinned.modified:hover .title:before {
-  /* Makes a circle as the modified
-   * icon using the border. */
-  background-color: transparent !important;
-  border: 2px solid !important;
-  border-radius: 50% !important;
-  font-size: 0 !important; /* Hides the file-type icon. */
-  height: 10px !important;
-  left: 14px !important;
-  top: calc(50% - 10px) !important;
-  width: 10px !important;
-}
-
-atom-pane-container atom-pane .tab-bar .tab {
-	z-index: 2;
-}
-atom-pane-container atom-pane .tab-bar .tab .title {
-  /* Make the title of the tab unclickable. Otherwise
-   * in some themes the title will be pinned instead
-   * of the tab. */
+.tab-bar .tab .title {
+  /* Prevent invocations on the .title elemen itself */
   pointer-events: none !important;
 }
-atom-pane-container atom-pane .tab-bar .tab.pinned {
+.tab-bar .tab.active {
+  z-index: 3;
+}
+
+.tab-bar .tab.pinned {
   /* Make pinned tabs a fixed width. */
   margin: 0 !important;
   max-width: 38px !important;
@@ -66,22 +28,16 @@ atom-pane-container atom-pane .tab-bar .tab.pinned {
   padding: 0 !important;
   width: 38px !important;
 }
-atom-pane-container atom-pane .tab-bar .tab.active {
-  z-index: 3;
-}
-atom-pane-container atom-pane .tab-bar .tab.pinned .title {
+.tab-bar .tab.pinned .title {
   padding: 0 !important;
-  font-size: 0 !important; /* Hide the title of the tab. */
+  font-size: 0 !important; /* Hides the title of the tab. */
 }
-atom-pane-container atom-pane .tab-bar .tab.pinned .close-icon {
-  /* Disable events on the close-icon. */
+.tab-bar .tab.pinned .close-icon {
+  /* Disable and hide the close-icon. */
   pointer-events: none !important;
-  /* Scale the close-icon to make it invisible. */
   transform: scale(0) !important;
 }
-
-atom-pane-container atom-pane .tab-bar .tab.pinned .title:before {
-  /* Position the icon of a pinned tab. */
+.tab-bar .tab.pinned .title::before {
   border-width: 0 !important;
   box-sizing: padding-box;
   display: block !important;
@@ -95,17 +51,47 @@ atom-pane-container atom-pane .tab-bar .tab.pinned .title:before {
   width: 38px !important;
   z-index: 0;
 }
-atom-pane-container atom-pane .tab-bar .tab.pinned .title:after {
-  /* Hide any ':after's as there is no place
-   * for these when the tab is pinned. */
-  left: -38px;
+.tab-bar .tab.pinned .title::after {
+  /* Hide any ::after as there is no place for these when the tab is pinned. */
+  left: 100%;
   margin: 0;
   padding: 0;
   position: absolute;
 }
 
-/* Animation to show the icon of a pinned tab. */
-@keyframes show-pinned-icon {
-  from { left: -38px; }
-  to { left: 0px; }
+body.pinned-tabs-animated .tab-bar .tab {
+  transition: max-width .3s ease;
+}
+body.pinned-tabs-animated .tab-bar .tab .title::before {
+  transition: border .175s .15s ease,
+              border-radius 0s .15s ease,
+              font-size .15s ease,
+              left .2s ease;
+}
+body.pinned-tabs-animated .tab-bar .tab.pinned .title::before {
+  left: 0;
+}
+body.pinned-tabs-animated .tab-bar .tab.pinned.modified .title::before {
+  transition: font-size .2s ease;
+}
+body.pinned-tabs-modified .tab-bar .tab.pinned.modified:hover .title::before {
+  /* Create a modified icon using the border property. */
+  background-color: transparent !important;
+  border: 2px solid !important;
+  border-radius: 50% !important;
+  font-size: 0 !important; /* Hide the actual icon. */
+  height: 10px !important;
+  left: 50% !important;
+  position: absolute;
+  top: 50% !important;
+  transform: translate(-50%, -50%);
+  transition: border 0s .2s,
+              border-radius 0s .2s,
+              height 0s .2s,
+              left 0s .2s,
+              top 0s .2s,
+              transform 0s .2s,
+              width  0s .2s,
+              font-size .2s ease;
+  width: 10px !important;
 }

@@ -72,7 +72,28 @@ body.pinned-tabs-animated .tab-bar .tab.pinned .title::before {
   left: 0;
   transition: font-size .2s ease;
 }
-body.pinned-tabs-animated .tab-bar .tab.pinned.modified .title::before {
+body.pinned-tabs-modified-always .tab-bar .tab.pinned.modified .title::before {
+  /* Create a modified icon using the border property. */
+  background-color: transparent !important;
+  border: 2px solid !important;
+  border-radius: 50% !important;
+  font-size: 0 !important; /* Hide the actual icon. */
+  height: 10px !important;
+  left: 50% !important;
+  position: absolute;
+  top: 50% !important;
+  transform: translate(-50%, -50%);
+  transition: border 0s .2s,
+              border-radius 0s .2s,
+              height 0s .2s,
+              left 0s .2s,
+              top 0s .2s,
+              transform 0s .2s,
+              width  0s .2s,
+              font-size .2s ease;
+  width: 10px !important;
+}
+body.pinned-tabs-modified-hover .tab-bar .tab.pinned.modified:hover .title::before {
   /* Create a modified icon using the border property. */
   background-color: transparent !important;
   border: 2px solid !important;

@@ -14,10 +14,14 @@ module.exports = PinnedTabs =
       default: false
       type: 'boolean'
     modified:
-      title: 'Enable the modified icon on pinned tabs'
-      description: 'Tick this to enable the modified icon when hovering over pinned tabs'
-      default: true
-      type: 'boolean'
+      title: 'Use an indicator for when a pinned tab has unsaved modifications'
+      default: 'always'
+      type: 'string'
+      enum: [
+        { value: 'dont', description: 'Don\'t use this feature' }
+        { value: 'hover', description: 'Only show this when I hover over the tab' }
+        { value: 'always', description: 'Always show this when a tab is modified' }
+      ]
 
   PinnedTabsState: undefined
 
@@ -186,6 +190,14 @@ module.exports = PinnedTabs =
     body = document.querySelector 'body'
     body.classList.toggle 'close-unpinned', enable
 
-  modified: (enable) ->
+  modified: (value) ->
     body = document.querySelector 'body'
-    body.classList.toggle 'pinned-tabs-modified', enable
+    if value == 'dont'
+      body.classList.remove 'pinned-tabs-modified-always'
+      body.classList.remove 'pinned-tabs-modified-hover'
+    else if value == 'hover'
+      body.classList.remove 'pinned-tabs-modified-always'
+      body.classList.add 'pinned-tabs-modified-hover'
+    else
+      body.classList.add 'pinned-tabs-modified-always'
+      body.classList.remove 'pinned-tabs-modified-hover'

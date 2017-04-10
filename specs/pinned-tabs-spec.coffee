@@ -175,3 +175,66 @@ describe 'PinnedTabs', ->
       runs ->
         expect(PinnedTabs.pin).toHaveBeenCalledWith(items[0])
         expect(PinnedTabs.pin).not.toHaveBeenCalledWith(items[1])
+
+  describe '::pinActive()', ->
+    [tab] = []
+
+    beforeEach ->
+      tab = document.createElement 'li'
+      tab.classList.add 'tab', 'active'
+      document.body.appendChild tab
+
+    afterEach ->
+      document.body.removeChild tab
+
+    it 'calls ::pin() with the active item', ->
+      spyOn PinnedTabs, 'pin'
+
+      waitsForPromise ->
+        atom.workspace.open('package.json').then (item) ->
+          PinnedTabs.pinActive()
+          expect(PinnedTabs.pin).toHaveBeenCalledWith(item, tab)
+
+  describe '::pinSelected()', ->
+    [tab] = []
+
+    beforeEach ->
+      tab = document.createElement 'li'
+      tab.classList.add 'tab', 'active'
+      document.body.appendChild tab
+
+      waitsForPromise ->
+        atom.workspace.open 'package.json'
+
+    afterEach ->
+      document.body.removeChild tab
+
+    it 'does nothing when no tab was selected', ->
+      spyOn PinnedTabs, 'pin'
+
+      PinnedTabs.pinSelected()
+      expect(PinnedTabs.pin).not.toHaveBeenCalled()
+
+    it 'calls ::pin() with the selected item', ->
+      spyOn PinnedTabs, 'pin'
+
+      items = atom.workspace.getPaneItems()
+      title = document.createElement 'div'
+      title.classList.add 'title'
+      title.setAttribute 'data-name', items[0].getTitle()
+
+      tab.appendChild title
+      atom.contextMenu.activeElement = tab
+      PinnedTabs.pinSelected()
+
+      expect(PinnedTabs.pin).toHaveBeenCalledWith(items[0], tab)
+
+  describe '::isPinned()', ->
+    it 'returns true if the tab is pinned', ->
+      tab = document.createElement 'li'
+      tab.classList.add 'pinned'
+      expect(PinnedTabs.isPinned(tab)).toBeTruthy()
+
+    it 'returns false if the tab isn\'t pinned', ->
+      tab = document.createElement 'li'
+      expect(PinnedTabs.isPinned(tab)).toBeFalsy()

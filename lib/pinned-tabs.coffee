@@ -92,26 +92,25 @@ module.exports = PinnedTabs =
   # Pin tabs
   pinActive: ->
     item = atom.workspace.getActivePaneItem()
-    @pin item
+    tab = document.querySelector '.tab.active'
+    @pin item, tab
 
   pinSelected: ->
     tab = atom.contextMenu.activeElement
-    return if tab == null
+    return false if tab == null
+    title = tab.querySelector '.title'
+    return false if title == null
+    target = title.getAttribute 'data-name'
+    return false if target == null
 
-    tabbarNode = tab.parentNode
-    paneNode = tabbarNode.parentNode
-    axisNode = paneNode.parentNode
-    tabIndex = Array.prototype.indexOf.call tabbarNode.children, tab
-    paneIndex = Array.prototype.indexOf.call axisNode.children, paneNode
-    pane = atom.workspace.getPanes()[paneIndex / 2]
+    for item in atom.workspace.getPaneItems()
+      if item.getTitle() == target
+        return @pin item, tab
 
-    item = pane.itemAtIndex tabIndex
-    @pin item
+  pin: (item, tab) ->
+    return false if item == null
 
-  pin: (item) ->
-    return if item == null
-
-    tab = document.querySelector('.title[data-name="' + item.getTitle() + '"]').parentNode
+    tab = document.querySelector('.title[data-name="' + item.getTitle() + '"]').parentNode if tab == undefined
     pane = atom.workspace.paneForItem item
     pinnedTabs = tab.parentNode.querySelectorAll '.pinned'
 

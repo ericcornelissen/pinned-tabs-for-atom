@@ -164,7 +164,7 @@ describe 'PinnedTabs', ->
       spyOn PinnedTabs, 'pin'
 
       items = atom.workspace.getPaneItems()
-      PinnedTabs.state.data.push items[0].id
+      PinnedTabs.state.data.push items[0].getURI()
 
       PinnedTabs.initTabs()
       setTimeout (=> done = true), 10
@@ -173,8 +173,8 @@ describe 'PinnedTabs', ->
         done
 
       runs ->
-        expect(PinnedTabs.pin).toHaveBeenCalledWith(items[0])
-        expect(PinnedTabs.pin).not.toHaveBeenCalledWith(items[1])
+        expect(PinnedTabs.pin).toHaveBeenCalledWith(items[0], undefined)
+        expect(PinnedTabs.pin).not.toHaveBeenCalledWith(items[1], undefined)
 
   describe '::pinActive()', ->
     [tab] = []
@@ -221,7 +221,7 @@ describe 'PinnedTabs', ->
       items = atom.workspace.getPaneItems()
       title = document.createElement 'div'
       title.classList.add 'title'
-      title.setAttribute 'data-name', items[0].getTitle()
+      title.setAttribute 'data-path', items[0].getPath()
 
       tab.appendChild title
       atom.contextMenu.activeElement = tab

@@ -1,6 +1,9 @@
 PinnedTabsState = require './pinned-tabs-state'
 {CompositeDisposable} = require 'atom'
 
+ABOUT_URI = 'About'
+CONFIG_URI = 'atom://config'
+
 module.exports = PinnedTabs =
   config:
     animated:
@@ -82,12 +85,16 @@ module.exports = PinnedTabs =
       ), 1
 
     atom.workspace.onWillDestroyPaneItem ({item}) =>
-      @state.data = @state.data.filter (id) -> id isnt item.id
+      return if not item.getURI
+      @state.data = @state.data.filter (uri) -> uri isnt item.getURI()
 
   initTabs: ->
     for item in atom.workspace.getPaneItems()
-      if @state.data.includes item.id
-        setTimeout ((item) => @pin item), 1, item
+      if @state.data.includes @getItemURI(item)
+        setTimeout (item) =>
+          tab = @getItemTab item
+          @pin item, tab
+        , 1, item
 
   # Pin tabs
   pinActive: ->
@@ -98,28 +105,32 @@ module.exports = PinnedTabs =
   pinSelected: ->
     tab = atom.contextMenu.activeElement
     return false if tab == null
-    title = tab.querySelector '.title'
-    return false if title == null
-    target = title.getAttribute 'data-name'
-    return false if target == null
+
+    dataType = tab.getAttribute 'data-type'
+    if dataType == 'AboutView'
+      target = ABOUT_URI
+    else if dataType == 'SettingsView'
+      target = CONFIG_URI
+    else
+      title = tab.querySelector '.title'
+      target = title.getAttribute 'data-path' if title != null
 
     for item in atom.workspace.getPaneItems()
-      if item.getTitle() == target
-        return @pin item, tab
+      if @getItemURI(item) == target
+        @pin item, tab
 
   pin: (item, tab) ->
     return false if item == null
 
-    tab = document.querySelector('.title[data-name="' + item.getTitle() + '"]').parentNode if tab == undefined
     pane = atom.workspace.paneForItem item
     pinnedTabs = tab.parentNode.querySelectorAll '.pinned'
 
     if @isPinned tab
-      @state.data = @state.data.filter (id) -> id isnt item.id
+      @state.data = @state.data.filter (uri) => uri isnt @getItemURI(item)
       pane.moveItem item, pinnedTabs.length - 1
       tab.classList.remove 'pinned'
     else
-      @state.data.push item.id
+      @state.data.push @getItemURI(item) if not @state.data.includes @getItemURI(item)
       pane.moveItem item, pinnedTabs.length
       tab.classList.add 'pinned'
 
@@ -133,6 +144,22 @@ module.exports = PinnedTabs =
     for i in [tabs.length - 1..0]
       if !tabs[i].classList.contains 'pinned'
         activePane.destroyItem activePane.itemAtIndex i
+
+  getItemURI: (item) ->
+    if item.getURI
+      return item.getURI()
+    else if item.getTitle
+      return item.getTitle()
+
+  getItemTab: (item) ->
+    if item.getTitle
+      title = document.querySelector '.title[data-name="' + item.getTitle() + '"]'
+      return title.parentNode if title != null
+
+    if item.element.classList.contains 'about'
+      return document.querySelector '.tab[data-type="AboutView"]'
+    else if item.element.classList.contains 'settings-view'
+      return document.querySelector '.tab[data-type="SettingsView"]'
 
   isPinned: (tab) ->
     tab.classList.contains 'pinned'

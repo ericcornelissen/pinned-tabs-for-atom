@@ -1,6 +1,14 @@
 PinnedTabs = require '../lib/pinned-tabs.coffee'
 {CommandRegistry, TextEditor} = require 'atom'
 
+
+fakeSetTimeout = (funcToCall, millis) ->
+  if jasmine.Clock.installed.setTimeout.apply
+    return jasmine.Clock.installed.setTimeout.apply this, arguments
+  else
+    return jasmine.Clock.installed.setTimeout funcToCall, millis
+
+
 describe 'PinnedTabs', ->
   it 'has a "config" variable', ->
     expect(PinnedTabs.config).toBeDefined()
@@ -86,3 +94,35 @@ describe 'PinnedTabs', ->
 
       PinnedTabs.initObservers()
       expect(atom.workspace.onWillDestroyPaneItem).toHaveBeenCalled()
+
+  describe '::initTabs()', ->
+    [done] = [false]
+
+    beforeEach ->
+      waitsForPromise ->
+        atom.workspace.open 'package.json'
+      waitsForPromise ->
+        atom.workspace.open 'README.md'
+
+    it 'does nothing when the state specifies no tabs', ->
+      spyOn PinnedTabs, 'pin'
+
+      PinnedTabs.initTabs()
+      expect(PinnedTabs.pin).not.toHaveBeenCalled()
+
+    it 'pins any tabs that are specified in the state', ->
+      jasmine.unspy window, 'setTimeout'
+      spyOn PinnedTabs, 'pin'
+
+      items = atom.workspace.getPaneItems()
+      PinnedTabs.state.data.push items[0].id
+
+      PinnedTabs.initTabs()
+      setTimeout (=> done = true), 10
+
+      waitsFor ->
+        done
+
+      runs ->
+        expect(PinnedTabs.pin).toHaveBeenCalledWith(items[0])
+        expect(PinnedTabs.pin).not.toHaveBeenCalledWith(items[1])

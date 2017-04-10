@@ -71,13 +71,9 @@ module.exports = PinnedTabs =
       @state.data = @state.data.filter (id) -> id isnt item.id
 
   initTabs: ->
-    setTimeout (=>
-      for tabbar in document.querySelectorAll '.tab-bar'
-        for tab in tabbar.children
-          editor = @getEditor tab
-          if @state.data.includes editor.id
-            tab.classList.add 'pinned'
-    ), 1
+    for item in atom.workspace.getPaneItems()
+      if @state.data.includes item.id
+        setTimeout ((item) => @pin item), 1, item
 
   # Configuration
   animated: (enable) ->
@@ -102,28 +98,37 @@ module.exports = PinnedTabs =
 
   # Pin tabs
   pinActive: ->
-    editor = atom.workspace.getActivePaneItem()
-    tab = document.querySelector '.tab-bar .tab.active'
-    @pin editor, tab
+    item = atom.workspace.getActivePaneItem()
+    @pin item
 
   pinSelected: ->
-    editor = @getEditor atom.contextMenu.activeElement
     tab = atom.contextMenu.activeElement
-    @pin editor, tab
+    return if tab == null
 
-  pin: (editor, tab) ->
-    return if editor == null || tab == null
+    tabbarNode = tab.parentNode
+    paneNode = tabbarNode.parentNode
+    axisNode = paneNode.parentNode
+    tabIndex = Array.prototype.indexOf.call tabbarNode.children, tab
+    paneIndex = Array.prototype.indexOf.call axisNode.children, paneNode
+    pane = atom.workspace.getPanes()[paneIndex / 2]
 
-    pane = atom.workspace.paneForItem editor
+    item = pane.itemAtIndex tabIndex
+    @pin item
+
+  pin: (item) ->
+    return if item == null
+
+    tab = document.querySelector('.title[data-name="' + item.getTitle() + '"]').parentNode
+    pane = atom.workspace.paneForItem item
     pinnedTabs = tab.parentNode.querySelectorAll '.pinned'
 
     if @isPinned tab
-      @state.data = @state.data.filter (id) -> id isnt editor.id
-      pane.moveItem editor, pinnedTabs.length - 1
+      @state.data = @state.data.filter (id) -> id isnt item.id
+      pane.moveItem item, pinnedTabs.length - 1
       tab.classList.remove 'pinned'
     else
-      @state.data.push editor.id
-      pane.moveItem editor, pinnedTabs.length
+      @state.data.push item.id
+      pane.moveItem item, pinnedTabs.length
       tab.classList.add 'pinned'
 
   # Misc
@@ -136,19 +141,6 @@ module.exports = PinnedTabs =
     for i in [tabs.length - 1..0]
       if !tabs[i].classList.contains 'pinned'
         activePane.destroyItem activePane.itemAtIndex i
-
-  getEditor: (tab) ->
-    return null if tab == null
-
-    tabbarNode = tab.parentNode
-    paneNode = tabbarNode.parentNode
-    axisNode = paneNode.parentNode
-
-    tabIndex = Array.prototype.indexOf.call tabbarNode.children, tab
-    paneIndex = Array.prototype.indexOf.call axisNode.children, paneNode
-
-    pane = atom.workspace.getPanes()[paneIndex / 2]
-    return pane.itemAtIndex tabIndex
 
   isPinned: (tab) ->
     tab.classList.contains 'pinned'

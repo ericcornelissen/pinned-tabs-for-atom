@@ -4,16 +4,33 @@ PinnedTabsState = require './pinned-tabs-state'
 module.exports = PinnedTabs =
   config:
     animated:
+      _change: (enable) ->
+        body = document.querySelector 'body'
+        body.classList.toggle 'pinned-tabs-animated', enable
       title: 'Enable animations'
       description: 'Tick this to enable all animation related to pinned tabs'
       default: true
       type: 'boolean'
     closeUnpinned:
+      _change: (enable) ->
+        body = document.querySelector 'body'
+        body.classList.toggle 'close-unpinned', enable
       title: 'Enable the \'Close Unpinned Tabs\' option'
       description: 'Tick this to show the \'Close Unpinned Tabs\' from the context menu'
       default: false
       type: 'boolean'
     modified:
+      _change: (value) ->
+        body = document.querySelector 'body'
+        if value == 'dont'
+          body.classList.remove 'pinned-tabs-modified-always'
+          body.classList.remove 'pinned-tabs-modified-hover'
+        else if value == 'hover'
+          body.classList.remove 'pinned-tabs-modified-always'
+          body.classList.add 'pinned-tabs-modified-hover'
+        else
+          body.classList.add 'pinned-tabs-modified-always'
+          body.classList.remove 'pinned-tabs-modified-hover'
       title: 'Use an indicator for when a pinned tab has unsaved modifications'
       default: 'always'
       type: 'string'
@@ -43,20 +60,17 @@ module.exports = PinnedTabs =
     atom.commands.add 'atom-workspace', 'pinned-tabs:close-unpinned', => @closeUnpinnedTabs()
 
   initConfig: ->
-    animated = 'pinned-tabs.animated'
-    atom.config.onDidChange animated, ({newValue, oldValue}) =>
-      @animated newValue
-    @animated atom.config.get(animated)
+    atom.config.onDidChange 'pinned-tabs.animated', ({newValue}) =>
+      @config.animated._change newValue
+    @config.animated._change atom.config.get('pinned-tabs.animated')
 
-    closeUnpinned = 'pinned-tabs.closeUnpinned'
-    atom.config.onDidChange closeUnpinned, ({newValue, oldValue}) =>
-      @closeUnpinned newValue
-    @closeUnpinned atom.config.get(closeUnpinned)
+    atom.config.onDidChange 'pinned-tabs.closeUnpinned', ({newValue}) =>
+      @config.closeUnpinned._change newValue
+    @config.closeUnpinned._change atom.config.get('pinned-tabs.closeUnpinned')
 
-    modified = 'pinned-tabs.modified'
-    atom.config.onDidChange modified, ({newValue, oldValue}) =>
-      @modified newValue
-    @modified atom.config.get(modified)
+    atom.config.onDidChange 'pinned-tabs.modified', ({newValue}) =>
+      @config.modified._change newValue
+    @config.modified._change atom.config.get('pinned-tabs.modified')
 
   initObservers: ->
     atom.workspace.onDidAddPaneItem ({index, item, pane}) =>
@@ -74,27 +88,6 @@ module.exports = PinnedTabs =
     for item in atom.workspace.getPaneItems()
       if @state.data.includes item.id
         setTimeout ((item) => @pin item), 1, item
-
-  # Configuration
-  animated: (enable) ->
-    body = document.querySelector 'body'
-    body.classList.toggle 'pinned-tabs-animated', enable
-
-  closeUnpinned: (enable) ->
-    body = document.querySelector 'body'
-    body.classList.toggle 'close-unpinned', enable
-
-  modified: (value) ->
-    body = document.querySelector 'body'
-    if value == 'dont'
-      body.classList.remove 'pinned-tabs-modified-always'
-      body.classList.remove 'pinned-tabs-modified-hover'
-    else if value == 'hover'
-      body.classList.remove 'pinned-tabs-modified-always'
-      body.classList.add 'pinned-tabs-modified-hover'
-    else
-      body.classList.add 'pinned-tabs-modified-always'
-      body.classList.remove 'pinned-tabs-modified-hover'
 
   # Pin tabs
   pinActive: ->

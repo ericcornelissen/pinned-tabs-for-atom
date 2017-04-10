@@ -82,6 +82,55 @@ describe 'PinnedTabs', ->
 
       expect(PinnedTabs.closeUnpinnedTabs).toHaveBeenCalled()
 
+  describe '::initConfig()', ->
+    it 'initializes observers for the config options', ->
+      spyOn atom.config, 'onDidChange'
+
+      PinnedTabs.initConfig()
+      expect(atom.config.onDidChange).toHaveBeenCalled()
+
+    it 'initializes the "animated" configuration variable', ->
+      spyOn PinnedTabs.config.animated, '_change'
+
+      PinnedTabs.initConfig()
+      expect(PinnedTabs.config.animated._change).toHaveBeenCalled()
+
+    it 'initializes the "closeUnpinned" configuration variable', ->
+      spyOn PinnedTabs.config.closeUnpinned, '_change'
+
+      PinnedTabs.initConfig()
+      expect(PinnedTabs.config.closeUnpinned._change).toHaveBeenCalled()
+
+    it 'initializes the "modified" configuration variable', ->
+      spyOn PinnedTabs.config.modified, '_change'
+
+      PinnedTabs.initConfig()
+      expect(PinnedTabs.config.modified._change).toHaveBeenCalled()
+
+    it 'performs the _change method for "animated" when it has been changed', ->
+      spy = spyOn PinnedTabs.config.animated, '_change'
+
+      PinnedTabs.initConfig()
+      atom.config.set 'pinned-tabs.animated', false
+
+      expect(spy.callCount).toBe(2)
+
+    it 'performs the _change method for "closeUnpinned" when it has been changed', ->
+      spy = spyOn PinnedTabs.config.closeUnpinned, '_change'
+
+      PinnedTabs.initConfig()
+      atom.config.set 'pinned-tabs.closeUnpinned', true
+
+      expect(spy.callCount).toBe(2)
+
+    it 'performs the _change method for "modified" when it has been changed', ->
+      spy = spyOn PinnedTabs.config.modified, '_change'
+
+      PinnedTabs.initConfig()
+      atom.config.set 'pinned-tabs.modified', 'dont'
+
+      expect(spy.callCount).toBe(2)
+
   describe '::initObservers()', ->
     it 'should start observing opening new PaneItems', ->
       spyOn atom.workspace, 'onDidAddPaneItem'

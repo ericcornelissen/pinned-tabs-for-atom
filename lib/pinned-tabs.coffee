@@ -22,20 +22,16 @@ module.exports = PinnedTabs =
         { value: 'hover', description: 'Only show this when I hover over the tab' }
         { value: 'always', description: 'Always show this when a tab is modified' }
       ]
-  state: undefined
+  state: new PinnedTabsState []
   subscriptions: new CompositeDisposable()
 
   activate: (state) ->
+    @state = atom.deserializers.deserialize state if state.deserializer == 'PinnedTabsState'
+
     @initCommands()
     @initConfig()
     @initObservers()
     @initTabs()
-
-    @state =
-      if state.deserializer == 'PinnedTabsState'
-        atom.deserializers.deserialize state
-      else
-        new PinnedTabsState []
 
   serialize: ->
     @state.serialize()

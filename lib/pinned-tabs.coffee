@@ -38,18 +38,9 @@ module.exports = PinnedTabs =
 
   # Initalization
   initCommands: ->
-    @subscriptions.add(
-      atom.commands.add 'atom-workspace',
-      'pinned-tabs:pin': => @pinActive()
-    )
-    @subscriptions.add(
-      atom.commands.add 'atom-workspace',
-      'pinned-tabs:pin-selected': => @pinSelected()
-    )
-    @subscriptions.add(
-      atom.commands.add 'atom-workspace',
-      'pinned-tabs:close-unpinned': => @closeUnpinnedTabs()
-    )
+    atom.commands.add 'atom-workspace', 'pinned-tabs:pin-active', => @pinActive()
+    atom.commands.add 'atom-workspace', 'pinned-tabs:pin-selected', => @pinSelected()
+    atom.commands.add 'atom-workspace', 'pinned-tabs:close-unpinned', => @closeUnpinnedTabs()
 
   initConfig: ->
     animated = 'pinned-tabs.animated'

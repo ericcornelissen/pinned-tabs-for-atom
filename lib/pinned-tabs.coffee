@@ -98,29 +98,19 @@ module.exports = PinnedTabs =
 
   # Pin tabs
   pinActive: ->
-    item = atom.workspace.getActivePaneItem()
     tab = document.querySelector '.tab.active'
+    item = atom.workspace.getActivePaneItem()
     @pin item, tab
 
   pinSelected: ->
     tab = atom.contextMenu.activeElement
-    return false if tab == null
+    item = @getEditor tab
 
-    dataType = tab.getAttribute 'data-type'
-    if dataType == 'AboutView'
-      target = ABOUT_URI
-    else if dataType == 'SettingsView'
-      target = CONFIG_URI
-    else
-      title = tab.querySelector '.title'
-      target = title.getAttribute 'data-path' if title != null
-
-    for item in atom.workspace.getPaneItems()
-      if @getItemURI(item) == target
-        @pin item, tab
+    return null if tab == null || item == undefined
+    @pin item, tab
 
   pin: (item, tab) ->
-    return false if item == null
+    return false if item == null || tab == null
 
     pane = atom.workspace.paneForItem item
     pinnedTabs = tab.parentNode.querySelectorAll '.pinned'
@@ -144,6 +134,19 @@ module.exports = PinnedTabs =
     for i in [tabs.length - 1..0]
       if !tabs[i].classList.contains 'pinned'
         activePane.destroyItem activePane.itemAtIndex i
+
+  getEditor: (tab) ->
+    return null if tab == null
+
+    tabbarNode = tab.parentNode
+    paneNode = tabbarNode.parentNode
+    axisNode = paneNode.parentNode
+
+    tabIndex = Array.prototype.indexOf.call tabbarNode.children, tab
+    paneIndex = Array.prototype.indexOf.call axisNode.children, paneNode
+
+    pane = atom.workspace.getPanes()[paneIndex / 2]
+    return pane.itemAtIndex tabIndex
 
   getItemURI: (item) ->
     if item.getURI

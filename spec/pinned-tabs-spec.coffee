@@ -2,13 +2,6 @@ PinnedTabs = require '../lib/pinned-tabs.coffee'
 {CommandRegistry, TextEditor} = require 'atom'
 
 
-fakeSetTimeout = (funcToCall, millis) ->
-  if jasmine.Clock.installed.setTimeout.apply
-    return jasmine.Clock.installed.setTimeout.apply this, arguments
-  else
-    return jasmine.Clock.installed.setTimeout funcToCall, millis
-
-
 describe 'PinnedTabs', ->
   it 'has a "config" variable', ->
     expect(PinnedTabs.config).toBeDefined()

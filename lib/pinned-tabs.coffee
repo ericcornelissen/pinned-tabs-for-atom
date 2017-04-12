@@ -42,7 +42,7 @@ module.exports = PinnedTabs =
         { value: 'hover', description: 'Only show this when I hover over the tab' }
         { value: 'always', description: 'Always show this when a tab is modified' }
       ]
-  state: new PinnedTabsState []
+  state: new PinnedTabsState({ })
   subscriptions: new CompositeDisposable()
 
   activate: (state) ->
@@ -77,50 +77,64 @@ module.exports = PinnedTabs =
 
   initObservers: ->
     atom.workspace.onDidAddPaneItem ({index, item, pane}) =>
-      setTimeout (=>
+      setTimeout =>
         tab = document.querySelector '.tab-bar .tab.active'
         pinnedTabs = tab.parentNode.querySelectorAll '.pinned'
         if index < pinnedTabs.length
           pane.moveItem item, pinnedTabs.length
-      ), 1
+      , 1
 
-    atom.workspace.onWillDestroyPaneItem ({item}) =>
-      return if not item.getURI
-      @state.data = @state.data.filter (uri) -> uri isnt item.getURI()
+    atom.workspace.onWillDestroyPaneItem ({item, pane}) =>
+      @state.data[pane.id] = @state.data[pane.id].filter (id) => id isnt @getItemID(item)
 
   initTabs: ->
-    for item in atom.workspace.getPaneItems()
-      if @state.data.includes @getItemURI(item)
-        setTimeout (item) =>
-          tab = @getItemTab item
-          @pin item, tab
-        , 1, item
+    activePane = atom.workspace.getActivePane()
+    for pane in atom.workspace.getPanes()
+      continue if @state.data[pane.id] == undefined
+      for target in @state.data[pane.id]
+        for item in pane.getItems()
+          if target == @getItemID item
+            setTimeout (pane, item) =>
+              pane.activate()
+              paneNode = document.querySelector '.pane.active'
+              return if paneNode == null
+
+              if item.getTitle
+                title = paneNode.querySelector '.title[data-name="' + item.getTitle() + '"]'
+                tab = title.parentNode if title != null
+              if item.element && item.element.classList.contains 'about'
+                tab = paneNode.querySelector '.tab[data-type="AboutView"]'
+              if item.element && item.element.classList.contains 'settings-view'
+                tab = paneNode.querySelector '.tab[data-type="SettingsView"]'
+
+              @pin item, tab if tab != undefined
+              activePane.activate() if activePane != undefined
+            , 1, pane, item
 
   # Pin tabs
   pinActive: ->
     tab = document.querySelector '.tab.active'
     item = atom.workspace.getActivePaneItem()
-    @pin item, tab
+    @pin item, tab if tab != null && item != null
 
   pinSelected: ->
     tab = atom.contextMenu.activeElement
     item = @getEditor tab
-
-    return null if tab == null || item == undefined
-    @pin item, tab
+    @pin item, tab if tab != null && item != null
 
   pin: (item, tab) ->
     return false if item == null || tab == null
 
     pane = atom.workspace.paneForItem item
     pinnedTabs = tab.parentNode.querySelectorAll '.pinned'
+    @state.data[pane.id] = [] if @state.data[pane.id] == undefined
 
     if @isPinned tab
-      @state.data = @state.data.filter (uri) => uri isnt @getItemURI(item)
+      @state.data[pane.id] = @state.data[pane.id].filter (id) => id isnt @getItemID(item)
       pane.moveItem item, pinnedTabs.length - 1
       tab.classList.remove 'pinned'
     else
-      @state.data.push @getItemURI(item) if not @state.data.includes @getItemURI(item)
+      @state.data[pane.id].push @getItemID(item) if not @state.data[pane.id].includes @getItemID(item)
       pane.moveItem item, pinnedTabs.length
       tab.classList.add 'pinned'
 
@@ -148,21 +162,11 @@ module.exports = PinnedTabs =
     pane = atom.workspace.getPanes()[paneIndex / 2]
     return pane.itemAtIndex tabIndex
 
-  getItemURI: (item) ->
+  getItemID: (item) ->
     if item.getURI
       return item.getURI()
     else if item.getTitle
       return item.getTitle()
-
-  getItemTab: (item) ->
-    if item.getTitle
-      title = document.querySelector '.title[data-name="' + item.getTitle() + '"]'
-      return title.parentNode if title != null
-
-    if item.element.classList.contains 'about'
-      return document.querySelector '.tab[data-type="AboutView"]'
-    else if item.element.classList.contains 'settings-view'
-      return document.querySelector '.tab[data-type="SettingsView"]'
 
   isPinned: (tab) ->
     tab.classList.contains 'pinned'

@@ -163,8 +163,22 @@ describe 'PinnedTabs', ->
       jasmine.unspy window, 'setTimeout'
       spyOn PinnedTabs, 'pin'
 
+      paneNode = document.createElement 'div'
+      paneNode.classList.add 'pane', 'active'
+      tabNode = document.createElement 'div'
+      titleNode = document.createElement 'div'
+      titleNode.classList.add 'title'
+      titleNode.setAttribute 'data-name', 'package.json'
+
+      document.body.appendChild paneNode
+      paneNode.appendChild tabNode
+      tabNode.appendChild titleNode
+
+      paneId = atom.workspace.getPanes()[0].id
       items = atom.workspace.getPaneItems()
-      PinnedTabs.state.data.push items[0].getURI()
+
+      PinnedTabs.state.data[paneId] = []
+      PinnedTabs.state.data[paneId].push items[0].getURI()
 
       PinnedTabs.initTabs()
       setTimeout (=> done = true), 10
@@ -173,8 +187,7 @@ describe 'PinnedTabs', ->
         done
 
       runs ->
-        expect(PinnedTabs.pin).toHaveBeenCalledWith(items[0], undefined)
-        expect(PinnedTabs.pin).not.toHaveBeenCalledWith(items[1], undefined)
+        expect(PinnedTabs.pin).toHaveBeenCalledWith(items[0], tabNode)
 
   describe '::pinActive()', ->
     [tab] = []

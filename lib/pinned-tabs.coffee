@@ -85,6 +85,7 @@ module.exports = PinnedTabs =
       , 1
 
     atom.workspace.onWillDestroyPaneItem ({item, pane}) =>
+      return if @state.data[pane.id] == undefined
       @state.data[pane.id] = @state.data[pane.id].filter (id) => id isnt @getItemID(item)
 
   initTabs: ->

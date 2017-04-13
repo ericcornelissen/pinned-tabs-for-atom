@@ -1,7 +1,6 @@
 PinnedTabs = require '../lib/pinned-tabs.coffee'
 {CommandRegistry, TextEditor} = require 'atom'
 
-
 describe 'PinnedTabs', ->
   it 'has a "config" variable', ->
     expect(PinnedTabs.config).toBeDefined()
@@ -106,7 +105,7 @@ describe 'PinnedTabs', ->
       PinnedTabs.initConfig()
       atom.config.set 'pinned-tabs.animated', false
 
-      expect(spy.callCount).toBe(2)
+      expect(spy.callCount).toBe 2
 
     it 'performs the _change method for "closeUnpinned" when it has been changed', ->
       spy = spyOn PinnedTabs.config.closeUnpinned, '_change'
@@ -114,7 +113,7 @@ describe 'PinnedTabs', ->
       PinnedTabs.initConfig()
       atom.config.set 'pinned-tabs.closeUnpinned', true
 
-      expect(spy.callCount).toBe(2)
+      expect(spy.callCount).toBe 2
 
     it 'performs the _change method for "modified" when it has been changed', ->
       spy = spyOn PinnedTabs.config.modified, '_change'
@@ -122,7 +121,7 @@ describe 'PinnedTabs', ->
       PinnedTabs.initConfig()
       atom.config.set 'pinned-tabs.modified', 'dont'
 
-      expect(spy.callCount).toBe(2)
+      expect(spy.callCount).toBe 2
 
   describe '::initObservers()', ->
     it 'should start observing opening new PaneItems', ->
@@ -180,7 +179,7 @@ describe 'PinnedTabs', ->
         done
 
       runs ->
-        expect(PinnedTabs.pin).toHaveBeenCalledWith(items[0], tabNode)
+        expect(PinnedTabs.pin).toHaveBeenCalledWith items[0], tabNode
 
   describe '::pinActive()', ->
     [tab] = []
@@ -199,11 +198,17 @@ describe 'PinnedTabs', ->
       waitsForPromise ->
         atom.workspace.open('package.json').then (item) ->
           PinnedTabs.pinActive()
-          expect(PinnedTabs.pin).toHaveBeenCalledWith(item, tab)
+          expect(PinnedTabs.pin).toHaveBeenCalledWith item, tab
+
+    it 'doesn\'t call ::pin() when there is no active item', ->
+      spyOn(atom.workspace, 'getActivePaneItem').andReturn null
+      spyOn PinnedTabs, 'pin'
+
+      PinnedTabs.pinActive()
+      expect(PinnedTabs.pin).not.toHaveBeenCalled()
 
   describe '::pinSelected()', ->
     beforeEach ->
-      atom.open {pathsToOpen: ['./']}
       waitsForPromise ->
         atom.workspace.open 'package.json'
 
@@ -219,7 +224,47 @@ describe 'PinnedTabs', ->
       atom.contextMenu.activeElement = tab
       PinnedTabs.pinSelected()
 
-      expect(PinnedTabs.pin).toHaveBeenCalledWith(items[0], tab)
+      expect(PinnedTabs.pin).toHaveBeenCalledWith items[0], tab
+
+  describe '::pin()', ->
+    beforeEach ->
+      waitsForPromise ->
+        atom.workspace.open 'package.json'
+
+    it 'pins unpinned tabs', ->
+      item = atom.workspace.getPaneItems()[0]
+
+      tabbar = document.createElement 'div'
+      tab = document.createElement 'div'
+      document.body.appendChild tabbar
+      tabbar.appendChild tab
+
+      PinnedTabs.pin item, tab
+      expect(tab.classList.contains 'pinned').toBeTruthy()
+
+    it 'unpins pinned tabs', ->
+      item = atom.workspace.getPaneItems()[0]
+
+      tabbar = document.createElement 'div'
+      tab = document.createElement 'div'
+      document.body.appendChild tabbar
+      tabbar.appendChild tab
+
+      tab.classList.add 'pinned'
+      PinnedTabs.pin item, tab
+      expect(tab.classList.contains 'pinned').toBeFalsy()
+
+    it 'changes the PinnedTabs state', ->
+      paneId = atom.workspace.getPanes()[0].id
+      item = atom.workspace.getPaneItems()[0]
+
+      tabbar = document.createElement 'div'
+      tab = document.createElement 'div'
+      document.body.appendChild tabbar
+      tabbar.appendChild tab
+
+      PinnedTabs.pin item, tab
+      expect(PinnedTabs.state.data[paneId]).toContain item.getURI()
 
   describe '::isPinned()', ->
     it 'returns true if the tab is pinned', ->

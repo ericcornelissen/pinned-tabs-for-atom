@@ -92,6 +92,7 @@ module.exports = PinnedTabs =
     activePane = atom.workspace.getActivePane()
     for pane in atom.workspace.getPanes()
       continue if @state.data[pane.id] == undefined
+
       for target in @state.data[pane.id]
         for item in pane.getItems()
           if target == @getItemID item
@@ -103,6 +104,9 @@ module.exports = PinnedTabs =
               if item.getTitle
                 title = paneNode.querySelector '.title[data-name="' + item.getTitle() + '"]'
                 tab = title.parentNode if title != null
+              if !tab && item.filePath
+                  title = paneNode.querySelector '.title[data-path="' + item.filePath.replace(/\\/g, '\\\\') + '"]'
+                  tab = title.parentNode if title != null
               if item.element && item.element.classList.contains 'about'
                 tab = paneNode.querySelector '.tab[data-type="AboutView"]'
               if item.element && item.element.classList.contains 'settings-view'
@@ -165,7 +169,9 @@ module.exports = PinnedTabs =
 
   getItemID: (item) ->
     if item.getURI
-      return item.getURI()
+      uri = item.getURI()
+      uri = 'markdown-preview://' + item.editorForId(item.editorId).getFileName() if uri.match(/markdown-preview:\/\//)
+      return uri
     else if item.getTitle
       return item.getTitle()
 

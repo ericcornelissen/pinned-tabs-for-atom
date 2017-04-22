@@ -84,6 +84,9 @@ module.exports = PinnedTabs =
           pane.moveItem item, pinnedTabs.length
       , 1
 
+    atom.workspace.onDidDestroyPane ({pane}) =>
+      delete @state.data[pane.id] if @state.data[pane.id] != undefined
+
     atom.workspace.onWillDestroyPaneItem ({item, pane}) =>
       return if @state.data[pane.id] == undefined
       @state.data[pane.id] = @state.data[pane.id].filter (id) => id isnt @getItemID(item)

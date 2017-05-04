@@ -10,8 +10,8 @@ For the best experience of this package, I recommend using it with the [file-ico
 ### Usage
 There are three ways to pin/unpin a tab using this package.
 - Via the context menu of a tab.
-- Via the keyboard shortcut ```ctrl-alt-p```.
-- Via the command-palette, by typing ```pin```.
+- Via the keyboard shortcut <kbd>ctrl</kbd> + <kbd>alt</kbd> + <kbd>p</kbd>.
+- Via the command-palette, by typing `Pin Active`.
 
 * * *
 
@@ -29,4 +29,4 @@ $ git clone https://github.com/ericcornelissen/pinned-tabs-for-atom --depth=1
 
 * * *
 
-Copyright © 2015-2016 Eric Cornelissen | MIT license
+Copyright © Eric Cornelissen | MIT license

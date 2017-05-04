@@ -54,22 +54,13 @@ body.pinned-tabs-animated .tab-bar .tab .title::before {
 body.pinned-tabs-animated .tab-bar .tab.pinned .title::before {
   transition: font-size .2s ease;
 }
-body.pinned-tabs-modified-always .tab-bar .tab.pinned.modified .title::before {
-  background-color: transparent !important;
-  border: 2px solid !important;
-  border-radius: 50% !important;
-  font-size: 0 !important; /* Hides the actual icon. */
-  height: 10px !important;
-  left: 50% !important;
-  position: absolute;
-  top: 50% !important;
-  transform: translate(-50%, -50%);
-  transition: border .3s ease .1s,
+body.pinned-tabs-animated.pinned-tabs-modified-always .tab-bar .tab.pinned.modified .title::before,
+body.pinned-tabs-animated.pinned-tabs-modified-hover .tab-bar .tab.pinned.modified:hover .title::before {
+  transition: border 0s ease .1s,
               font-size .2s ease 0s;
-  width: 10px !important;
 }
+body.pinned-tabs-modified-always .tab-bar .tab.pinned.modified .title::before,
 body.pinned-tabs-modified-hover .tab-bar .tab.pinned.modified:hover .title::before {
-  /* Create a modified icon using the border property. */
   background-color: transparent !important;
   border: 2px solid !important;
   border-radius: 50% !important;
@@ -79,13 +70,5 @@ body.pinned-tabs-modified-hover .tab-bar .tab.pinned.modified:hover .title::befo
   position: absolute;
   top: 50% !important;
   transform: translate(-50%, -50%);
-  transition: border 0s .2s,
-              border-radius 0s .2s,
-              height 0s .2s,
-              left 0s .2s,
-              top 0s .2s,
-              transform 0s .2s,
-              width  0s .2s,
-              font-size .2s ease;
   width: 10px !important;
 }

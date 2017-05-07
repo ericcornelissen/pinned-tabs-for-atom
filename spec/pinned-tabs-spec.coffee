@@ -266,6 +266,19 @@ describe 'PinnedTabs', ->
       PinnedTabs.pin item, tab
       expect(PinnedTabs.state.data[paneId]).toContain item.getURI()
 
+    it 'pins a new file', ->
+      waitsForPromise ->
+        atom.workspace.open('').then (item) ->
+          item = atom.workspace.getPaneItems()[1] # [0] = package.json from beforeEach
+
+          tabbar = document.createElement 'div'
+          tab = document.createElement 'div'
+          document.body.appendChild tabbar
+          tabbar.appendChild tab
+
+          PinnedTabs.pin item, tab
+          expect(tab.classList.contains 'pinned').toBeTruthy()
+
   describe '::isPinned()', ->
     it 'returns true if the tab is pinned', ->
       tab = document.createElement 'li'

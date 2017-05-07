@@ -171,7 +171,7 @@ module.exports = PinnedTabs =
     return pane.itemAtIndex tabIndex
 
   getItemID: (item) ->
-    if item.getURI
+    if item.getURI && item.getURI()
       uri = item.getURI()
       uri = 'markdown-preview://' + item.editorForId(item.editorId).getFileName() if uri.match(/markdown-preview:\/\//)
       return uri

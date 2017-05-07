@@ -12,6 +12,7 @@
 .tab-bar .tab .title {
   /* Prevent invocations on the .title elemen itself */
   pointer-events: none !important;
+  margin-left: 0px;
 }
 
 .tab-bar .tab.pinned {
@@ -22,9 +23,9 @@
 }
 .tab-bar .tab.pinned .title {
   font-size: 0;
-  margin: 0 !important;
+  margin-left: 38px;
+  overflow: visible;
   -webkit-mask: none !important;
-  padding: 0 !important;
 }
 .tab-bar .tab.pinned .close-icon {
   /* Disable and hide the close-icon. */
@@ -32,11 +33,11 @@
   transform: scale(0) !important;
 }
 .tab-bar .tab.pinned .title::before {
+  border-width: 0 !important;
+  left: -38px;
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  border-width: 0 !important;
-  margin: 0 !important;
   width: 38px !important;
 }
 .tab-bar .tab.pinned .title::after {
@@ -50,12 +51,16 @@
 body.pinned-tabs-animated .tab-bar .tab {
   transition: max-width .3s ease;
 }
-body.pinned-tabs-animated .tab-bar .tab .title::before {
-  transition: border .2s ease 0s,
-              font-size .2s ease .2s;
+body.pinned-tabs-animated .tab-bar .tab .title {
+  transition: font-size 0s ease 0s;
 }
-body.pinned-tabs-animated .tab-bar .tab.pinned .title::before {
-  transition: font-size .2s ease;
+body.pinned-tabs-animated .tab-bar .tab.pinned .title {
+  transition: font-size .2s ease .3s;
+}
+body.pinned-tabs-animated.pinned-tabs-modified-always .tab-bar .tab.pinned .title::before,
+body.pinned-tabs-animated.pinned-tabs-modified-hover .tab-bar .tab.pinned .title::before {
+  transition: border 0s ease .1s,
+              font-size .2s ease 0s;
 }
 body.pinned-tabs-animated.pinned-tabs-modified-always .tab-bar .tab.pinned.modified .title::before,
 body.pinned-tabs-animated.pinned-tabs-modified-hover .tab-bar .tab.pinned.modified:hover .title::before {
@@ -69,9 +74,6 @@ body.pinned-tabs-modified-hover .tab-bar .tab.pinned.modified:hover .title::befo
   border-radius: 50% !important;
   font-size: 0 !important; /* Hide the actual icon. */
   height: 10px !important;
-  left: 50% !important;
-  position: absolute;
-  top: 50% !important;
-  transform: translate(-50%, -50%);
+  margin: 0 14px;
   width: 10px !important;
 }

@@ -48,6 +48,12 @@ module.exports = PinnedTabs =
   activate: (state) ->
     @state = atom.deserializers.deserialize state if state.deserializer == 'PinnedTabsState'
 
+    # Reset states from older versions
+    @state.data = { } if @state.data == undefined
+    for key, value of @state.data
+      @state.data[key] = [] if value != undefined && not Array.isArray value
+
+    # Initialize commands/config/etc.
     @initCommands()
     @initConfig()
     @initObservers()

@@ -279,6 +279,18 @@ describe 'PinnedTabs', ->
           PinnedTabs.pin item, tab
           expect(tab.classList.contains 'pinned').toBeTruthy()
 
+    it 'doesn\'t fail when pinning a file w/o onDidChangeTitle', ->
+      item = atom.workspace.getPaneItems()[0]
+      item.onDidChangeTitle = undefined
+
+      tabbar = document.createElement 'div'
+      tab = document.createElement 'div'
+      document.body.appendChild tabbar
+      tabbar.appendChild tab
+
+      PinnedTabs.pin item, tab
+      expect(tab.classList.contains 'pinned').toBeTruthy()
+
   describe '::isPinned()', ->
     it 'returns true if the tab is pinned', ->
       tab = document.createElement 'li'

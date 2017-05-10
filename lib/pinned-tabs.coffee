@@ -153,11 +153,12 @@ module.exports = PinnedTabs =
       tab.classList.add 'pinned'
 
       # Watch for filename changes and update the state accordingly
-      oldId = @getItemID(item)
-      item.onDidChangeTitle =>
-          return if not @state.data[pane.id].includes oldId # Prevent tabs that are no longer pinned from being repinned
-          @state.data[pane.id] = @state.data[pane.id].filter (id) => id isnt oldId
-          @state.data[pane.id].push @getItemID(item) if not @state.data[pane.id].includes @getItemID(item)
+      if item.onDidChangeTitle
+        oldId = @getItemID item
+        item.onDidChangeTitle =>
+            return if not @state.data[pane.id].includes oldId # Prevent tabs that are no longer pinned from being repinned
+            @state.data[pane.id] = @state.data[pane.id].filter (id) => id isnt oldId
+            @state.data[pane.id].push @getItemID(item) if not @state.data[pane.id].includes @getItemID(item)
 
   # Misc
   closeUnpinnedTabs: ->

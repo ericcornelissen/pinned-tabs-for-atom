@@ -22,9 +22,9 @@
   padding: 0 !important;
 }
 .tab-bar .tab.pinned .title {
-  font-size: 0;
-  margin-left: 38px;
-  overflow: visible;
+  margin-left: 0;
+  margin-right: 0;
+  width: 100%;
   -webkit-mask: none !important;
 }
 .tab-bar .tab.pinned .close-icon {
@@ -34,14 +34,10 @@
 }
 .tab-bar .tab.pinned .title::before {
   border-width: 0 !important;
-  left: -38px;
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
+  text-align: center !important;
   width: 38px !important;
 }
 .tab-bar .tab.pinned .title::after {
-  /* Hide any ::after as there is no place for these when the tab is pinned. */
   left: 100%;
   margin: 0;
   padding: 0;

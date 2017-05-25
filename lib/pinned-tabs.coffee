@@ -127,7 +127,7 @@ module.exports = PinnedTabs =
 
   # Pin tabs
   pinActive: ->
-    tab = document.querySelector '.tab.active'
+    tab = document.querySelector '.tab.active:not([data-type="TreeView"])'
     item = atom.workspace.getActivePaneItem()
     @pin item, tab if tab != null && item != null
 

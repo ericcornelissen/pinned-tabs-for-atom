@@ -106,9 +106,7 @@ module.exports = PinnedTabs =
         for item in pane.getItems()
           if target == @getItemID item
             setTimeout (pane, item) =>
-              pane.activate()
-              paneNode = document.querySelector '.pane.active'
-              return if paneNode == null
+              paneNode = pane.element
 
               if item.getTitle
                 title = paneNode.querySelector '.title[data-name="' + item.getTitle() + '"]'

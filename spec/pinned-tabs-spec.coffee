@@ -166,7 +166,10 @@ describe 'PinnedTabs', ->
       paneNode.appendChild tabNode
       tabNode.appendChild titleNode
 
-      paneId = atom.workspace.getPanes()[0].id
+      pane = atom.workspace.getPanes()[0]
+      pane.activate()
+
+      paneId = pane.id
       items = atom.workspace.getPaneItems()
 
       PinnedTabs.state.data[paneId] = []

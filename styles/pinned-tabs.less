@@ -25,6 +25,7 @@
   margin-left: 0;
   margin-right: 0;
   width: 100%;
+  text-overflow: clip;
   -webkit-mask: none !important;
 }
 .tab-bar .tab.pinned .close-icon {
@@ -60,6 +61,8 @@ body.pinned-tabs-animated.pinned-tabs-modified-hover .tab-bar .tab.pinned .title
 }
 body.pinned-tabs-animated.pinned-tabs-modified-always .tab-bar .tab.pinned.modified .title::before,
 body.pinned-tabs-animated.pinned-tabs-modified-hover .tab-bar .tab.pinned.modified:hover .title::before {
+  top: 50%;
+  transform: translateY(-50%);
   transition: border 0s ease .1s,
               font-size .2s ease 0s;
 }

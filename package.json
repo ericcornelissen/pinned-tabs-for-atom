@@ -1,7 +1,7 @@
 {
   "name": "pinned-tabs",
   "main": "./lib/pinned-tabs",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "An Atom package that allows you to pin tabs",
   "keywords": [
     "pinned",

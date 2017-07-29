@@ -14,6 +14,14 @@ module.exports = PinnedTabs =
       description: 'Tick this to enable all animation related to pinned tabs'
       default: true
       type: 'boolean'
+    visualStudio:
+      _change: (enable) ->
+        body = document.querySelector 'body'
+        body.classList.toggle 'pinned-tabs-visualstudio', enable
+      title: 'Visual Studio style pinning'
+      description: 'Tick this to use Microsoft Visual Studio style pinned tabs'
+      default: false
+      type: 'boolean'
     closeUnpinned:
       _change: (enable) ->
         body = document.querySelector 'body'
@@ -72,6 +80,10 @@ module.exports = PinnedTabs =
     atom.config.onDidChange 'pinned-tabs.animated', ({newValue}) =>
       @config.animated._change newValue
     @config.animated._change atom.config.get('pinned-tabs.animated')
+
+    atom.config.onDidChange 'pinned-tabs.visualStudio', ({newValue}) =>
+      @config.visualStudio._change newValue
+    @config.visualStudio._change atom.config.get('pinned-tabs.visualStudio')
 
     atom.config.onDidChange 'pinned-tabs.closeUnpinned', ({newValue}) =>
       @config.closeUnpinned._change newValue

@@ -16,19 +16,7 @@
   pointer-events: none !important;
 }
 
-//
-body.pinned-tabs-animated.pinned-tabs-modified-always .tab-bar .tab.pinned .title::before,
-body.pinned-tabs-animated.pinned-tabs-modified-hover .tab-bar .tab.pinned .title::before {
-  transition: border 0s ease .1s,
-              font-size .2s ease 0s;
-}
-body.pinned-tabs-animated.pinned-tabs-modified-always .tab-bar .tab.pinned.modified .title::before,
-body.pinned-tabs-animated.pinned-tabs-modified-hover .tab-bar .tab.pinned.modified:hover .title::before {
-  top: 50%;
-  transform: translateY(-50%);
-}
-
-// Default pinned styling
+// Default pinned tab styling
 body:not(.pinned-tabs-visualstudio) {
   // Make pinned tabs a fixed width
   .tab-bar .tab.pinned {
@@ -77,6 +65,16 @@ body:not(.pinned-tabs-visualstudio) {
   &.pinned-tabs-animated .tab-bar .tab.pinned .title:not(.icon)::before {
     animation: icon-in .3s;
   }
+  &.pinned-tabs-animated.pinned-tabs-modified-always .tab-bar .tab.pinned .title::before,
+  &.pinned-tabs-animated.pinned-tabs-modified-hover .tab-bar .tab.pinned .title::before {
+    transition: border 0s ease .1s,
+                font-size .2s ease 0s;
+  }
+  &.pinned-tabs-animated.pinned-tabs-modified-always .tab-bar .tab.pinned.modified .title::before,
+  &.pinned-tabs-animated.pinned-tabs-modified-hover .tab-bar .tab.pinned.modified:hover .title::before {
+    top: 50%;
+    transform: translateY(-50%);
+  }
 
   // Style ::before of the title for modified tabs
   &.pinned-tabs-modified-always .tab-bar .tab.pinned.modified .title::before,
@@ -97,8 +95,10 @@ body:not(.pinned-tabs-visualstudio) {
 // Visual studio pinned tab styling
 body.pinned-tabs-visualstudio {
   .tab-bar .tab.pinned .close-icon {
+    pointer-events: none !important; // Makes the close icon non-functional
+
     &::before {
-      content: '\f041'; // Change close icon into a "pin" icon
+      content: '\f041'; // Change close icon into a "pinned" icon
     }
   }
 }

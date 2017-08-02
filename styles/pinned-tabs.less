@@ -1,5 +1,5 @@
-.tab-bar .tab .title:not(.icon)::before {
-  /* Set a default icon for pinned tabs. */
+// Set a default icon for pinned tabs
+.tab-bar .tab.pinned .title:not(.icon)::before {
   content: '\f011';
   display: inline-block;
   font-family: 'Octicons Regular';
@@ -11,15 +11,12 @@
   width: 0;
 }
 
+// Prevent invocations on the .title element
 .tab-bar .tab .title {
-  /* Prevent invocations on the .title element itself */
-  pointer-events: none !important;
-}
-.tab-bar .tab.pinned .close-icon {
-  /* Disable and hide the close-icon. */
   pointer-events: none !important;
 }
 
+//
 body.pinned-tabs-animated.pinned-tabs-modified-always .tab-bar .tab.pinned .title::before,
 body.pinned-tabs-animated.pinned-tabs-modified-hover .tab-bar .tab.pinned .title::before {
   transition: border 0s ease .1s,
@@ -31,16 +28,21 @@ body.pinned-tabs-animated.pinned-tabs-modified-hover .tab-bar .tab.pinned.modifi
   transform: translateY(-50%);
 }
 
+// Default pinned styling
 body:not(.pinned-tabs-visualstudio) {
+  // Make pinned tabs a fixed width
   .tab-bar .tab.pinned {
-    /* Make pinned tabs a fixed width. */
     max-width: 38px !important;
     min-width: 38px !important;
     padding: 0 !important;
   }
+
+  // Visually hide the close-icon
   .tab-bar .tab.pinned .close-icon {
     transform: scale(0) !important;
   }
+
+  // Hide the title of the pinned tab
   .tab-bar .tab.pinned .title {
     margin: 0;
     overflow: hidden;
@@ -48,6 +50,8 @@ body:not(.pinned-tabs-visualstudio) {
     text-overflow: clip;
     -webkit-mask: none !important;
   }
+
+  // Position the icon for the pinned tab
   .tab-bar .tab.pinned .title::before {
     border-width: 0 !important;
     left: -38px;
@@ -55,6 +59,8 @@ body:not(.pinned-tabs-visualstudio) {
     text-align: center !important;
     width: 38px !important;
   }
+
+  // Hide any content added ::after the title
   .tab-bar .tab.pinned .title::after {
     left: 100%;
     margin: 0;
@@ -62,6 +68,7 @@ body:not(.pinned-tabs-visualstudio) {
     position: absolute;
   }
 
+  // Set animation transitions
   &.pinned-tabs-animated .tab-bar .tab {
     transition: max-width .3s ease,
                 min-width .3s ease,
@@ -71,6 +78,7 @@ body:not(.pinned-tabs-visualstudio) {
     animation: icon-in .3s;
   }
 
+  // Style ::before of the title for modified tabs
   &.pinned-tabs-modified-always .tab-bar .tab.pinned.modified .title::before,
   &.pinned-tabs-modified-hover .tab-bar .tab.pinned.modified:hover .title::before {
     background-color: transparent;
@@ -84,25 +92,13 @@ body:not(.pinned-tabs-visualstudio) {
     top: 50%;
     width: 10px !important;
   }
-  &.pinned-tabs-modified-always .tab-bar .tab.pinned.modified .title::before,
-  &.pinned-tabs-modified-hover .tab-bar .tab.pinned.modified:hover .title::before {
-    background-color: transparent;
-    border: 2px solid !important;
-    border-radius: 50%;
-    font-size: 0 !important; // Hides the actual icon
-    height: 10px !important;
-    width: 10px !important;
-  }
 }
+
+// Visual studio pinned tab styling
 body.pinned-tabs-visualstudio {
   .tab-bar .tab.pinned .close-icon {
     &::before {
-      content: '\f041';
+      content: '\f041'; // Change close icon into a "pin" icon
     }
   }
-}
-
-@keyframes icon-in {
-  0% { left: -76px; }
-  100% { left: -38px; }
 }

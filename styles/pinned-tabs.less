@@ -1,5 +1,5 @@
 // Set a default icon for pinned tabs
-.tab-bar .tab .title:not(.icon)::before {
+.tab-bar .tab.pinned .title:not(.icon)::before {
   content: '\f011';
   display: inline-block;
   font-family: 'Octicons Regular';
@@ -12,7 +12,7 @@
 }
 
 // Prevent invocations on the .title element
-.tab-bar .tab .title {
+.tab-bar .tab.pinned .title {
   pointer-events: none !important;
 }
 

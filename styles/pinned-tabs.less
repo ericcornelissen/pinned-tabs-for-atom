@@ -95,7 +95,8 @@ body:not(.pinned-tabs-visualstudio) {
 // Visual studio pinned tab styling
 body.pinned-tabs-visualstudio {
   .tab-bar .tab.pinned .close-icon {
-    pointer-events: none !important; // Makes the close icon non-functional
+    pointer-events: none !important; // Makes the close icon non-functional when used as pinned icon
+    transform: scale(1) !important; // Force show the pinned icon
 
     &::before {
       content: '\f041'; // Change close icon into a "pinned" icon

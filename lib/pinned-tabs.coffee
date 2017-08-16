@@ -7,22 +7,42 @@ CONFIG_URI = 'atom://config'
 module.exports = PinnedTabs =
   config:
     animated:
-      _change: (enable) ->
-        body = document.querySelector 'body'
-        body.classList.toggle 'pinned-tabs-animated', enable
       title: 'Enable animations'
       description: 'Tick this to enable all animation related to pinned tabs'
       default: true
       type: 'boolean'
-    closeUnpinned:
+      order: 1
       _change: (enable) ->
         body = document.querySelector 'body'
-        body.classList.toggle 'close-unpinned', enable
+        body.classList.toggle 'pinned-tabs-animated', enable
+    visualStudio:
+      title: 'Visual Studio style pinning'
+      description: 'Tick this to use Microsoft Visual Studio style pinned tabs (**Modified indicator** will be ignored)'
+      default: false
+      type: 'boolean'
+      order: 2
+      _change: (enable) ->
+        body = document.querySelector 'body'
+        body.classList.toggle 'pinned-tabs-visualstudio', enable
+    closeUnpinned:
       title: 'Enable the \'Close Unpinned Tabs\' option'
       description: 'Tick this to show the \'Close Unpinned Tabs\' from the context menu'
       default: false
       type: 'boolean'
+      order: 3
+      _change: (enable) ->
+        body = document.querySelector 'body'
+        body.classList.toggle 'close-unpinned', enable
     modified:
+      title: 'Modified indicator'
+      default: 'always'
+      type: 'string'
+      order: 4
+      enum: [
+        { value: 'dont', description: 'Don\'t use this feature' }
+        { value: 'hover', description: 'Only show this when I hover over the tab' }
+        { value: 'always', description: 'Always show this when a tab is modified' }
+      ]
       _change: (value) ->
         body = document.querySelector 'body'
         if value == 'dont'
@@ -34,14 +54,6 @@ module.exports = PinnedTabs =
         else
           body.classList.add 'pinned-tabs-modified-always'
           body.classList.remove 'pinned-tabs-modified-hover'
-      title: 'Use an indicator for when a pinned tab has unsaved modifications'
-      default: 'always'
-      type: 'string'
-      enum: [
-        { value: 'dont', description: 'Don\'t use this feature' }
-        { value: 'hover', description: 'Only show this when I hover over the tab' }
-        { value: 'always', description: 'Always show this when a tab is modified' }
-      ]
   state: new PinnedTabsState({ })
   subscriptions: new CompositeDisposable()
 
@@ -72,6 +84,10 @@ module.exports = PinnedTabs =
     atom.config.onDidChange 'pinned-tabs.animated', ({newValue}) =>
       @config.animated._change newValue
     @config.animated._change atom.config.get('pinned-tabs.animated')
+
+    atom.config.onDidChange 'pinned-tabs.visualStudio', ({newValue}) =>
+      @config.visualStudio._change newValue
+    @config.visualStudio._change atom.config.get('pinned-tabs.visualStudio')
 
     atom.config.onDidChange 'pinned-tabs.closeUnpinned', ({newValue}) =>
       @config.closeUnpinned._change newValue

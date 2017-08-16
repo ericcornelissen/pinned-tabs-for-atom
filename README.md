@@ -1,5 +1,5 @@
 # Pinned tabs for Atom
-A simple package for the Atom text editor from GitHub that allows you to pin tabs. Inspired by the pin tab feature from Google Chrome.
+A simple package for the Atom text editor from GitHub that allows you to pin tabs. Inspired by the pin tab feature from Browsers, also supports Visual Studio style pinning.
 
 For the best experience of this package, I recommend using it with the [file-icons](https://atom.io/packages/file-icons) package.
 

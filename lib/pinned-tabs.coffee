@@ -74,11 +74,14 @@ module.exports = PinnedTabs =
   serialize: ->
     @state.serialize()
 
+  deactivate: ->
+    @subscriptions.dispose()
+
   # Initalization
   initCommands: ->
-    atom.commands.add 'atom-workspace', 'pinned-tabs:pin-active', => @pinActive()
-    atom.commands.add 'atom-workspace', 'pinned-tabs:pin-selected', => @pinSelected()
-    atom.commands.add 'atom-workspace', 'pinned-tabs:close-unpinned', => @closeUnpinnedTabs()
+    @subscriptions.add(atom.commands.add 'atom-workspace', 'pinned-tabs:pin-active', => @pinActive())
+    @subscriptions.add(atom.commands.add 'atom-workspace', 'pinned-tabs:pin-selected', => @pinSelected())
+    @subscriptions.add(atom.commands.add 'atom-workspace', 'pinned-tabs:close-unpinned', => @closeUnpinnedTabs())
 
   initConfig: ->
     atom.config.onDidChange 'pinned-tabs.animated', ({newValue}) =>

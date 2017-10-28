@@ -222,8 +222,8 @@ describe('PinnedTabs', () => {
       let paneId = pane.id;
       let items = atom.workspace.getPaneItems();
 
-      PinnedTabs.state.data[paneId] = [];
-      PinnedTabs.state.data[paneId].push(items[0].getURI());
+      PinnedTabs.state[paneId] = [];
+      PinnedTabs.state[paneId].push(items[0].getURI());
 
       PinnedTabs.initTabs();
 
@@ -334,7 +334,7 @@ describe('PinnedTabs', () => {
       tabbar.appendChild(tab);
 
       PinnedTabs.pin(item, tab);
-      expect(PinnedTabs.state.data[paneId]).toContain(item.getURI());
+      expect(PinnedTabs.state[paneId]).toContain(item.getURI());
     });
 
     it('pins a new file', () => {

@@ -184,6 +184,8 @@ module.exports = PinnedTabs =
   # Misc
   closeUnpinnedTabs: ->
     activePane = document.querySelector '.pane.active'
+    return if activePane == null
+
     tabbar = activePane.querySelector '.tab-bar'
 
     activePane = atom.workspace.getActivePane()
@@ -214,7 +216,13 @@ module.exports = PinnedTabs =
   getItemID: (item) ->
     if item.getURI && item.getURI()
       uri = item.getURI()
-      uri = 'markdown-preview://' + item.editorForId(item.editorId).getFileName() if uri.match(/markdown-preview:\/\//)
+
+      if uri.match(/markdown-preview:\/\//)
+        try
+          uri = 'markdown-preview://' + item.editorForId(item.editorId).getFileName()
+        catch error
+          return uri
+
       return uri
     else if item.getTitle
       return item.getTitle()

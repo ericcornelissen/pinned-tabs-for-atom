@@ -6,8 +6,8 @@ git:
   depth: 10
 
 os:
-- linux
-- osx
+  - linux
+  - osx
 
 env:
   global:
@@ -19,14 +19,18 @@ env:
     - ATOM_CHANNEL=beta
 
 addons:
-apt:
-  packages:
-  - build-essential
-  - git
-  - libgnome-keyring-dev
-  - fakeroot
+  apt:
+    packages:
+      - build-essential
+      - git
+      - libgnome-keyring-dev
+      - fakeroot
+
+install:
+  - npm install
 
 script:
+  - npm run lint
   - curl -s -O https://raw.githubusercontent.com/atom/ci/master/build-package.sh
   - chmod u+x build-package.sh
   - ./build-package.sh

@@ -1,0 +1,16 @@
+{
+  "context-menu": {
+    ".tab:not(.pinned)": [{
+      "label": "Pin tab",
+      "command": "pinned-tabs:pin-selected"
+    }],
+    ".tab.pinned": [{
+      "label": "Unpin tab",
+      "command": "pinned-tabs:pin-selected"
+    }],
+    "body.close-unpinned .tab": [{
+      "label": "Close Unpinned Tabs",
+      "command": "pinned-tabs:close-unpinned"
+    }]
+  }
+}

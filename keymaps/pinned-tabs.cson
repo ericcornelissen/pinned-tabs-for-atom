@@ -1,3 +1,0 @@
-# Pin the active tab with the shortcut ctrl-alt-p
-'atom-workspace':
-  'ctrl-alt-p': 'pinned-tabs:pin-active'

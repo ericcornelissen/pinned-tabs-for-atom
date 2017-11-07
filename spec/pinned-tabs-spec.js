@@ -192,11 +192,11 @@ describe('PinnedTabs', () => {
       jasmine.unspy(window, 'setTimeout');
 
       // Open two files in the workspace
-      atom.workspace.open('fixtures/chicken.md')
+      atom.workspace.open('chicken.md')
         .then(editor => {
           chickenPath = editor.getPath();
         })
-        .then(() => atom.workspace.open('fixtures/lorem.txt'))
+        .then(() => atom.workspace.open('lorem.txt'))
         .then(editor => {
           loremPath = editor.getPath();
           paneId = atom.workspace.getPanes().find(pane => pane.getItems().includes(editor)).id;
@@ -248,10 +248,37 @@ describe('PinnedTabs', () => {
 
   });
 
+  describe('::closeUnpinned()', () => {
+
+    beforeEach(done => {
+      atom.workspace.open('chicken.md')
+        .then(() => atom.workspace.open('lorem.txt'))
+        .then(done);
+    });
+
+    it('closes all unpinned tabs', () => {
+      let pane = atom.workspace.getActivePane();
+
+      PinnedTabs.closeUnpinned();
+      expect(pane.getItems().length).toBe(0);
+    });
+
+    it('doesn\'t close pinned tabs', () => {
+      let pane = atom.workspace.getActivePane();
+
+      let tab = workspaceElement.querySelector('.tab .title[data-name="chicken.md"]').parentNode;
+      tab.classList.add('pinned');
+
+      PinnedTabs.closeUnpinned();
+      expect(pane.getItems().length).toBe(1);
+    });
+
+  });
+
   describe('::pinActive()', () => {
 
     beforeEach(done => {
-      atom.workspace.open('fixtures/lorem.txt').then(done);
+      atom.workspace.open('lorem.txt').then(done);
     });
 
     it('calls ::pin() with the active item', () => {
@@ -274,7 +301,7 @@ describe('PinnedTabs', () => {
       PinnedTabs.state = new PinnedTabsState();
 
       // Open a file in the workspace
-      atom.workspace.open('fixtures/chicken.md')
+      atom.workspace.open('chicken.md')
         .then(editor => {
           chickenPath = editor.getPath();
           paneId = atom.workspace.getPanes().find(pane => pane.getItems().includes(editor)).id;

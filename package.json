@@ -14,9 +14,11 @@
     "atom": ">=1.0.0 <2.0.0"
   },
   "devDependencies": {
+    "atom-jasmine2-test-runner": "^1.1.2",
     "eslint": "^4.10.0"
   },
   "scripts": {
     "lint": "eslint lib/*.js"
-  }
+  },
+  "atomTestRunner": "./spec/runner"
 }

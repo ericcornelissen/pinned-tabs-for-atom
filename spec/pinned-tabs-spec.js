@@ -1,16 +1,17 @@
 const PinnedTabs = require('../lib/pinned-tabs.js');
+const PinnedTabsState = require('../lib/state.js');
 
 describe('PinnedTabs', () => {
 
 
   let workspaceElement;
 
-  beforeEach(() => {
+  beforeEach(done => {
     workspaceElement = atom.views.getView(atom.workspace);
     jasmine.attachToDOM(workspaceElement);
 
     // The "tabs" package is required for pinned-tabs
-    waitsForPromise(() => atom.packages.activatePackage('tabs'));
+    atom.packages.activatePackage('tabs').then(done);
   });
 
   it('has a "config" variable', () => {
@@ -44,19 +45,19 @@ describe('PinnedTabs', () => {
       expect(PinnedTabs.setObservers).toHaveBeenCalled();
     });
 
-    it('initializes the pinned tabs from a previous state', () => {
+    it('does not restore a state without a previous state', () => {
       spyOn(PinnedTabs, 'restoreState');
 
       PinnedTabs.activate();
-      expect(PinnedTabs.restoreState).toHaveBeenCalled();
+      expect(PinnedTabs.restoreState).not.toHaveBeenCalled();
     });
 
-    it('doesn\'t throw when the package is being activated', () => {
-      waitsForPromise(() =>
-        atom.packages.activatePackage('pinned-tabs').then(() => {
-          expect(atom.packages.isPackageActive('pinned-tabs')).toBe(true);
-        })
-      );
+    it('restores the state from a previous state', () => {
+      spyOn(PinnedTabs, 'restoreState');
+
+      let state = new PinnedTabsState();
+      PinnedTabs.activate(state.serialize());
+      expect(PinnedTabs.restoreState).toHaveBeenCalled();
     });
 
   });
@@ -119,32 +120,32 @@ describe('PinnedTabs', () => {
 
   describe('::initializeConfig()', () => {
 
-    it('initializes observers for the config options', () => {
-      spyOn(atom.config, 'onDidChange');
+    it('initializes the "animated" configuration variable', () => {
+      spyOn(atom.config, 'observe');
 
       PinnedTabs.initializeConfig();
-      expect(atom.config.onDidChange).toHaveBeenCalled();
+      expect(atom.config.observe).toHaveBeenCalledWith('pinned-tabs.animated', jasmine.any(Function));
     });
 
-    it('initializes the "animated" configuration variable', () => {
-      spyOn(PinnedTabs.config.animated, '_change');
+    it('initializes the "visualStudio" configuration variable', () => {
+      spyOn(atom.config, 'observe');
 
       PinnedTabs.initializeConfig();
-      expect(PinnedTabs.config.animated._change).toHaveBeenCalled();
+      expect(atom.config.observe).toHaveBeenCalledWith('pinned-tabs.visualStudio', jasmine.any(Function));
     });
 
     it('initializes the "closeUnpinned" configuration variable', () => {
-      spyOn(PinnedTabs.config.closeUnpinned, '_change');
+      spyOn(atom.config, 'observe');
 
       PinnedTabs.initializeConfig();
-      expect(PinnedTabs.config.closeUnpinned._change).toHaveBeenCalled();
+      expect(atom.config.observe).toHaveBeenCalledWith('pinned-tabs.closeUnpinned', jasmine.any(Function));
     });
 
     it('initializes the "modified" configuration variable', () => {
-      spyOn(PinnedTabs.config.modified, '_change');
+      spyOn(atom.config, 'observe');
 
       PinnedTabs.initializeConfig();
-      expect(PinnedTabs.config.modified._change).toHaveBeenCalled();
+      expect(atom.config.observe).toHaveBeenCalledWith('pinned-tabs.modified', jasmine.any(Function));
     });
 
   });
@@ -152,21 +153,21 @@ describe('PinnedTabs', () => {
   describe('::setObservers()', () => {
 
     it('should start observing opening new Panes', () => {
-      spyOn(atom.workspace, 'onDidAddPane');
+      spyOn(atom.workspace, 'onDidAddPane').and.returnValue({dispose: jasmine.createSpy('dispose')});
 
       PinnedTabs.setObservers();
       expect(atom.workspace.onDidAddPane).toHaveBeenCalled();
     });
 
     it('should start observing closing Panes', () => {
-      spyOn(atom.workspace, 'onDidDestroyPane');
+      spyOn(atom.workspace, 'onDidDestroyPane').and.returnValue({dispose: jasmine.createSpy('dispose')});
 
       PinnedTabs.setObservers();
       expect(atom.workspace.onDidDestroyPane).toHaveBeenCalled();
     });
 
     it('should start observing opening new Pane Items', () => {
-      spyOn(atom.workspace, 'onDidAddPaneItem');
+      spyOn(atom.workspace, 'onDidAddPaneItem').and.returnValue({dispose: jasmine.createSpy('dispose')});
 
       PinnedTabs.setObservers();
       expect(atom.workspace.onDidAddPaneItem).toHaveBeenCalled();
@@ -178,66 +179,70 @@ describe('PinnedTabs', () => {
 
     let chickenPath, loremPath;
 
-    beforeEach(() => {
+    beforeEach(done => {
       jasmine.unspy(window, 'setTimeout');
 
-      waitsForPromise(() =>
-        atom.workspace.open('fixtures/chicken.md')
-          .then(editor => { chickenPath = editor.getPath(); })
-      );
-      waitsForPromise(() =>
-        atom.workspace.open('fixtures/lorem.txt')
-          .then(editor => { loremPath = editor.getPath(); })
-      );
+      atom.workspace.open('fixtures/chicken.md')
+        .then(editor => { chickenPath = editor.getPath(); })
+        .then(done);
+      atom.workspace.open('fixtures/lorem.txt')
+        .then(editor => { loremPath = editor.getPath(); })
+        .then(done);
     });
 
-    it('does nothing when the state specifies no tabs', () => {
+    it('does nothing when the state specifies no tabs', done => {
       spyOn(PinnedTabs, 'pin');
 
-      waitsForPromise(() => PinnedTabs.restoreState());
-      runs(() => expect(PinnedTabs.pin).not.toHaveBeenCalled());
+      let state = new PinnedTabsState();
+      PinnedTabs.restoreState(state)
+        .then(() => expect(PinnedTabs.pin).not.toHaveBeenCalled())
+        .then(done);
     });
 
-    it('pins one tab that is specified in the state', () => {
+    it('pins one tab that is specified in the state', done => {
       spyOn(PinnedTabs, 'pin');
 
+      let state = new PinnedTabsState();
       let paneId = 81;// TODO: Adjusting state
-      PinnedTabs.state[paneId] = [
+      state[paneId] = [
         { type: 'TextEditor', id: chickenPath, subscriptions: () => { } }
       ];
 
-      waitsForPromise(() => PinnedTabs.restoreState());
-      runs(() => {
-        let tab = workspaceElement.querySelector('.tab .title[data-name="chicken.md"]').parentNode;
-        expect(PinnedTabs.pin).toHaveBeenCalledWith(tab, true);
-      });
+      PinnedTabs.restoreState(state)
+        .then(() => {
+          let tab = workspaceElement.querySelector('.tab .title[data-name="chicken.md"]').parentNode;
+          expect(PinnedTabs.pin).toHaveBeenCalledWith(tab, true);
+        })
+        .then(done);
     });
 
-    it('pins multiple tabs that are specified in the state', () => {
+    it('pins multiple tabs that are specified in the state', done => {
       spyOn(PinnedTabs, 'pin');
 
+      let state = new PinnedTabsState();
       let paneId = 85;// TODO: Adjusting state
-      PinnedTabs.state[paneId] = [
+      state[paneId] = [
         { type: 'TextEditor', id: chickenPath, subscriptions: () => { } },
         { type: 'TextEditor', id: loremPath, subscriptions: () => { } }
       ];
 
-      waitsForPromise(() => PinnedTabs.restoreState());
-      runs(() => {
-        let tabChicken = workspaceElement.querySelector('.tab .title[data-name="chicken.md"]').parentNode;
-        expect(PinnedTabs.pin).toHaveBeenCalledWith(tabChicken, true);
+      PinnedTabs.restoreState(state)
+        .then(() => {
+          let tabChicken = workspaceElement.querySelector('.tab .title[data-name="chicken.md"]').parentNode;
+          expect(PinnedTabs.pin).toHaveBeenCalledWith(tabChicken, true);
 
-        let tabLorem = workspaceElement.querySelector('.tab .title[data-name="lorem.txt"]').parentNode;
-        expect(PinnedTabs.pin).toHaveBeenCalledWith(tabLorem, true);
-      });
+          let tabLorem = workspaceElement.querySelector('.tab .title[data-name="lorem.txt"]').parentNode;
+          expect(PinnedTabs.pin).toHaveBeenCalledWith(tabLorem, true);
+        })
+        .then(done);
     });
 
   });
 
   describe('::pinActive()', () => {
 
-    beforeEach(() => {
-      waitsForPromise(() => atom.workspace.open('fixtures/lorem.txt'));
+    beforeEach(done => {
+      atom.workspace.open('fixtures/lorem.txt').then(done);
     });
 
     it('calls ::pin() with the active item', () => {
@@ -252,8 +257,8 @@ describe('PinnedTabs', () => {
 
   describe('::pin()', () => {
 
-    beforeEach(() => {
-      waitsForPromise(() => atom.workspace.open('fixtures/chicken.md'));
+    beforeEach(done => {
+      atom.workspace.open('fixtures/chicken.md').then(done);
     });
 
     it('pins unpinned tabs', () => {
@@ -283,21 +288,17 @@ describe('PinnedTabs', () => {
       expect(PinnedTabs.state[paneId][0].id).toContain('chicken.md');
     });
 
-    xit('pins a new (unsaved) file', () => {
-      // TODO: No longer works
-      waitsForPromise(() =>
-        atom.workspace.open('').then(item => {
-          item = atom.workspace.getPaneItems()[1]; // [0] = package.json from beforeEach
+    xit('pins a new (unsaved) file', done => {
+      atom.workspace.open('')
+        .then(() => {
+          let paneId = 105;
+          PinnedTabs.state[paneId] = []; // TODO: Adjusting state
 
-          let tabbar = document.createElement('div');
-          let tab = document.createElement('div');
-          document.body.appendChild(tabbar);
-          tabbar.appendChild(tab);
-
-          PinnedTabs.pin(item, tab);
+          let tab = workspaceElement.querySelector('.tab .title:not([data-name])').parentNode;
+          PinnedTabs.pin(tab);
           expect(tab.classList.contains('pinned')).toBeTruthy();
         })
-      );
+        .then(done);
     });
 
   });

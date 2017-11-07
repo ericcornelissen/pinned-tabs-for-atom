@@ -1,17 +1,21 @@
+const { CompositeDisposable } = require('atom');
+
 const PinnedTabs = require('../lib/pinned-tabs.js');
 const PinnedTabsState = require('../lib/state.js');
 
 describe('PinnedTabs', () => {
 
-
   let workspaceElement;
 
   beforeEach(done => {
+    // Attach the workspace to the DOM
     workspaceElement = atom.views.getView(atom.workspace);
     jasmine.attachToDOM(workspaceElement);
 
     // The "tabs" package is required for pinned-tabs
-    atom.packages.activatePackage('tabs').then(done);
+    atom.packages.activatePackage('tabs')
+      .then(atom.packages.activatePackage('settings-view'))
+      .then(done);
   });
 
   it('has a "config" variable', () => {
@@ -178,22 +182,31 @@ describe('PinnedTabs', () => {
   describe('::restoreState()', () => {
 
     let chickenPath, loremPath;
+    let state, paneId;
 
     beforeEach(done => {
+      // Initialize a state to work with
+      state = new PinnedTabsState();
+
+      // Unspy setTimeout since ::restoreState() uses it
       jasmine.unspy(window, 'setTimeout');
 
+      // Open two files in the workspace
       atom.workspace.open('fixtures/chicken.md')
-        .then(editor => { chickenPath = editor.getPath(); })
-        .then(done);
-      atom.workspace.open('fixtures/lorem.txt')
-        .then(editor => { loremPath = editor.getPath(); })
+        .then(editor => {
+          chickenPath = editor.getPath();
+        })
+        .then(() => atom.workspace.open('fixtures/lorem.txt'))
+        .then(editor => {
+          loremPath = editor.getPath();
+          paneId = atom.workspace.getPanes().find(pane => pane.getItems().includes(editor)).id;
+        })
         .then(done);
     });
 
     it('does nothing when the state specifies no tabs', done => {
       spyOn(PinnedTabs, 'pin');
 
-      let state = new PinnedTabsState();
       PinnedTabs.restoreState(state)
         .then(() => expect(PinnedTabs.pin).not.toHaveBeenCalled())
         .then(done);
@@ -202,10 +215,8 @@ describe('PinnedTabs', () => {
     it('pins one tab that is specified in the state', done => {
       spyOn(PinnedTabs, 'pin');
 
-      let state = new PinnedTabsState();
-      let paneId = 81;// TODO: Adjusting state
       state[paneId] = [
-        { type: 'TextEditor', id: chickenPath, subscriptions: () => { } }
+        { type: 'TextEditor', id: chickenPath, subscriptions: new CompositeDisposable() }
       ];
 
       PinnedTabs.restoreState(state)
@@ -219,11 +230,9 @@ describe('PinnedTabs', () => {
     it('pins multiple tabs that are specified in the state', done => {
       spyOn(PinnedTabs, 'pin');
 
-      let state = new PinnedTabsState();
-      let paneId = 85;// TODO: Adjusting state
       state[paneId] = [
-        { type: 'TextEditor', id: chickenPath, subscriptions: () => { } },
-        { type: 'TextEditor', id: loremPath, subscriptions: () => { } }
+        { type: 'TextEditor', id: chickenPath, subscriptions: new CompositeDisposable() },
+        { type: 'TextEditor', id: loremPath, subscriptions: new CompositeDisposable() }
       ];
 
       PinnedTabs.restoreState(state)
@@ -257,21 +266,29 @@ describe('PinnedTabs', () => {
 
   describe('::pin()', () => {
 
+    let chickenPath;
+    let paneId;
+
     beforeEach(done => {
-      atom.workspace.open('fixtures/chicken.md').then(done);
+      // Initialize a state to work with
+      PinnedTabs.state = new PinnedTabsState();
+
+      // Open a file in the workspace
+      atom.workspace.open('fixtures/chicken.md')
+        .then(editor => {
+          chickenPath = editor.getPath();
+          paneId = atom.workspace.getPanes().find(pane => pane.getItems().includes(editor)).id;
+        })
+        .then(done);
     });
 
-    it('pins unpinned tabs', () => {
-      PinnedTabs.state[93] = []; // TODO: Adjusting state
-
+    it('pins an unpinned TextEditor', () => {
       let tab = workspaceElement.querySelector('.tab .title[data-name="chicken.md"]').parentNode;
       PinnedTabs.pin(tab);
       expect(tab.classList.contains('pinned')).toBeTruthy();
     });
 
-    it('unpins pinned tabs', () => {
-      PinnedTabs.state[97] = []; // TODO: Adjusting state
-
+    it('unpins a pinned TextEditor', () => {
       let tab = workspaceElement.querySelector('.tab .title[data-name="chicken.md"]').parentNode;
       tab.classList.add('pinned');
 
@@ -279,26 +296,59 @@ describe('PinnedTabs', () => {
       expect(tab.classList.contains('pinned')).toBeFalsy();
     });
 
-    it('changes the PinnedTabs state', () => {
-      let paneId = 101;
-      PinnedTabs.state[paneId] = []; // TODO: Adjusting state
-
+    it('changes the PinnedTabs state when a tab is pinned', () => {
       let tab = workspaceElement.querySelector('.tab .title[data-name="chicken.md"]').parentNode;
       PinnedTabs.pin(tab);
       expect(PinnedTabs.state[paneId][0].id).toContain('chicken.md');
     });
 
-    xit('pins a new (unsaved) file', done => {
+    it('changes the PinnedTabs state when a tab is unpinned', () => {
+      PinnedTabs.state[paneId] = [
+        { id: chickenPath, subscriptions: new CompositeDisposable() }
+      ];
+
+      let tab = workspaceElement.querySelector('.tab .title[data-name="chicken.md"]').parentNode;
+      tab.classList.add('pinned');
+
+      PinnedTabs.pin(tab);
+      expect(PinnedTabs.state[paneId].length).toBe(0);
+    });
+
+    it('is not possible to pin new (unsaved) editors', done => {
+      spyOn(atom.notifications, 'addWarning');
+
       atom.workspace.open('')
         .then(() => {
-          let paneId = 105;
-          PinnedTabs.state[paneId] = []; // TODO: Adjusting state
-
           let tab = workspaceElement.querySelector('.tab .title:not([data-name])').parentNode;
           PinnedTabs.pin(tab);
-          expect(tab.classList.contains('pinned')).toBeTruthy();
+          expect(tab.classList.contains('pinned')).toBeFalsy();
+          expect(atom.notifications.addWarning).toHaveBeenCalled();
         })
         .then(done);
+    });
+
+    it('pins the settings tab', done => {
+      atom.commands.dispatch(workspaceElement, 'settings-view:open');
+
+      // Opening the settings view takes some time
+      setTimeout(() => {
+        let tab = workspaceElement.querySelector('.tab[data-type="SettingsView"]');
+        PinnedTabs.pin(tab);
+        expect(tab.classList.contains('pinned')).toBeTruthy();
+        done();
+      });
+    });
+
+    xit('pins the about tab', done => {
+      atom.commands.dispatch(workspaceElement, 'application:about');
+
+      // Opening the about view takes some time
+      setTimeout(() => {
+        let tab = workspaceElement.querySelector('.tab[data-type="AboutView"]');
+        PinnedTabs.pin(tab);
+        expect(tab.classList.contains('pinned')).toBeTruthy();
+        done();
+      });
     });
 
   });

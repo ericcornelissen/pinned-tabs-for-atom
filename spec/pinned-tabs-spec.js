@@ -1,4 +1,5 @@
 const { CompositeDisposable } = require('atom');
+const fs = require('fs');
 
 const PinnedTabs = require('../lib/pinned-tabs.js');
 const PinnedTabsState = require('../lib/state.js');
@@ -14,7 +15,7 @@ describe('PinnedTabs', () => {
 
     // The "tabs" package is required for pinned-tabs
     atom.packages.activatePackage('tabs')
-      .then(atom.packages.activatePackage('settings-view'))
+      .then(() => atom.packages.activatePackage('settings-view'))
       .then(done);
   });
 
@@ -216,7 +217,7 @@ describe('PinnedTabs', () => {
       spyOn(PinnedTabs, 'pin');
 
       state[paneId] = [
-        { type: 'TextEditor', id: chickenPath, subscriptions: new CompositeDisposable() }
+        { type: 'TextEditor', id: chickenPath }
       ];
 
       PinnedTabs.restoreState(state)
@@ -231,8 +232,8 @@ describe('PinnedTabs', () => {
       spyOn(PinnedTabs, 'pin');
 
       state[paneId] = [
-        { type: 'TextEditor', id: chickenPath, subscriptions: new CompositeDisposable() },
-        { type: 'TextEditor', id: loremPath, subscriptions: new CompositeDisposable() }
+        { type: 'TextEditor', id: chickenPath },
+        { type: 'TextEditor', id: loremPath }
       ];
 
       PinnedTabs.restoreState(state)
@@ -293,8 +294,7 @@ describe('PinnedTabs', () => {
 
   describe('::pin()', () => {
 
-    let chickenPath;
-    let paneId;
+    let itemEditor, itemPath, itemPane;
 
     beforeEach(done => {
       // Initialize a state to work with
@@ -303,8 +303,9 @@ describe('PinnedTabs', () => {
       // Open a file in the workspace
       atom.workspace.open('chicken.md')
         .then(editor => {
-          chickenPath = editor.getPath();
-          paneId = atom.workspace.getPanes().find(pane => pane.getItems().includes(editor)).id;
+          itemEditor = editor;
+          itemPath = editor.getPath();
+          itemPane = atom.workspace.getPanes().find(pane => pane.getItems().includes(editor));
         })
         .then(done);
     });
@@ -316,29 +317,37 @@ describe('PinnedTabs', () => {
     });
 
     it('unpins a pinned TextEditor', () => {
-      let tab = workspaceElement.querySelector('.tab .title[data-name="chicken.md"]').parentNode;
-      tab.classList.add('pinned');
+      let subscriptions = new CompositeDisposable();
+      spyOn(subscriptions, 'dispose');
 
-      PinnedTabs.pin(tab);
-      expect(tab.classList.contains('pinned')).toBeFalsy();
-    });
-
-    it('changes the PinnedTabs state when a tab is pinned', () => {
-      let tab = workspaceElement.querySelector('.tab .title[data-name="chicken.md"]').parentNode;
-      PinnedTabs.pin(tab);
-      expect(PinnedTabs.state[paneId][0].id).toContain('chicken.md');
-    });
-
-    it('changes the PinnedTabs state when a tab is unpinned', () => {
-      PinnedTabs.state[paneId] = [
-        { id: chickenPath, subscriptions: new CompositeDisposable() }
+      PinnedTabs.state[itemPane.id] = [
+        { type: 'TextEditor', id: itemPath, subscriptions: subscriptions }
       ];
 
       let tab = workspaceElement.querySelector('.tab .title[data-name="chicken.md"]').parentNode;
       tab.classList.add('pinned');
 
       PinnedTabs.pin(tab);
-      expect(PinnedTabs.state[paneId].length).toBe(0);
+      expect(tab.classList.contains('pinned')).toBeFalsy();
+      expect(subscriptions.dispose).toHaveBeenCalled();
+    });
+
+    it('updates the state when a tab is pinned', () => {
+      let tab = workspaceElement.querySelector('.tab .title[data-name="chicken.md"]').parentNode;
+      PinnedTabs.pin(tab);
+      expect(PinnedTabs.state[itemPane.id][0].id).toContain('chicken.md');
+    });
+
+    it('updates the state when a tab is unpinned', () => {
+      PinnedTabs.state[itemPane.id] = [
+        { type: 'TextEditor', id: itemPath, subscriptions: new CompositeDisposable() }
+      ];
+
+      let tab = workspaceElement.querySelector('.tab .title[data-name="chicken.md"]').parentNode;
+      tab.classList.add('pinned');
+
+      PinnedTabs.pin(tab);
+      expect(PinnedTabs.state[itemPane.id].length).toBe(0);
     });
 
     it('is not possible to pin new (unsaved) editors', done => {
@@ -376,6 +385,54 @@ describe('PinnedTabs', () => {
         expect(tab.classList.contains('pinned')).toBeTruthy();
         done();
       });
+    });
+
+    it('calls ::onDidChangeTitle() when a pinned tab\'s name is changed', done => {
+      spyOn(itemEditor, 'onDidChangeTitle').and.returnValue(new CompositeDisposable());
+
+      let tab = workspaceElement.querySelector('.tab .title[data-name="chicken.md"]').parentNode;
+      PinnedTabs.pin(tab);
+
+      itemEditor.saveAs('temporary-file')
+        .then(() => {
+          expect(itemEditor.onDidChangeTitle).toHaveBeenCalled();
+          fs.unlinkSync('temporary-file'); // Remove created file
+        })
+        .then(done);
+    });
+
+    it('updates the state when a pinned tab\'s name is changed', done => {
+      let tab = workspaceElement.querySelector('.tab .title[data-name="chicken.md"]').parentNode;
+      PinnedTabs.pin(tab);
+
+      itemEditor.saveAs('temporary-file')
+        .then(() => {
+          setTimeout(() => {
+            expect(PinnedTabs.state[itemPane.id][0].id).not.toBe(itemPath); // The new path depends on the system
+            fs.unlinkSync('temporary-file'); // Remove created file
+            done();
+          });
+        });
+    });
+
+    it('calls ::onDidDestroy() when closing a pinned tab', done => {
+      spyOn(itemEditor, 'onDidDestroy').and.returnValue(new CompositeDisposable());
+
+      let tab = workspaceElement.querySelector('.tab .title[data-name="chicken.md"]').parentNode;
+      PinnedTabs.pin(tab);
+
+      itemPane.destroyItem(itemEditor, true)
+        .then(() => expect(itemEditor.onDidDestroy).toHaveBeenCalled())
+        .then(done);
+    });
+
+    it('updates the state if a pinned tab is closed', done => {
+      let tab = workspaceElement.querySelector('.tab .title[data-name="chicken.md"]').parentNode;
+      PinnedTabs.pin(tab);
+
+      itemPane.destroyItem(itemEditor, true)
+        .then(() => expect(PinnedTabs.state[itemPane.id].length).toBe(0))
+        .then(done);
     });
 
   });

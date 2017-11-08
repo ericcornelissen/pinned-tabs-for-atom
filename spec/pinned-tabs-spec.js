@@ -182,8 +182,7 @@ describe('PinnedTabs', () => {
 
   describe('::restoreState()', () => {
 
-    let chickenPath, loremPath;
-    let state, paneId;
+    let chickendId, paneId, state;
 
     beforeEach(done => {
       // Initialize a state to work with
@@ -195,13 +194,10 @@ describe('PinnedTabs', () => {
       // Open two files in the workspace
       atom.workspace.open('chicken.md')
         .then(editor => {
-          chickenPath = editor.getPath();
-        })
-        .then(() => atom.workspace.open('lorem.txt'))
-        .then(editor => {
-          loremPath = editor.getPath();
+          chickendId = editor.getTitle();
           paneId = atom.workspace.getPanes().find(pane => pane.getItems().includes(editor)).id;
         })
+        .then(() => atom.workspace.open('lorem.txt'))
         .then(done);
     });
 
@@ -213,36 +209,14 @@ describe('PinnedTabs', () => {
         .then(done);
     });
 
-    it('pins one tab that is specified in the state', done => {
+    it('pins tabs that are specified in the state', done => {
       spyOn(PinnedTabs, 'pin');
 
-      state[paneId] = [
-        { type: 'TextEditor', id: chickenPath }
-      ];
-
+      state[paneId] = [{ id: chickendId }];
       PinnedTabs.restoreState(state)
         .then(() => {
           let tab = workspaceElement.querySelector('.tab .title[data-name="chicken.md"]').parentNode;
           expect(PinnedTabs.pin).toHaveBeenCalledWith(tab, true);
-        })
-        .then(done);
-    });
-
-    it('pins multiple tabs that are specified in the state', done => {
-      spyOn(PinnedTabs, 'pin');
-
-      state[paneId] = [
-        { type: 'TextEditor', id: chickenPath },
-        { type: 'TextEditor', id: loremPath }
-      ];
-
-      PinnedTabs.restoreState(state)
-        .then(() => {
-          let tabChicken = workspaceElement.querySelector('.tab .title[data-name="chicken.md"]').parentNode;
-          expect(PinnedTabs.pin).toHaveBeenCalledWith(tabChicken, true);
-
-          let tabLorem = workspaceElement.querySelector('.tab .title[data-name="lorem.txt"]').parentNode;
-          expect(PinnedTabs.pin).toHaveBeenCalledWith(tabLorem, true);
         })
         .then(done);
     });
@@ -294,7 +268,7 @@ describe('PinnedTabs', () => {
 
   describe('::pin()', () => {
 
-    let itemEditor, itemPath, itemPane;
+    let itemEditor, itemId, itemPane;
 
     beforeEach(done => {
       // Initialize a state to work with
@@ -304,7 +278,7 @@ describe('PinnedTabs', () => {
       atom.workspace.open('chicken.md')
         .then(editor => {
           itemEditor = editor;
-          itemPath = editor.getPath();
+          itemId = editor.getTitle();
           itemPane = atom.workspace.getPanes().find(pane => pane.getItems().includes(editor));
         })
         .then(done);
@@ -321,7 +295,7 @@ describe('PinnedTabs', () => {
       spyOn(subscriptions, 'dispose');
 
       PinnedTabs.state[itemPane.id] = [
-        { type: 'TextEditor', id: itemPath, subscriptions: subscriptions }
+        { id: itemId, subscriptions: subscriptions }
       ];
 
       let tab = workspaceElement.querySelector('.tab .title[data-name="chicken.md"]').parentNode;
@@ -340,7 +314,7 @@ describe('PinnedTabs', () => {
 
     it('updates the state when a tab is unpinned', () => {
       PinnedTabs.state[itemPane.id] = [
-        { type: 'TextEditor', id: itemPath, subscriptions: new CompositeDisposable() }
+        { id: itemId, subscriptions: new CompositeDisposable() }
       ];
 
       let tab = workspaceElement.querySelector('.tab .title[data-name="chicken.md"]').parentNode;
@@ -408,7 +382,7 @@ describe('PinnedTabs', () => {
       itemEditor.saveAs('temporary-file')
         .then(() => {
           setTimeout(() => {
-            expect(PinnedTabs.state[itemPane.id][0].id).not.toBe(itemPath); // The new path depends on the system
+            expect(PinnedTabs.state[itemPane.id][0].id).not.toBe(itemId); // The new path depends on the system
             fs.unlinkSync('temporary-file'); // Remove created file
             done();
           });

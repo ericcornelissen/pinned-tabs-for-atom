@@ -164,18 +164,18 @@ describe('PinnedTabs', () => {
       expect(atom.workspace.observePanes).toHaveBeenCalled();
     });
 
-    it('should start observing closing Panes', () => {
+    it('should start observing destroying Panes', () => {
       spyOn(atom.workspace, 'onDidDestroyPane').and.returnValue(new CompositeDisposable());
 
       PinnedTabs.setObservers();
       expect(atom.workspace.onDidDestroyPane).toHaveBeenCalled();
     });
 
-    it('should start observing opening new Pane Items', () => {
-      spyOn(atom.workspace, 'onDidAddPaneItem').and.returnValue(new CompositeDisposable());
+    it('should start observing removing PaneItems', () => {
+      spyOn(atom.workspace, 'onDidDestroyPaneItem').and.returnValue(new CompositeDisposable());
 
       PinnedTabs.setObservers();
-      expect(atom.workspace.onDidAddPaneItem).toHaveBeenCalled();
+      expect(atom.workspace.onDidDestroyPaneItem).toHaveBeenCalled();
     });
 
   });

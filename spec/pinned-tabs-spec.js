@@ -158,21 +158,21 @@ describe('PinnedTabs', () => {
   describe('::setObservers()', () => {
 
     it('should start observing opening new Panes', () => {
-      spyOn(atom.workspace, 'onDidAddPane').and.returnValue({dispose: jasmine.createSpy('dispose')});
+      spyOn(atom.workspace, 'observePanes').and.returnValue(new CompositeDisposable());
 
       PinnedTabs.setObservers();
-      expect(atom.workspace.onDidAddPane).toHaveBeenCalled();
+      expect(atom.workspace.observePanes).toHaveBeenCalled();
     });
 
     it('should start observing closing Panes', () => {
-      spyOn(atom.workspace, 'onDidDestroyPane').and.returnValue({dispose: jasmine.createSpy('dispose')});
+      spyOn(atom.workspace, 'onDidDestroyPane').and.returnValue(new CompositeDisposable());
 
       PinnedTabs.setObservers();
       expect(atom.workspace.onDidDestroyPane).toHaveBeenCalled();
     });
 
     it('should start observing opening new Pane Items', () => {
-      spyOn(atom.workspace, 'onDidAddPaneItem').and.returnValue({dispose: jasmine.createSpy('dispose')});
+      spyOn(atom.workspace, 'onDidAddPaneItem').and.returnValue(new CompositeDisposable());
 
       PinnedTabs.setObservers();
       expect(atom.workspace.onDidAddPaneItem).toHaveBeenCalled();
@@ -182,7 +182,7 @@ describe('PinnedTabs', () => {
 
   describe('::restoreState()', () => {
 
-    let chickendId, paneId, state;
+    let chickenId, paneId, state;
 
     beforeEach(done => {
       // Initialize a state to work with
@@ -191,10 +191,10 @@ describe('PinnedTabs', () => {
       // Unspy setTimeout since ::restoreState() uses it
       jasmine.unspy(window, 'setTimeout');
 
-      // Open two files in the workspace
+      // Open two files in the workspace to work with
       atom.workspace.open('chicken.md')
         .then(editor => {
-          chickendId = editor.getTitle();
+          chickenId = editor.getURI();
           paneId = atom.workspace.getPanes().find(pane => pane.getItems().includes(editor)).id;
         })
         .then(() => atom.workspace.open('lorem.txt'))
@@ -212,7 +212,7 @@ describe('PinnedTabs', () => {
     it('pins tabs that are specified in the state', done => {
       spyOn(PinnedTabs, 'pin');
 
-      state[paneId] = [{ id: chickendId }];
+      state[paneId] = [{ id: chickenId }];
       PinnedTabs.restoreState(state)
         .then(() => {
           let tab = workspaceElement.querySelector('.tab .title[data-name="chicken.md"]').parentNode;
@@ -271,14 +271,13 @@ describe('PinnedTabs', () => {
     let itemEditor, itemId, itemPane;
 
     beforeEach(done => {
-      // Initialize a state to work with
-      PinnedTabs.state = new PinnedTabsState();
+      PinnedTabs.activate();
 
-      // Open a file in the workspace
+      // Open a file in the workspace to work with
       atom.workspace.open('chicken.md')
         .then(editor => {
           itemEditor = editor;
-          itemId = editor.getTitle();
+          itemId = editor.getURI();
           itemPane = atom.workspace.getPanes().find(pane => pane.getItems().includes(editor));
         })
         .then(done);
@@ -324,15 +323,12 @@ describe('PinnedTabs', () => {
       expect(PinnedTabs.state[itemPane.id].length).toBe(0);
     });
 
-    it('is not possible to pin new (unsaved) editors', done => {
-      spyOn(atom.notifications, 'addWarning');
-
+    it('is possible to pin new (unsaved) editors', done => {
       atom.workspace.open('')
         .then(() => {
           let tab = workspaceElement.querySelector('.tab .title:not([data-name])').parentNode;
           PinnedTabs.pin(tab);
-          expect(tab.classList.contains('pinned')).toBeFalsy();
-          expect(atom.notifications.addWarning).toHaveBeenCalled();
+          expect(tab.classList.contains('pinned')).toBeTruthy();
         })
         .then(done);
     });
@@ -389,17 +385,6 @@ describe('PinnedTabs', () => {
         });
     });
 
-    it('calls ::onDidDestroy() when closing a pinned tab', done => {
-      spyOn(itemEditor, 'onDidDestroy').and.returnValue(new CompositeDisposable());
-
-      let tab = workspaceElement.querySelector('.tab .title[data-name="chicken.md"]').parentNode;
-      PinnedTabs.pin(tab);
-
-      itemPane.destroyItem(itemEditor, true)
-        .then(() => expect(itemEditor.onDidDestroy).toHaveBeenCalled())
-        .then(done);
-    });
-
     it('updates the state if a pinned tab is closed', done => {
       let tab = workspaceElement.querySelector('.tab .title[data-name="chicken.md"]').parentNode;
       PinnedTabs.pin(tab);
@@ -422,6 +407,64 @@ describe('PinnedTabs', () => {
     it('returns false if the tab isn\'t pinned', () => {
       let tab = document.createElement('li');
       expect(PinnedTabs.isPinned(tab)).toBeFalsy();
+    });
+
+  });
+
+  describe('::reorderTab()', () => {
+
+    let pane, chickenEditor, loremEditor;
+
+    beforeEach(done => {
+      atom.workspace.open('chicken.md')
+        .then(editor => {
+          chickenEditor = editor;
+          pane = atom.workspace.getPanes().find(pane => pane.getItems().includes(editor));
+        })
+        .then(() => atom.workspace.open('lorem.txt'))
+        .then(editor => {
+          loremEditor = editor;
+        })
+        .then(done);
+    });
+
+    it('does nothing if an unpinned tab is moved to a valid index', () => {
+      spyOn(pane, 'moveItem');
+
+      PinnedTabs.reorderTab(pane, loremEditor, 0);
+      expect(pane.moveItem).not.toHaveBeenCalled();
+    });
+
+    it('does nothing if a pinned tab is moved to a valid index', () => {
+      spyOn(pane, 'moveItem');
+
+      let chickenTab = workspaceElement.querySelector('.tab .title[data-name="chicken.md"]').parentNode;
+      chickenTab.classList.add('pinned');
+      let loremTab = workspaceElement.querySelector('.tab .title[data-name="lorem.txt"]').parentNode;
+      loremTab.classList.add('pinned');
+
+      PinnedTabs.reorderTab(pane, loremEditor, 0);
+      expect(pane.moveItem).not.toHaveBeenCalled();
+    });
+
+    it('moves unpinned tabs after pinned tabs', () => {
+      spyOn(pane, 'moveItem');
+
+      let tab = workspaceElement.querySelector('.tab .title[data-name="chicken.md"]').parentNode;
+      tab.classList.add('pinned');
+
+      PinnedTabs.reorderTab(pane, loremEditor, 0);
+      expect(pane.moveItem).toHaveBeenCalledWith(loremEditor, 1);
+    });
+
+    it('moves pinned tabs before unpinned tabs', () => {
+      spyOn(pane, 'moveItem');
+
+      let tab = workspaceElement.querySelector('.tab .title[data-name="chicken.md"]').parentNode;
+      tab.classList.add('pinned');
+
+      PinnedTabs.reorderTab(pane, chickenEditor, 1);
+      expect(pane.moveItem).toHaveBeenCalledWith(chickenEditor, 0);
     });
 
   });

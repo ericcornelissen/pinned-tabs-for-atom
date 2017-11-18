@@ -69,11 +69,49 @@ describe('PinnedTabs', () => {
 
   describe('::deactivate()', () => {
 
-    it('disposes the subscriptions', () => {
+    let itemId, paneId;
+
+    beforeEach(done => {
+      atom.workspace.open('chicken.md')
+        .then(editor => {
+          itemId = editor.getURI();
+          paneId = atom.workspace.getPanes().find(pane => pane.getItems().includes(editor)).id;
+        })
+        .then(done);
+    });
+
+    it('disposes subscriptions', () => {
       spyOn(PinnedTabs.subscriptions, 'dispose');
+
+      let itemSubscriptions = new CompositeDisposable();
+      spyOn(itemSubscriptions, 'dispose');
+      PinnedTabs.state.addPane(paneId, [{ id: itemId, subscriptions: itemSubscriptions }]);
 
       PinnedTabs.deactivate();
       expect(PinnedTabs.subscriptions.dispose).toHaveBeenCalled();
+      expect(itemSubscriptions.dispose).toHaveBeenCalled();
+    });
+
+    it('removes all \'.pinned\' classes', () => {
+      let tab = workspaceElement.querySelector('.tab .title[data-name="chicken.md"]').parentNode;
+      tab.classList.add('pinned');
+
+      PinnedTabs.deactivate();
+      expect(tab.classList.contains('pinned')).toBeFalsy();
+    });
+
+    it('removes all configuration classes', () => {
+      let body = document.querySelector('body');
+      body.classList.add('pinned-tabs-animated');
+      body.classList.add('pinned-tabs-modified-always');
+      body.classList.add('pinned-tabs-modified-hover');
+      body.classList.add('pinned-tabs-visualstudio');
+
+      PinnedTabs.deactivate();
+      expect(body.classList.contains('pinned-tabs-animated')).toBeFalsy();
+      expect(body.classList.contains('pinned-tabs-modified-always')).toBeFalsy();
+      expect(body.classList.contains('pinned-tabs-modified-hover')).toBeFalsy();
+      expect(body.classList.contains('pinned-tabs-visualstudio')).toBeFalsy();
     });
 
   });
@@ -85,40 +123,6 @@ describe('PinnedTabs', () => {
 
       PinnedTabs.serialize();
       expect(PinnedTabs.state.serialize).toHaveBeenCalled();
-    });
-
-  });
-
-  describe('::setCommands()', () => {
-
-    it('initalizes the "pinned-tabs:pin-active" command', () => {
-      spyOn(PinnedTabs, 'pinActive');
-      PinnedTabs.setCommands();
-
-      let workspace = document.createElement('atom-workspace');
-      atom.commands.dispatch(workspace, 'pinned-tabs:pin-active');
-
-      expect(PinnedTabs.pinActive).toHaveBeenCalled();
-    });
-
-    it('initalizes the "pinned-tabs:pin-selected" command', () => {
-      spyOn(PinnedTabs, 'pin');
-      PinnedTabs.setCommands();
-
-      let workspace = document.createElement('atom-workspace');
-      atom.commands.dispatch(workspace, 'pinned-tabs:pin-selected');
-
-      expect(PinnedTabs.pin).toHaveBeenCalled();
-    });
-
-    it('initalizes the "pinned-tabs:close-unpinned" command', () => {
-      spyOn(PinnedTabs, 'closeUnpinned');
-      PinnedTabs.setCommands();
-
-      let workspace = document.createElement('atom-workspace');
-      atom.commands.dispatch(workspace, 'pinned-tabs:close-unpinned');
-
-      expect(PinnedTabs.closeUnpinned).toHaveBeenCalled();
     });
 
   });
@@ -151,31 +155,6 @@ describe('PinnedTabs', () => {
 
       PinnedTabs.initializeConfig();
       expect(atom.config.observe).toHaveBeenCalledWith('pinned-tabs.modified', jasmine.any(Function));
-    });
-
-  });
-
-  describe('::setObservers()', () => {
-
-    it('should start observing opening new Panes', () => {
-      spyOn(atom.workspace, 'observePanes').and.returnValue(new CompositeDisposable());
-
-      PinnedTabs.setObservers();
-      expect(atom.workspace.observePanes).toHaveBeenCalled();
-    });
-
-    it('should start observing destroying Panes', () => {
-      spyOn(atom.workspace, 'onDidDestroyPane').and.returnValue(new CompositeDisposable());
-
-      PinnedTabs.setObservers();
-      expect(atom.workspace.onDidDestroyPane).toHaveBeenCalled();
-    });
-
-    it('should start observing removing PaneItems', () => {
-      spyOn(atom.workspace, 'onDidDestroyPaneItem').and.returnValue(new CompositeDisposable());
-
-      PinnedTabs.setObservers();
-      expect(atom.workspace.onDidDestroyPaneItem).toHaveBeenCalled();
     });
 
   });
@@ -219,6 +198,65 @@ describe('PinnedTabs', () => {
           expect(PinnedTabs.pin).toHaveBeenCalledWith(tab, true);
         })
         .then(done);
+    });
+
+  });
+
+  describe('::setCommands()', () => {
+
+    it('initalizes the "pinned-tabs:pin-active" command', () => {
+      spyOn(PinnedTabs, 'pinActive');
+      PinnedTabs.setCommands();
+
+      let workspace = document.createElement('atom-workspace');
+      atom.commands.dispatch(workspace, 'pinned-tabs:pin-active');
+
+      expect(PinnedTabs.pinActive).toHaveBeenCalled();
+    });
+
+    it('initalizes the "pinned-tabs:pin-selected" command', () => {
+      spyOn(PinnedTabs, 'pin');
+      PinnedTabs.setCommands();
+
+      let workspace = document.createElement('atom-workspace');
+      atom.commands.dispatch(workspace, 'pinned-tabs:pin-selected');
+
+      expect(PinnedTabs.pin).toHaveBeenCalled();
+    });
+
+    it('initalizes the "pinned-tabs:close-unpinned" command', () => {
+      spyOn(PinnedTabs, 'closeUnpinned');
+      PinnedTabs.setCommands();
+
+      let workspace = document.createElement('atom-workspace');
+      atom.commands.dispatch(workspace, 'pinned-tabs:close-unpinned');
+
+      expect(PinnedTabs.closeUnpinned).toHaveBeenCalled();
+    });
+
+  });
+
+  describe('::setObservers()', () => {
+
+    it('should start observing opening new Panes', () => {
+      spyOn(atom.workspace, 'observePanes').and.returnValue(new CompositeDisposable());
+
+      PinnedTabs.setObservers();
+      expect(atom.workspace.observePanes).toHaveBeenCalled();
+    });
+
+    it('should start observing destroying Panes', () => {
+      spyOn(atom.workspace, 'onDidDestroyPane').and.returnValue(new CompositeDisposable());
+
+      PinnedTabs.setObservers();
+      expect(atom.workspace.onDidDestroyPane).toHaveBeenCalled();
+    });
+
+    it('should start observing removing PaneItems', () => {
+      spyOn(atom.workspace, 'onDidDestroyPaneItem').and.returnValue(new CompositeDisposable());
+
+      PinnedTabs.setObservers();
+      expect(atom.workspace.onDidDestroyPaneItem).toHaveBeenCalled();
     });
 
   });
@@ -453,7 +491,8 @@ describe('PinnedTabs', () => {
 
       let tab = workspaceElement.querySelector('.tab .title[data-name="chicken.md"]').parentNode;
       tab.classList.add('pinned');
-      PinnedTabs.state[pane.id].push({id: chickenEditor.getURI()});
+
+      PinnedTabs.state[pane.id] = [{ id: chickenEditor.getURI() }];
 
       PinnedTabs.reorderTab(pane, loremEditor, 0);
       expect(pane.moveItem).toHaveBeenCalledWith(loremEditor, 1);
@@ -464,6 +503,7 @@ describe('PinnedTabs', () => {
 
       let tab = workspaceElement.querySelector('.tab .title[data-name="chicken.md"]').parentNode;
       tab.classList.add('pinned');
+
       PinnedTabs.state[pane.id].push({id: chickenEditor.getURI()});
 
       PinnedTabs.reorderTab(pane, chickenEditor, 1);
@@ -475,11 +515,13 @@ describe('PinnedTabs', () => {
 
       let chickenTab = workspaceElement.querySelector('.tab .title[data-name="chicken.md"]').parentNode;
       chickenTab.classList.add('pinned');
-      PinnedTabs.state[pane.id].push({id: chickenEditor.getURI()});
-
       let loremTab = workspaceElement.querySelector('.tab .title[data-name="chicken.md"]').parentNode;
       loremTab.classList.add('pinned');
-      PinnedTabs.state[pane.id].push({id: loremEditor.getURI()});
+
+      PinnedTabs.state[pane.id] = [
+        { id: chickenEditor.getURI() },
+        { id: loremEditor.getURI() }
+      ];
 
       PinnedTabs.reorderTab(pane, chickenEditor, 1);
       expect(PinnedTabs.state.movePaneItem).toHaveBeenCalled();

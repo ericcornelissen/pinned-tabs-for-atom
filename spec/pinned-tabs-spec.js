@@ -420,6 +420,7 @@ describe('PinnedTabs', () => {
         .then(editor => {
           chickenEditor = editor;
           pane = atom.workspace.getPanes().find(pane => pane.getItems().includes(editor));
+          PinnedTabs.state[pane.id] = [];
         })
         .then(() => atom.workspace.open('lorem.txt'))
         .then(editor => {
@@ -435,7 +436,7 @@ describe('PinnedTabs', () => {
       expect(pane.moveItem).not.toHaveBeenCalled();
     });
 
-    it('does nothing if a pinned tab is moved to a valid index', () => {
+    it('does not reorder if a pinned tab is moved to a valid index', () => {
       spyOn(pane, 'moveItem');
 
       let chickenTab = workspaceElement.querySelector('.tab .title[data-name="chicken.md"]').parentNode;
@@ -452,6 +453,7 @@ describe('PinnedTabs', () => {
 
       let tab = workspaceElement.querySelector('.tab .title[data-name="chicken.md"]').parentNode;
       tab.classList.add('pinned');
+      PinnedTabs.state[pane.id].push({id: chickenEditor.getURI()});
 
       PinnedTabs.reorderTab(pane, loremEditor, 0);
       expect(pane.moveItem).toHaveBeenCalledWith(loremEditor, 1);
@@ -462,9 +464,25 @@ describe('PinnedTabs', () => {
 
       let tab = workspaceElement.querySelector('.tab .title[data-name="chicken.md"]').parentNode;
       tab.classList.add('pinned');
+      PinnedTabs.state[pane.id].push({id: chickenEditor.getURI()});
 
       PinnedTabs.reorderTab(pane, chickenEditor, 1);
       expect(pane.moveItem).toHaveBeenCalledWith(chickenEditor, 0);
+    });
+
+    it('updates the state if a pinned tab is moved', () => {
+      spyOn(PinnedTabs.state, 'movePaneItem');
+
+      let chickenTab = workspaceElement.querySelector('.tab .title[data-name="chicken.md"]').parentNode;
+      chickenTab.classList.add('pinned');
+      PinnedTabs.state[pane.id].push({id: chickenEditor.getURI()});
+
+      let loremTab = workspaceElement.querySelector('.tab .title[data-name="chicken.md"]').parentNode;
+      loremTab.classList.add('pinned');
+      PinnedTabs.state[pane.id].push({id: loremEditor.getURI()});
+
+      PinnedTabs.reorderTab(pane, chickenEditor, 1);
+      expect(PinnedTabs.state.movePaneItem).toHaveBeenCalled();
     });
 
   });

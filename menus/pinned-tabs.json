@@ -1,6 +1,6 @@
 {
   "context-menu": {
-    ".tab:not(.pinned)": [{
+    ".tab:not(.pinned):not([data-type=\"TreeView\"]):not([data-type=\"Object\"])": [{
       "label": "Pin tab",
       "command": "pinned-tabs:pin-selected"
     }],
@@ -8,7 +8,7 @@
       "label": "Unpin tab",
       "command": "pinned-tabs:pin-selected"
     }],
-    "body.close-unpinned .tab": [{
+    "body.close-unpinned .tab:not([data-type=\"TreeView\"]):not([data-type=\"Object\"])": [{
       "label": "Close Unpinned Tabs",
       "command": "pinned-tabs:close-unpinned"
     }]

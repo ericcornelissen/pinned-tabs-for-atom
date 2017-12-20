@@ -129,32 +129,39 @@ describe('PinnedTabs', () => {
 
   describe('::initializeConfig()', () => {
 
-    it('initializes the "animated" configuration variable', () => {
+    it('observes the "animated" configuration variable', () => {
       spyOn(atom.config, 'observe');
 
       PinnedTabs.initializeConfig();
       expect(atom.config.observe).toHaveBeenCalledWith('pinned-tabs.animated', jasmine.any(Function));
     });
 
-    it('initializes the "visualStudio" configuration variable', () => {
-      spyOn(atom.config, 'observe');
-
-      PinnedTabs.initializeConfig();
-      expect(atom.config.observe).toHaveBeenCalledWith('pinned-tabs.visualStudio', jasmine.any(Function));
-    });
-
-    it('initializes the "closeUnpinned" configuration variable', () => {
+    it('observes the "closeUnpinned" configuration variable', () => {
       spyOn(atom.config, 'observe');
 
       PinnedTabs.initializeConfig();
       expect(atom.config.observe).toHaveBeenCalledWith('pinned-tabs.closeUnpinned', jasmine.any(Function));
     });
 
-    it('initializes the "modified" configuration variable', () => {
+    it('observes the "modified" configuration variable', () => {
       spyOn(atom.config, 'observe');
 
       PinnedTabs.initializeConfig();
       expect(atom.config.observe).toHaveBeenCalledWith('pinned-tabs.modified', jasmine.any(Function));
+    });
+
+    it('observes the "visualStudio" configuration variable', () => {
+      spyOn(atom.config, 'observe');
+
+      PinnedTabs.initializeConfig();
+      expect(atom.config.observe).toHaveBeenCalledWith('pinned-tabs.visualStudio', jasmine.any(Function));
+    });
+
+    it('observes the "minimumWidth" configuration variable', () => {
+      spyOn(atom.config, 'observe');
+
+      PinnedTabs.initializeConfig();
+      expect(atom.config.observe).toHaveBeenCalledWith('pinned-tabs.minimumWidth', jasmine.any(Function));
     });
 
   });

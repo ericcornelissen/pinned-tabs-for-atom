@@ -20,5 +20,53 @@
   "scripts": {
     "lint": "eslint lib/*.js"
   },
-  "atomTestRunner": "./spec/runner"
+  "atomTestRunner": "./spec/runner",
+  "configSchema": {
+    "animated": {
+      "type": "boolean",
+      "default": true,
+      "order": 1,
+      "title": "Enable animations",
+      "description": "Tick this to enable all animation related to pinned tabs"
+    },
+    "closeUnpinned": {
+      "type": "boolean",
+      "default": false,
+      "order": 2,
+      "title": "Enable the 'Close Unpinned Tabs' option",
+      "description": "Tick this to show the 'Close Unpinned Tabs' from the context menu"
+    },
+    "modified": {
+      "type": "string",
+      "default": "always",
+      "order": 3,
+      "title": "Modified indicator",
+      "enum": [
+        { "value": "dont", "description": "Don't use this feature" },
+        { "value": "hover", "description": "Only show this when I hover over the tab" },
+        { "value": "always", "description": "Always show this when a tab is modified" }
+      ]
+    },
+    "visualstudio": {
+      "type": "object",
+      "title": "Visual Studio style pinning",
+      "description": "Options for...",
+      "order": 4,
+      "properties": {
+        "enable": {
+          "type": "boolean",
+          "default": false,
+          "order": 1,
+          "title": "Enable VS style pinning"
+        },
+        "minimumWidth": {
+          "type": "integer",
+          "default": 180,
+          "minimum": 0,
+          "order": 2,
+          "title": "Minimum width for pinned tabs"
+        }
+      }
+    }
+  }
 }

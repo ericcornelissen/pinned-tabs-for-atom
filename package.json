@@ -18,6 +18,7 @@
     "eslint": "^4.10.0"
   },
   "scripts": {
+    "test": "apm test",
     "lint": "eslint lib/*.js"
   },
   "atomTestRunner": "./spec/runner",

@@ -1,8 +1,11 @@
-const { CompositeDisposable } = require('atom');
-const fs = require('fs');
+'use babel';
 
-const PinnedTabs = require('../lib/pinned-tabs.js');
-const PinnedTabsState = require('../lib/state.js');
+import { CompositeDisposable } from 'atom';
+import fs from 'fs';
+
+import PinnedTabs from '../lib/pinned-tabs.js';
+import PinnedTabsState from '../lib/state.js';
+
 
 describe('PinnedTabs', () => {
 

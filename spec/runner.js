@@ -1,4 +1,6 @@
-const { createRunner } = require('atom-jasmine2-test-runner');
+'use babel';
+
+import { createRunner } from 'atom-jasmine2-test-runner';
 
 let options = {
   specHelper: {
@@ -9,4 +11,4 @@ let options = {
   }
 };
 
-module.exports = createRunner(options);
+export default createRunner(options);

@@ -88,12 +88,12 @@ describe('PinnedTabs', () => {
       expect(itemSubscriptions.dispose).toHaveBeenCalled();
     });
 
-    it('removes all \'.pinned\' classes', () => {
+    it('removes all \'.pinned-tab\' classes', () => {
       let tab = workspaceElement.querySelector('.tab .title[data-name="chicken.md"]').parentNode;
-      tab.classList.add('pinned');
+      tab.classList.add('pinned-tab');
 
       PinnedTabs.deactivate();
-      expect(tab.classList.contains('pinned')).toBeFalsy();
+      expect(tab.classList.contains('pinned-tab')).toBeFalsy();
     });
 
     it('removes all configuration classes', () => {
@@ -283,7 +283,7 @@ describe('PinnedTabs', () => {
       let pane = atom.workspace.getActivePane();
 
       let tab = workspaceElement.querySelector('.tab .title[data-name="chicken.md"]').parentNode;
-      tab.classList.add('pinned');
+      tab.classList.add('pinned-tab');
 
       PinnedTabs.closeUnpinned();
       expect(pane.getItems().length).toBe(1);
@@ -327,7 +327,7 @@ describe('PinnedTabs', () => {
     it('pins an unpinned TextEditor', () => {
       let tab = workspaceElement.querySelector('.tab .title[data-name="chicken.md"]').parentNode;
       PinnedTabs.pin(tab);
-      expect(tab.classList.contains('pinned')).toBeTruthy();
+      expect(tab.classList.contains('pinned-tab')).toBeTruthy();
     });
 
     it('unpins a pinned TextEditor', () => {
@@ -339,10 +339,10 @@ describe('PinnedTabs', () => {
       ];
 
       let tab = workspaceElement.querySelector('.tab .title[data-name="chicken.md"]').parentNode;
-      tab.classList.add('pinned');
+      tab.classList.add('pinned-tab');
 
       PinnedTabs.pin(tab);
-      expect(tab.classList.contains('pinned')).toBeFalsy();
+      expect(tab.classList.contains('pinned-tab')).toBeFalsy();
       expect(subscriptions.dispose).toHaveBeenCalled();
     });
 
@@ -358,7 +358,7 @@ describe('PinnedTabs', () => {
       ];
 
       let tab = workspaceElement.querySelector('.tab .title[data-name="chicken.md"]').parentNode;
-      tab.classList.add('pinned');
+      tab.classList.add('pinned-tab');
 
       PinnedTabs.pin(tab);
       expect(PinnedTabs.state[itemPane.id].length).toBe(0);
@@ -369,7 +369,7 @@ describe('PinnedTabs', () => {
         .then(() => {
           let tab = workspaceElement.querySelector('.tab .title:not([data-name])').parentNode;
           PinnedTabs.pin(tab);
-          expect(tab.classList.contains('pinned')).toBeTruthy();
+          expect(tab.classList.contains('pinned-tab')).toBeTruthy();
         })
         .then(done);
     });
@@ -381,7 +381,7 @@ describe('PinnedTabs', () => {
       setTimeout(() => {
         let tab = workspaceElement.querySelector('.tab[data-type="SettingsView"]');
         PinnedTabs.pin(tab);
-        expect(tab.classList.contains('pinned')).toBeTruthy();
+        expect(tab.classList.contains('pinned-tab')).toBeTruthy();
         done();
       });
     });
@@ -393,7 +393,7 @@ describe('PinnedTabs', () => {
       setTimeout(() => {
         let tab = workspaceElement.querySelector('.tab[data-type="AboutView"]');
         PinnedTabs.pin(tab);
-        expect(tab.classList.contains('pinned')).toBeTruthy();
+        expect(tab.classList.contains('pinned-tab')).toBeTruthy();
         done();
       });
     });
@@ -441,7 +441,7 @@ describe('PinnedTabs', () => {
 
     it('returns true if the tab is pinned', () => {
       let tab = document.createElement('li');
-      tab.classList.add('pinned');
+      tab.classList.add('pinned-tab');
       expect(PinnedTabs.isPinned(tab)).toBeTruthy();
     });
 
@@ -481,9 +481,9 @@ describe('PinnedTabs', () => {
       spyOn(pane, 'moveItem');
 
       let chickenTab = workspaceElement.querySelector('.tab .title[data-name="chicken.md"]').parentNode;
-      chickenTab.classList.add('pinned');
+      chickenTab.classList.add('pinned-tab');
       let loremTab = workspaceElement.querySelector('.tab .title[data-name="lorem.txt"]').parentNode;
-      loremTab.classList.add('pinned');
+      loremTab.classList.add('pinned-tab');
 
       PinnedTabs.reorderTab(pane, loremEditor, 0);
       expect(pane.moveItem).not.toHaveBeenCalled();
@@ -493,7 +493,7 @@ describe('PinnedTabs', () => {
       spyOn(pane, 'moveItem');
 
       let tab = workspaceElement.querySelector('.tab .title[data-name="chicken.md"]').parentNode;
-      tab.classList.add('pinned');
+      tab.classList.add('pinned-tab');
 
       PinnedTabs.state[pane.id] = [{ id: chickenEditor.getURI() }];
 
@@ -505,7 +505,7 @@ describe('PinnedTabs', () => {
       spyOn(pane, 'moveItem');
 
       let tab = workspaceElement.querySelector('.tab .title[data-name="chicken.md"]').parentNode;
-      tab.classList.add('pinned');
+      tab.classList.add('pinned-tab');
 
       PinnedTabs.state[pane.id].push({id: chickenEditor.getURI()});
 
@@ -517,9 +517,9 @@ describe('PinnedTabs', () => {
       spyOn(PinnedTabs.state, 'movePaneItem');
 
       let chickenTab = workspaceElement.querySelector('.tab .title[data-name="chicken.md"]').parentNode;
-      chickenTab.classList.add('pinned');
+      chickenTab.classList.add('pinned-tab');
       let loremTab = workspaceElement.querySelector('.tab .title[data-name="chicken.md"]').parentNode;
-      loremTab.classList.add('pinned');
+      loremTab.classList.add('pinned-tab');
 
       PinnedTabs.state[pane.id] = [
         { id: chickenEditor.getURI() },

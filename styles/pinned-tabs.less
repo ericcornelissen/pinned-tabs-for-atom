@@ -1,5 +1,5 @@
 // Set a default icon for pinned tabs
-.tab.pinned > .title:not(.icon)::before {
+.tab.pinned-tab > .title:not(.icon)::before {
   content: '\f011';
   display: inline-block;
   font-family: 'Octicons Regular';
@@ -19,19 +19,19 @@
 // Default pinned tab styling
 body:not(.pinned-tabs-visualstudio) {
   // Make pinned tabs a fixed width
-  .tab.pinned {
+  .tab.pinned-tab {
     max-width: 38px !important;
     min-width: 38px !important;
     padding: 0 !important;
   }
 
   // Visually hide the close-icon
-  .tab.pinned > .close-icon {
+  .tab.pinned-tab > .close-icon {
     transform: scale(0) !important;
   }
 
   // Hide the title of the pinned tab
-  .tab.pinned > .title {
+  .tab.pinned-tab > .title {
     margin: 0;
     overflow: hidden;
     padding: 0 0 0 38px !important;
@@ -40,7 +40,7 @@ body:not(.pinned-tabs-visualstudio) {
   }
 
   // Position the icon for the pinned tab
-  .tab.pinned > .title::before {
+  .tab.pinned-tab > .title::before {
     border-width: 0 !important;
     left: -38px;
     position: relative;
@@ -49,7 +49,7 @@ body:not(.pinned-tabs-visualstudio) {
   }
 
   // Hide any content added ::after the title
-  .tab.pinned > .title::after {
+  .tab.pinned-tab > .title::after {
     left: 100%;
     margin: 0;
     padding: 0;
@@ -62,11 +62,11 @@ body:not(.pinned-tabs-visualstudio) {
                 min-width .3s ease,
                 width .3s ease;
   }
-  &.pinned-tabs-animated .tab.pinned > .title:not(.icon)::before {
+  &.pinned-tabs-animated .tab.pinned-tab > .title:not(.icon)::before {
     animation: icon-in .3s;
   }
-  &.pinned-tabs-animated.pinned-tabs-modified-always .tab.pinned > .title::before,
-  &.pinned-tabs-animated.pinned-tabs-modified-hover .tab.pinned > .title::before {
+  &.pinned-tabs-animated.pinned-tabs-modified-always .tab.pinned-tab > .title::before,
+  &.pinned-tabs-animated.pinned-tabs-modified-hover .tab.pinned-tab > .title::before {
     transition: border 0s ease .1s,
                 font-size .2s ease 0s;
   }
@@ -94,7 +94,7 @@ body:not(.pinned-tabs-visualstudio) {
 
 // Visual studio pinned tab styling
 body.pinned-tabs-visualstudio {
-  .tab.pinned > .close-icon {
+  .tab.pinned-tab > .close-icon {
     pointer-events: none !important; // Makes the close icon non-functional when used as pinned icon
     transform: scale(1) !important; // Force show the pinned icon
 

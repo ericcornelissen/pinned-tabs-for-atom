@@ -1,6 +1,6 @@
 {
   "name": "pinned-tabs",
-  "version": "2.0.3",
+  "version": "2.0.4",
   "description": "An Atom package that allows you to pin tabs",
   "license": "MIT",
   "main": "./lib/pinned-tabs",
@@ -43,9 +43,18 @@
       "order": 3,
       "title": "Modified indicator",
       "enum": [
-        { "value": "dont", "description": "Don't use this feature" },
-        { "value": "hover", "description": "Only show this when I hover over the tab" },
-        { "value": "always", "description": "Always show this when a tab is modified" }
+        {
+          "value": "dont",
+          "description": "Don't use this feature"
+        },
+        {
+          "value": "hover",
+          "description": "Only show this when I hover over the tab"
+        },
+        {
+          "value": "always",
+          "description": "Always show this when a tab is modified"
+        }
       ]
     },
     "visualstudio": {

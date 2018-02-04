@@ -70,15 +70,15 @@ body:not(.pinned-tabs-visualstudio) {
     transition: border 0s ease .1s,
                 font-size .2s ease 0s;
   }
-  &.pinned-tabs-animated.pinned-tabs-modified-always .tab.pinned.modified > .title::before,
-  &.pinned-tabs-animated.pinned-tabs-modified-hover .tab.pinned.modified:hover > .title::before {
+  &.pinned-tabs-animated.pinned-tabs-modified-always .tab.pinned-tab.modified > .title::before,
+  &.pinned-tabs-animated.pinned-tabs-modified-hover .tab.pinned-tab.modified:hover > .title::before {
     top: 50%;
     transform: translateY(-50%);
   }
 
   // Style ::before of the title for modified tabs
-  &.pinned-tabs-modified-always .tab.pinned.modified > .title::before,
-  &.pinned-tabs-modified-hover .tab.pinned.modified:hover > .title::before {
+  &.pinned-tabs-modified-always .tab.pinned-tab.modified > .title::before,
+  &.pinned-tabs-modified-hover .tab.pinned-tab.modified:hover > .title::before {
     background-color: transparent;
     border: 2px solid !important;
     border-radius: 50%;

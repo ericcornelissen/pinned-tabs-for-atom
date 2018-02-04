@@ -30,7 +30,7 @@ $ git clone https://github.com/ericcornelissen/pinned-tabs-for-atom --depth=1
 * * *
 
 ## Customization
-You can add custom styles for pinned tabs. Use your [Stylesheet](https://flight-manual.atom.io/using-atom/sections/basic-customization/#style-tweaks) and target `.tab.pinned` to tweak a pinned tab. You can consult the [package stylesheet](./styles/pinned-tabs.less) to see what classes are used.
+You can add custom styles for pinned tabs. Use your [Stylesheet](https://flight-manual.atom.io/using-atom/sections/basic-customization/#style-tweaks) and target `.tab.pinned-tab` to tweak a pinned tab. You can consult the [package stylesheet](./styles/pinned-tabs.less) to see what classes are used.
 
 Below are a few examples of ways to customize the styling of pinned tabs.
 

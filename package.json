@@ -1,6 +1,6 @@
 {
   "name": "pinned-tabs",
-  "version": "2.0.4",
+  "version": "2.0.5",
   "description": "An Atom package that allows you to pin tabs",
   "license": "MIT",
   "main": "./lib/pinned-tabs",

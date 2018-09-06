@@ -15,11 +15,13 @@
   },
   "devDependencies": {
     "atom-jasmine2-test-runner": "^1.1.2",
-    "eslint": "^4.10.0"
+    "eslint": "^4.10.0",
+    "husky": "^0.14.3"
   },
   "scripts": {
-    "test": "apm test",
-    "lint": "eslint lib/*.js"
+    "lint": "eslint lib/*.js",
+    "precommit": "npm run lint",
+    "test": "apm test"
   },
   "atomTestRunner": "./spec/runner",
   "configSchema": {

@@ -5,20 +5,6 @@ sudo: false
 git:
   depth: 10
 
-os:
-  - linux
-  - osx
-
-env:
-  global:
-    - APM_TEST_PACKAGES=""
-    - ATOM_LINT_WITH_BUNDLED_NODE="true"
-    - CI="true"
-
-  matrix:
-    - ATOM_CHANNEL=stable
-    - ATOM_CHANNEL=beta
-
 addons:
   apt:
     packages:
@@ -27,14 +13,47 @@ addons:
       - libgnome-keyring-dev
       - fakeroot
 
-install:
-  - npm install
 
-script:
-  - npm run lint
-  - curl -s -O https://raw.githubusercontent.com/atom/ci/master/build-package.sh
-  - chmod u+x build-package.sh
-  - ./build-package.sh
+install: source bin/build-package.sh
+
+jobs:
+  include:
+    - stage: "Per operating system"
+      name: "Linux - Atom Beta"
+      os: linux
+      env: ATOM_CHANNEL=beta
+      script: atom-beta --test spec
+    - name: "OS X - Atom Stable"
+      os: osx
+      env: ATOM_CHANNEL=stable
+      script: atom.sh --test spec
+    - name: "OS X - Atom Beta"
+      os: osx
+      env: ATOM_CHANNEL=beta
+      script: atom.sh --test spec
+
+    - stage: "Full test"
+      name: "Linux - Atom Stable"
+      os: linux
+
+      env:
+        - ATOM_CHANNEL=stable
+        - CC_TEST_REPORTER_ID=bc381870919ad46541ab8090ab343a528b0c89e8384925d452638abb3c8f5b72
+
+      before_script:
+        # Get CodeClimate ready for test reports
+        # - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+        # - chmod +x ./cc-test-reporter
+        # - ./cc-test-reporter before-build
+
+      script:
+        - npm run lint
+        - npm run test:coverage
+
+      after_script:
+        # Report the test results to CodeClimate
+        # - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
+
 
 notifications:
   email:

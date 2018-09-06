@@ -28,7 +28,7 @@
   },
   "scripts": {
     "lint": "eslint lib/*.js",
-    "test": "cross-env NODE_ENV=test apm test",
+    "test": "atom --test spec",
     "test:coverage": "atom-coverage"
   },
   "atomTestRunner": "atom-mocha",

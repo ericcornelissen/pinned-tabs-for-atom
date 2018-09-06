@@ -422,7 +422,9 @@ describe('PinnedTabs', function() {
       expect(tab.classList.contains('pinned-tab')).to.be.true;
     });
 
-    it('pins the settings tab', done => {
+    it('pins the settings tab', function(done) {
+      this.timeout(5000); // Opening the settings view can take some time
+
       atom.commands.dispatch(workspaceElement, 'settings-view:open');
 
       // Opening the settings view takes some time

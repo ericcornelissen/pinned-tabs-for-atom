@@ -1,0 +1,10 @@
+{
+  "exclude-after-remap": false,
+  "instrument": false,
+  "reporter": [
+    "lcov", "text"
+  ],
+  "report-dir": "coverage",
+  "temp-directory": "coverage/.nyc_output",
+  "source-map": false
+}

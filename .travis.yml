@@ -42,9 +42,9 @@ jobs:
 
       before_script:
         # Get CodeClimate ready for test reports
-        # - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
-        # - chmod +x ./cc-test-reporter
-        # - ./cc-test-reporter before-build
+        - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+        - chmod +x ./cc-test-reporter
+        - ./cc-test-reporter before-build
 
       script:
         - npm run lint
@@ -52,7 +52,7 @@ jobs:
 
       after_script:
         # Report the test results to CodeClimate
-        # - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
+        - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
 
 
 notifications:

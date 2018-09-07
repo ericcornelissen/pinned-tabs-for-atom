@@ -13,7 +13,7 @@ const PinnedTabsState = testquire('state.js');
 
 Chai.use(sinonChai);
 
-describe('PinnedTabs', function() {
+describe('PinnedTabs', () => {
 
   const outputPath = path.resolve(__dirname, './temporary-file');
   let workspaceElement;
@@ -436,17 +436,7 @@ describe('PinnedTabs', function() {
       });
     });
 
-    xit('pins the about tab', done => {
-      atom.commands.dispatch(workspaceElement, 'application:about');
-
-      // Opening the about view takes some time
-      setTimeout(() => {
-        let tab = workspaceElement.querySelector('.tab[data-type="AboutView"]');
-        PinnedTabs.pin(tab);
-        expect(tab.classList.contains('pinned-tab')).to.be.true;
-        done();
-      });
-    });
+    it('pins the about tab'); // Opens in a separate window, therefor hard to test
 
     it('calls ::onDidChangeTitle() when a pinned tab\'s name is changed', async () => {
       stub(itemEditor, 'onDidChangeTitle').returns(new CompositeDisposable());

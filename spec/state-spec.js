@@ -4,13 +4,12 @@ import { spy } from 'sinon';
 import sinonChai from 'sinon-chai';
 
 import { testquire } from 'atom-coverage';
-import { Stats } from 'fs';
 const PinnedTabsState = testquire('state.js');
 
 
 Chai.use(sinonChai);
 
-describe('PinnedTabsState', function() {
+describe('PinnedTabsState', () => {
 
   it('can be initialized without a previous state', () => {
     let state = new PinnedTabsState();

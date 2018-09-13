@@ -52,12 +52,12 @@
       "title": "Enable the 'Close Unpinned Tabs' option",
       "description": "Tick this to show the 'Close Unpinned Tabs' from the context menu"
     },
-    "preventCloseAll": {
+    "preventCloseBatch": {
       "type": "boolean",
       "default": true,
       "order": 3,
-      "title": "Prevent 'Close all tabs' from closing pinned tabs",
-      "description": "Prevent the native 'Close all tabs' from closing pinned tabs"
+      "title": "Prevent closing pinned tabs in batch",
+      "description": "Prevent actions like 'Close all tabs' from closing pinned tabs"
     },
     "modified": {
       "type": "string",

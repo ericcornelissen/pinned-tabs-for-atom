@@ -1,0 +1,16 @@
+{
+  "context-menu": {
+    ".tab:not(.pinned-tab):not([data-type=\"TreeView\"]):not([data-type=\"PanelDock\"]):not([data-type=\"Object\"])": [{
+      "label": "Pin tab",
+      "command": "pinned-tabs:pin-selected"
+    }],
+    ".tab.pinned-tab": [{
+      "label": "Unpin tab",
+      "command": "pinned-tabs:pin-selected"
+    }],
+    "body.close-unpinned .tab:not([data-type=\"TreeView\"]):not([data-type=\"PanelDock\"]):not([data-type=\"Object\"])": [{
+      "label": "Close Unpinned Tabs",
+      "command": "pinned-tabs:close-unpinned"
+    }]
+  }
+}

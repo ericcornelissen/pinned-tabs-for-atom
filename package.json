@@ -4,7 +4,7 @@
   "description": "An Atom package that allows you to pin tabs",
   "license": "MIT",
   "main": "./lib/pinned-tabs",
-  "repository": "https://github.com/ericcornelissen/pinned-tabs-for-atom",
+  "repository": "git@github.com:ericcornelissen/pinned-tabs-for-atom.git",
   "keywords": [
     "pinned",
     "pin",

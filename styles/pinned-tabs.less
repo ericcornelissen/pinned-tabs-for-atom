@@ -1,5 +1,5 @@
 // Set a default icon for pinned tabs
-.tab.pinned-tab > .title[class$="icon"]::before {
+.tab.pinned-tab > .title:not([class*="-icon"])::before {
   content: '\f011';
   display: inline-block;
   font-family: 'Octicons Regular';

@@ -83,5 +83,7 @@
       }
     }
   },
-  "dependencies": {}
+  "activationHooks": [
+    "core:loaded-shell-environment"
+  ]
 }

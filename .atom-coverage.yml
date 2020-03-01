@@ -1,4 +1,0 @@
-instrumenter: nyc
-transpiler: babel
-sourcesRoot: lib/
-testScript: test

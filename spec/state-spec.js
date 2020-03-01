@@ -3,8 +3,7 @@
 import { spy } from 'sinon';
 import sinonChai from 'sinon-chai';
 
-import { testquire } from 'atom-coverage';
-const PinnedTabsState = testquire('state.js');
+import PinnedTabsState from '../lib/state.js';
 
 
 Chai.use(sinonChai);

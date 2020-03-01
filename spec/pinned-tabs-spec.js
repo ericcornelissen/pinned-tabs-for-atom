@@ -6,9 +6,8 @@ import * as path from 'path';
 import { match as matchers, spy, stub } from 'sinon';
 import sinonChai from 'sinon-chai';
 
-import { testquire } from 'atom-coverage';
-const PinnedTabs = testquire('pinned-tabs.js');
-const PinnedTabsState = testquire('state.js');
+import PinnedTabs from '../lib/pinned-tabs.js';
+import PinnedTabsState from '../lib/state.js';
 
 
 Chai.use(sinonChai);
@@ -436,7 +435,7 @@ describe('PinnedTabs', () => {
       });
     });
 
-    it('pins the about tab'); // Opens in a separate window, therefor hard to test
+    // it('pins the about tab'); // Opens in a separate window, therefor hard to test
 
     it('calls ::onDidChangeTitle() when a pinned tab\'s name is changed', async () => {
       stub(itemEditor, 'onDidChangeTitle').returns(new CompositeDisposable());

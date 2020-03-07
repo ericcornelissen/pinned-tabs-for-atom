@@ -1,6 +1,6 @@
 // Set a default icon for pinned tabs (when file-icons is not active)
-.tab.pinned-tab[data-type="TextEditor"] > :not([class*="-icon"])::before {
-  content: '\f011';
+.tab.pinned-tab[data-type="TextEditor"] > :not([class*="-icon"])::before,
+.tab.pinned-tab[data-type="ImageEditor"] > :not([class*="-icon"])::before {
   display: inline-block;
   font-family: 'Octicons Regular';
   font-size: medium;
@@ -9,6 +9,14 @@
   overflow: hidden;
   position: absolute;
   width: 0;
+}
+
+.tab.pinned-tab[data-type="TextEditor"] > :not([class*="-icon"])::before {
+  content: '\f011';
+}
+
+.tab.pinned-tab[data-type="ImageEditor"] > :not([class*="-icon"])::before {
+  content: '\f012';
 }
 
 // Prevent invocations on the .title element

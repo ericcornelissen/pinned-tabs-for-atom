@@ -1,5 +1,5 @@
-// Set a default icon for pinned tabs
-.tab.pinned-tab > .title:not([class*="-icon"])::before {
+// Set a default icon for pinned tabs (when file-icons is not active)
+.tab.pinned-tab[data-type="TextEditor"] > :not([class*="-icon"])::before {
   content: '\f011';
   display: inline-block;
   font-family: 'Octicons Regular';

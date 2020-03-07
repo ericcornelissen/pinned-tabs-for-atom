@@ -58,18 +58,23 @@ body:not(.pinned-tabs-visualstudio) {
 
   // Set animation transitions
   &.pinned-tabs-animated .tab {
-    transition: max-width .3s ease,
-                min-width .3s ease,
-                width .3s ease;
+    transition:
+      max-width .3s ease,
+      min-width .3s ease,
+      width .3s ease;
   }
+
   &.pinned-tabs-animated .tab.pinned-tab > .title:not(.icon)::before {
     animation: icon-in .3s;
   }
+
   &.pinned-tabs-animated.pinned-tabs-modified-always .tab.pinned-tab > .title::before,
   &.pinned-tabs-animated.pinned-tabs-modified-hover .tab.pinned-tab > .title::before {
-    transition: border 0s ease .1s,
-                font-size .2s ease 0s;
+    transition:
+      border 0s ease .1s,
+      font-size .2s ease 0s;
   }
+
   &.pinned-tabs-animated.pinned-tabs-modified-always .tab.pinned-tab.modified > .title::before,
   &.pinned-tabs-animated.pinned-tabs-modified-hover .tab.pinned-tab.modified:hover > .title::before {
     top: 50%;

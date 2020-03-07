@@ -1,9 +1,10 @@
 language: generic
+os: linux
 dist: trusty
 
 jobs:
   include:
-    - Stage: "Lint"
+    - stage: "Lint"
       name: "Lint"
       os: linux
       language: node_js
@@ -54,18 +55,3 @@ addons:
     - fakeroot
     - git
     - libsecret-1-dev
-
-language: generic
-dist: trusty
-sudo: false
-
-git:
-  depth: 10
-
-addons:
-  apt:
-    packages:
-      - build-essential
-      - git
-      - libgnome-keyring-dev
-      - fakeroot

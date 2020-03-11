@@ -67,7 +67,7 @@
     "visualstudio": {
       "type": "object",
       "title": "Visual Studio style pinning",
-      "description": "Options for...",
+      "description": "When _Visual Studio style pinning_ is enabled pinned tabs wno't shrink. Instead, the closing button is replaced by an indicator that the tab is now pinned.",
       "order": 4,
       "properties": {
         "enable": {

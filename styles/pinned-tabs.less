@@ -97,29 +97,31 @@ body.pinned-tabs-visualstudio {
 }
 
 // Pin button on tabs
-.pin-icon {
-  cursor: pointer;
-  height: 100%;
-  position: absolute;
-  right: 28px;
-  text-align: right;
-  top: 1px;
-  width: 12px;
-
-  &::before {
-    content: '\f041'; // Change close icon into a "pinned" icon
-    display: inline-block;
-    font-family: 'Octicons Regular';
-    font-size: .9em;
-    font-style: normal !important;
-    height: 12px;
-    line-height: 1;
-    text-decoration: none;
-    -webkit-font-smoothing: antialiased;
+body.pinned-tabs-pin-button {
+  .pin-icon {
+    cursor: pointer;
+    height: 100%;
+    position: absolute;
+    right: 28px;
+    text-align: right;
+    top: 1px;
     width: 12px;
-  }
 
-  .tab.pinned-tab > & {
-    display: none;
+    &::before {
+      content: '\f041';
+      display: inline-block;
+      font-family: 'Octicons Regular';
+      font-size: .9em;
+      font-style: normal !important;
+      height: 12px;
+      line-height: 1;
+      text-decoration: none;
+      -webkit-font-smoothing: antialiased;
+      width: 12px;
+    }
+
+    .tab.pinned-tab > & {
+      display: none;
+    }
   }
 }

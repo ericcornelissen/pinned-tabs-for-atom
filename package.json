@@ -43,10 +43,17 @@
       "title": "Enable the 'Close Unpinned Tabs' option",
       "description": "Tick this to show the 'Close Unpinned Tabs' from the context menu"
     },
+    "pinButton": {
+      "type": "boolean",
+      "default": false,
+      "order": 3,
+      "title": "Enable pin button on tabs",
+      "description": "Tick this to add a button to unpinned tabs to pin them"
+    },
     "modified": {
       "type": "string",
       "default": "always",
-      "order": 3,
+      "order": 4,
       "title": "Modified indicator",
       "enum": [
         {
@@ -67,7 +74,7 @@
       "type": "object",
       "title": "Visual Studio style pinning",
       "description": "Options for...",
-      "order": 4,
+      "order": 5,
       "properties": {
         "enable": {
           "type": "boolean",

@@ -1,6 +1,7 @@
 // Set a default icon for pinned tabs (when file-icons is not active)
-.tab.pinned-tab[data-type="TextEditor"] > :not([class*="-icon"])::before,
-.tab.pinned-tab[data-type="ImageEditor"] > :not([class*="-icon"])::before {
+.tab.pinned-tab[data-type="Object"] > :not([class*="-icon"])::before,
+.tab.pinned-tab[data-type="ImageEditor"] > :not([class*="-icon"])::before,
+.tab.pinned-tab[data-type="TextEditor"] > :not([class*="-icon"])::before, {
   display: inline-block;
   font-family: 'Octicons Regular';
   font-size: medium;
@@ -11,10 +12,14 @@
   width: 0;
 }
 
-.tab.pinned-tab[data-type="TextEditor"] > :not([class*="-icon"])::before {
-  content: '\f011';
+.tab.pinned-tab[data-type="Object"] > :not([class*="-icon"])::before {
+  content: '\f011'; // https://octicons.github.com/icon/file/
 }
 
 .tab.pinned-tab[data-type="ImageEditor"] > :not([class*="-icon"])::before {
-  content: '\f012';
+  content: '\f012'; // https://octicons.github.com/icon/file-media/
+}
+
+.tab.pinned-tab[data-type="TextEditor"] > :not([class*="-icon"])::before {
+  content: '\f011'; // https://octicons.github.com/icon/file/
 }

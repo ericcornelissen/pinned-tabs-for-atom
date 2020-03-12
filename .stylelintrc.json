@@ -1,8 +1,12 @@
 {
   "extends": "stylelint-config-standard",
+  "plugins": [
+    "stylelint-order"
+  ],
   "rules": {
     "font-family-no-missing-generic-family-keyword": null,
     "no-descending-specificity": null,
-    "number-leading-zero": "never"
+    "number-leading-zero": "never",
+    "order/properties-alphabetical-order": true
   }
 }

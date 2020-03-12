@@ -1,6 +1,6 @@
 {
   "name": "pinned-tabs",
-  "version": "2.2.0",
+  "version": "2.2.1",
   "description": "An Atom package that allows you to pin tabs",
   "license": "MIT",
   "main": "./lib/pinned-tabs",
@@ -21,7 +21,8 @@
     "sinon": "^6.3.5",
     "sinon-chai": "^3.5.0",
     "stylelint": "^13.2.0",
-    "stylelint-config-standard": "^20.0.0"
+    "stylelint-config-standard": "^20.0.0",
+    "stylelint-order": "^4.0.0"
   },
   "scripts": {
     "lint": "eslint lib/*.js spec/*.js && stylelint styles/*.less",
@@ -73,7 +74,7 @@
     "visualstudio": {
       "type": "object",
       "title": "Visual Studio style pinning",
-      "description": "Options for...",
+      "description": "When _Visual Studio style pinning_ is enabled pinned tabs wno't shrink. Instead, the closing button is replaced by an indicator that the tab is now pinned.",
       "order": 5,
       "properties": {
         "enable": {

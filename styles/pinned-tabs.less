@@ -116,6 +116,7 @@ body.pinned-tabs-pin-button {
     width: 12px;
 
     &::before {
+      color: rgba(96, 125, 139, .65);
       content: '\f041';
       display: inline-block;
       font-family: 'Octicons Regular';
@@ -126,6 +127,10 @@ body.pinned-tabs-pin-button {
       line-height: 1;
       text-decoration: none;
       width: 12px;
+    }
+
+    &:hover::before {
+      color: rgb(96, 125, 139);
     }
 
     .tab.pinned-tab > & {

@@ -98,6 +98,12 @@ body.pinned-tabs-visualstudio {
 
 // Pin button on tabs
 body.pinned-tabs-pin-button {
+  .tab:not(.pinned-tab):hover {
+    .pin-icon {
+      transform: scale(1);
+    }
+  }
+
   .pin-icon {
     cursor: pointer;
     height: 100%;
@@ -105,6 +111,8 @@ body.pinned-tabs-pin-button {
     right: 28px;
     text-align: right;
     top: 1px;
+    transform: scale(0);
+    transition: transform 250ms cubic-bezier(.4, 0, .2, 1);
     width: 12px;
 
     &::before {
@@ -112,11 +120,11 @@ body.pinned-tabs-pin-button {
       display: inline-block;
       font-family: 'Octicons Regular';
       font-size: .9em;
+      -webkit-font-smoothing: antialiased;
       font-style: normal !important;
       height: 12px;
       line-height: 1;
       text-decoration: none;
-      -webkit-font-smoothing: antialiased;
       width: 12px;
     }
 

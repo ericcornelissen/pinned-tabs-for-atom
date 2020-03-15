@@ -61,6 +61,13 @@ Below are a few examples of ways to customize the styling of pinned tabs.
 
 If you're using file-icons, you can check out its [customization documentation](https://github.com/file-icons/atom#customisation) as well.
 
+#### Change the pin button on tabs
+```css
+.tab > .pin-icon::before {
+  content: '\f015' !important;
+}
+```
+
 #### Change the 'pinned' icon for Visual Studio mode
 ```css
 .tab.pinned-tab > .close-icon::before {

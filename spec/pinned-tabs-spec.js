@@ -6,6 +6,8 @@ import * as path from 'path';
 import { match as matchers, spy, stub } from 'sinon';
 import sinonChai from 'sinon-chai';
 
+import { simulateClick } from './utils.js';
+
 import PinnedTabs from '../lib/pinned-tabs.js';
 import PinnedTabsState from '../lib/state.js';
 
@@ -86,6 +88,19 @@ describe('PinnedTabs', () => {
       PinnedTabs.restoreState.restore();
     });
 
+    it('adds the pin button to all tabs', async () => {
+      const chickenFileName = 'chicken.md';
+      const chickenFilePath = path.resolve(__dirname, './fixtures', chickenFileName);
+      await atom.workspace.open(chickenFilePath);
+
+      spy(PinnedTabs, 'addPinButtonTo');
+      PinnedTabs.activate();
+
+      expect(PinnedTabs.addPinButtonTo).to.have.been.called;
+
+      PinnedTabs.addPinButtonTo.restore();
+    });
+
   });
 
   describe('::deactivate()', () => {
@@ -135,6 +150,19 @@ describe('PinnedTabs', () => {
       expect(body.classList.contains('pinned-tabs-modified-always')).to.be.false;
       expect(body.classList.contains('pinned-tabs-modified-hover')).to.be.false;
       expect(body.classList.contains('pinned-tabs-visualstudio')).to.be.false;
+    });
+
+    it('removes the pin button from all tabs', async () => {
+      const chickenFileName = 'chicken.md';
+      const chickenFilePath = path.resolve(__dirname, './fixtures', chickenFileName);
+      await atom.workspace.open(chickenFilePath);
+
+      spy(PinnedTabs, 'removePinButtonFrom');
+      PinnedTabs.deactivate();
+
+      expect(PinnedTabs.removePinButtonFrom).to.have.been.called;
+
+      PinnedTabs.removePinButtonFrom.restore();
     });
 
   });
@@ -558,6 +586,83 @@ describe('PinnedTabs', () => {
 
     afterEach(() => {
       pane.moveItem.restore();
+    });
+
+  });
+
+  describe('::addPinButtonTo()', () => {
+
+    const chickenFileName = 'chicken.md';
+    const loremFileName = 'lorem.txt';
+    const chickenFilePath = path.resolve(__dirname, './fixtures', chickenFileName);
+    const loremFilePath = path.resolve(__dirname, './fixtures', loremFileName);
+
+    beforeEach(async () => {
+      spy(PinnedTabs, 'pin');
+
+      // Open a file in the workspace to work with
+      await atom.workspace.open(chickenFilePath);
+    });
+
+    it('adds a pin button to a tab', () => {
+      let tab = workspaceElement.querySelector(`.tab .title[data-name="${chickenFileName}"]`).parentNode;
+      PinnedTabs.addPinButtonTo(tab);
+      expect(tab.querySelector('.pin-icon')).not.to.be.null;
+    });
+
+    it('the pin button on a tab pins the tab when clicked', () => {
+      let tab = workspaceElement.querySelector(`.tab .title[data-name="${chickenFileName}"]`).parentNode;
+      PinnedTabs.addPinButtonTo(tab);
+
+      let pinButton = tab.querySelector('.pin-icon');
+      expect(pinButton).not.to.be.null;
+
+      simulateClick(pinButton);
+      expect(PinnedTabs.pin).to.have.been.called;
+    });
+
+    it('is called when a new tab is opened', async () => {
+      spy(PinnedTabs, 'addPinButtonTo');
+
+      await atom.workspace.open(loremFilePath);
+      expect(PinnedTabs.addPinButtonTo).to.have.been.called;
+
+      PinnedTabs.addPinButtonTo.restore();
+    });
+
+    afterEach(() => {
+      PinnedTabs.pin.restore();
+    });
+
+  });
+
+  describe('::removePinButtonFrom()', () => {
+
+    const chickenFileName = 'chicken.md';
+    const chickenFilePath = path.resolve(__dirname, './fixtures', chickenFileName);
+
+    beforeEach(async () => {
+      // Open a file in the workspace to work with
+      await atom.workspace.open(chickenFilePath);
+    });
+
+    it('removes te pin button from a tab', () => {
+      const pinButton = document.createElement('div');
+      pinButton.classList.add('pin-icon');
+
+      let tab = workspaceElement.querySelector(`.tab .title[data-name="${chickenFileName}"]`).parentNode;
+      tab.appendChild(pinButton);
+
+      PinnedTabs.removePinButtonFrom(tab);
+      expect(tab.querySelector('.pin-icon')).not.to.null;
+    });
+
+    it('does nothing if there is no pin button on the tab', () => {
+      let tab = workspaceElement.querySelector(`.tab .title[data-name="${chickenFileName}"]`).parentNode;
+      spy(tab, 'removeChild');
+
+      expect(() => PinnedTabs.removePinButtonFrom(tab)).not.to.throw;
+      expect(tab.removeChild).not.to.have.been.called;
     });
 
   });

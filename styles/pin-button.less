@@ -1,0 +1,47 @@
+// Pin button on tabs
+body.pinned-tabs-pin-button {
+  .tab-bar .tab:hover > .title {
+    padding-right: 24px;
+  }
+
+  .tab:not(.pinned-tab):hover {
+    .pin-icon {
+      transform: scale(1);
+    }
+  }
+
+  .pin-icon {
+    color: inherit;
+    cursor: pointer;
+    height: 100%;
+    position: absolute;
+    right: 28px;
+    text-align: right;
+    top: 1px;
+    transform: scale(0);
+    transition: transform 250ms cubic-bezier(.4, 0, .2, 1);
+    width: 12px;
+
+    &::before {
+      content: '\f041';
+      display: inline-block;
+      font-family: 'Octicons Regular';
+      font-size: .9em;
+      -webkit-font-smoothing: antialiased;
+      font-style: normal !important;
+      height: 12px;
+      line-height: 1;
+      opacity: .65;
+      text-decoration: none;
+      width: 12px;
+    }
+
+    &:hover::before {
+      opacity: 1;
+    }
+
+    .tab.pinned-tab > & {
+      display: none;
+    }
+  }
+}

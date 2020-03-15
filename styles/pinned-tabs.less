@@ -98,6 +98,10 @@ body.pinned-tabs-visualstudio {
 
 // Pin button on tabs
 body.pinned-tabs-pin-button {
+  .tab-bar .tab:hover > .title {
+    padding-right: 24px;
+  }
+
   .tab:not(.pinned-tab):hover {
     .pin-icon {
       transform: scale(1);
@@ -105,6 +109,7 @@ body.pinned-tabs-pin-button {
   }
 
   .pin-icon {
+    color: inherit;
     cursor: pointer;
     height: 100%;
     position: absolute;
@@ -116,7 +121,6 @@ body.pinned-tabs-pin-button {
     width: 12px;
 
     &::before {
-      color: rgba(96, 125, 139, .65);
       content: '\f041';
       display: inline-block;
       font-family: 'Octicons Regular';
@@ -125,12 +129,13 @@ body.pinned-tabs-pin-button {
       font-style: normal !important;
       height: 12px;
       line-height: 1;
+      opacity: .65;
       text-decoration: none;
       width: 12px;
     }
 
     &:hover::before {
-      color: rgb(96, 125, 139);
+      opacity: 1;
     }
 
     .tab.pinned-tab > & {

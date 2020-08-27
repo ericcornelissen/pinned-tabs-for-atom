@@ -6,7 +6,7 @@ import * as path from 'path';
 import { match as matchers, spy, stub } from 'sinon';
 import sinonChai from 'sinon-chai';
 
-import { simulateClick } from './utils.js';
+import { simulateClick, sleep } from './utils.js';
 
 import PinnedTabs from '../lib/pinned-tabs.js';
 import PinnedTabsState from '../lib/state.js';
@@ -447,6 +447,39 @@ describe('PinnedTabs', () => {
       let tab = workspaceElement.querySelector('.tab .title:not([data-name])').parentNode;
       PinnedTabs.pin(tab);
       expect(tab.classList.contains('pinned-tab')).to.be.true;
+    });
+
+    it('is possible to pin multiple new (unsaved) editors', async () => {
+      spy(PinnedTabs.state, 'movePaneItem');
+
+      let item0 = await atom.workspace.open('');
+      let item1 = await atom.workspace.open('');
+
+      let tabs = workspaceElement.querySelectorAll('.tab .title:not([data-name])');
+      expect(tabs).to.have.lengthOf(2);
+
+      let tab0 = tabs[0].parentNode;
+      let tab1 = tabs[1].parentNode;
+
+      PinnedTabs.pin(tab0);
+      expect(tab0.classList.contains('pinned-tab')).to.be.true;
+
+      await sleep(10);
+
+      PinnedTabs.pin(tab1);
+      expect(tab0.classList.contains('pinned-tab')).to.be.true;
+
+      await sleep(10);
+      PinnedTabs.state.movePaneItem.resetHistory();
+
+      PinnedTabs.pin(tab0);
+      expect(tab0.classList.contains('pinned-tab')).to.be.false;
+
+      await sleep(100);
+      expect(PinnedTabs.state.movePaneItem).not.to.have.been.calledWith(matchers.any, item0, matchers.any);
+      expect(PinnedTabs.state.movePaneItem).not.to.have.been.calledWith(matchers.any, item1, matchers.any);
+
+      PinnedTabs.state.movePaneItem.restore();
     });
 
     it('pins the settings tab', function(done) {

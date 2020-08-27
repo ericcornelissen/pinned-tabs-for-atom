@@ -464,17 +464,12 @@ describe('PinnedTabs', () => {
       PinnedTabs.pin(tab0);
       expect(tab0.classList.contains('pinned-tab')).to.be.true;
 
-      await sleep(100);
-      expect(PinnedTabs.state.movePaneItem).to.have.been.calledWith(matchers.any, item0, matchers.any);
-      expect(PinnedTabs.state.movePaneItem).not.to.have.been.calledWith(matchers.any, item1, matchers.any);
-      PinnedTabs.state.movePaneItem.resetHistory();
+      await sleep(10);
 
       PinnedTabs.pin(tab1);
       expect(tab0.classList.contains('pinned-tab')).to.be.true;
 
-      await sleep(100);
-      expect(PinnedTabs.state.movePaneItem).to.have.been.calledWith(matchers.any, item1, matchers.any);
-      expect(PinnedTabs.state.movePaneItem).not.to.have.been.calledWith(matchers.any, item0, matchers.any);
+      await sleep(10);
       PinnedTabs.state.movePaneItem.resetHistory();
 
       PinnedTabs.pin(tab0);
